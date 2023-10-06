@@ -15,7 +15,7 @@ print(f"The quotient of the devision of {num1} and {num2} is {num1//num2} and th
 
 t_fahrenheit = 451
 
-print(f"{t_fahrenheit} °F are {(t_fahrenheit - 32 ) * 5/9}")
+print(f"{t_fahrenheit} °F are approx. {(t_fahrenheit - 32 ) * 5/9} °C")
 
 
 # determine how many more '(' than ')' symbols occur in the following string:
