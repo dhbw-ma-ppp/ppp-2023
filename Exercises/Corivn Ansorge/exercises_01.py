@@ -34,17 +34,15 @@ print(f"There are {symbols_count} more '(' than ')' symbols in the string")
 first_list = ['ybk', 'zcg', 'dhw', 'gua', 'mqh', 'yel', 'fpk', 'imk', 'nkt', 'tpl', 'guc', 'ozk', 'dip', 'thn', 'pxc', 'obk', 'orl', 'rdc', 'vto', 'wen', 'tbw', 'itj', 'qfb', 'ymd', 'txb', 'vgw', 'wgd', 'tcg', 'ezm', 'gnt', 'ehf', 'pfo', 'alf']
 second_list = ['ybk', 'zcg', 'dhw', 'gua', 'mqh', 'yel', 'fpk', 'imk', 'nkt', 'tpl', 'guc', 'ozk', 'dip', 'thn', 'pxc', 'obk', 'orl', 'rdc', 'vto', 'wen', 'tbw', 'itj', 'qfb', 'ymd', 'txb', 'vgw', 'wgd', 'tcg', 'ezm', 'gnt', 'ehf', 'pfo', 'alf']
 
-#if first_list == second_list: #proof that the lists are equal
-    #print("Is equal")
 
-print(f" There are {len(first_list)} elements in the list 'first_list'")
-print(f" There are {len(second_list)} elements in the list 'second_list'")
+print(f" There are {len(first_list)} elements in the list 'first_list' and {len(second_list)} elements in the list 'second_list'")
+
 
 
 # which and how many elements are common to the two lists above?
 
 common_list = set(first_list) & set(second_list)
-print(f"These elements are the elements common in these two lists.\n{common_list}\nThe count is {len(common_list)}.")
+print(f"These elements are the elements common in these two lists:\n{common_list}\nand the count is {len(common_list)}.")
 
 
 
@@ -52,4 +50,4 @@ print(f"These elements are the elements common in these two lists.\n{common_list
 
 # how often does the character 'a' occur in each of the lists above?
 list = "".join(first_list)
-print(list.count("a"))
+print("There are",list.count("a"), "'a' in each of the lists")
