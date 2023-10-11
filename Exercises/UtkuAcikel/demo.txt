@@ -1,0 +1,75 @@
+Last login: Wed Oct 11 16:07:26 on ttys016
+(base) uacikel@MacBook-Pro-von-Utku study % git clone https://github.com/dhbw-ma-ppp/ppp-2023.git
+Cloning into 'ppp-2023'...
+remote: Enumerating objects: 40, done.
+remote: Counting objects: 100% (40/40), done.
+remote: Compressing objects: 100% (28/28), done.
+remote: Total 40 (delta 13), reused 31 (delta 7), pack-reused 0
+Receiving objects: 100% (40/40), 35.86 KiB | 17.93 MiB/s, done.
+Resolving deltas: 100% (13/13), done.
+(base) uacikel@MacBook-Pro-von-Utku study % ls
+ppp-2023
+(base) uacikel@MacBook-Pro-von-Utku study % cd ppp-2023
+(base) uacikel@MacBook-Pro-von-Utku ppp-2023 % ls
+Exercises		README.md
+LICENSE			Vorlesungsunterlagen
+(base) uacikel@MacBook-Pro-von-Utku ppp-2023 % git status
+On branch main
+Your branch is up to date with 'origin/main'.
+
+nothing to commit, working tree clean
+(base) uacikel@MacBook-Pro-von-Utku ppp-2023 % ls 
+Exercises		README.md
+LICENSE			Vorlesungsunterlagen
+(base) uacikel@MacBook-Pro-von-Utku ppp-2023 % cd Exercises 
+(base) uacikel@MacBook-Pro-von-Utku Exercises % lös
+zsh: command not found: lös
+(base) uacikel@MacBook-Pro-von-Utku Exercises % ls
+AtrejuTauschinsky	exercises_01.py
+(base) uacikel@MacBook-Pro-von-Utku Exercises % cd\UtkuAcikel
+zsh: command not found: cdUtkuAcikel
+(base) uacikel@MacBook-Pro-von-Utku Exercises % mkdir UtkuAcikel
+(base) uacikel@MacBook-Pro-von-Utku Exercises % ls   
+AtrejuTauschinsky	UtkuAcikel		exercises_01.py
+(base) uacikel@MacBook-Pro-von-Utku Exercises % cd UtkuAcikel
+(base) uacikel@MacBook-Pro-von-Utku UtkuAcikel % ls
+(base) uacikel@MacBook-Pro-von-Utku UtkuAcikel % git checkout -b UtkuAcikel
+Switched to a new branch 'UtkuAcikel'
+(base) uacikel@MacBook-Pro-von-Utku UtkuAcikel % git status
+On branch UtkuAcikel
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	../../.DS_Store
+	../.DS_Store
+	./
+
+nothing added to commit but untracked files present (use "git add" to track)
+(base) uacikel@MacBook-Pro-von-Utku UtkuAcikel % touch demo
+(base) uacikel@MacBook-Pro-von-Utku UtkuAcikel % ls
+demo
+(base) uacikel@MacBook-Pro-von-Utku UtkuAcikel % nano demo
+
+  UW PICO 5.09                       File: demo                       Modified  
+
+test test test
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+^G Get Help  ^O WriteOut  ^R Read File ^Y Prev Pg   ^K Cut Text  ^C Cur Pos   
+^X Exit      ^J Justify   ^W Where is  ^V Next Pg   ^U UnCut Text^T To Spell  
