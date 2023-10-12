@@ -6,14 +6,15 @@
 # what are the quotient and remainder after (integer) division of 2711274328912 by 23369245575
 a =2711274328912
 b=23369245575
-print('Remainder= '+ a%b)
-print('Quotient=' + a/b)
+remain = a%b
+quoti = a/b
+print('Remainder= ' , remain , 'Quotient=' , quoti)
 
 
 # assume the variable below is a temperature in degrees Fahrenheit. Print the same temperature converted to °C.
 t_fahrenheit = 451
 t_celsius = (t_fahrenheit-32)*5/9
-print(t_celsius + 'C°')
+print(t_celsius , 'C°')
 
 
 # determine how many more '(' than ')' symbols occur in the following string:
@@ -21,19 +22,33 @@ input_string = '()()(()()()(()()((()((()))((()((((()()((((()))()((((())(((((((()
 anz1 = input_string.count('(')
 anz2 = input_string.count(')')
 
-print('Es gibt '+ anz1-anz2 + 'mehr')
+print('Es gibt ', anz1-anz2 , 'mehr')
 
 # how may elements are in each of the following lists?
 first_list = ['ybk', 'zcg', 'dhw', 'gua', 'mqh', 'yel', 'fpk', 'imk', 'nkt', 'tpl', 'guc', 'ozk', 'dip', 'thn', 'pxc', 'obk', 'orl', 'rdc', 'vto', 'wen', 'tbw', 'itj', 'qfb', 'ymd', 'txb', 'vgw', 'wgd', 'tcg', 'ezm', 'gnt', 'ehf', 'pfo', 'alf']
 second_list = ['ybk', 'zcg', 'dhw', 'gua', 'mqh', 'yel', 'fpk', 'imk', 'nkt', 'tpl', 'guc', 'ozk', 'dip', 'thn', 'pxc', 'obk', 'orl', 'rdc', 'vto', 'wen', 'tbw', 'itj', 'qfb', 'ymd', 'txb', 'vgw', 'wgd', 'tcg', 'ezm', 'gnt', 'ehf', 'pfo', 'alf']
-print('In Liste 1 sind ' + len(first_list))
-print('In Liste 2 sind ' + len(second_list))
+print('In Liste 1 sind ' , len(first_list), '. In Liste 2 sind' , len(second_list))
 
 # which and how many elements are common to the two lists above?
-same_elements = first_list.intersection(second_list)
+same_elements = list(set(first_list).intersection(second_list))
 x=len(same_elements)
-print(x)
-print(same_elements)
+print('Es gibt ', x, 'gleiche Elemente. Die gleichen Elemente sind ', same_elements)
+
 
 
 # how often does the character 'a' occur in each of the lists above?
+a_list1 = 0
+a_list2 = 0
+for count in range(0,len(first_list)):
+    if "a" in first_list[count]:
+        a_list1+=1
+    else:
+        a_list1=a_list1
+
+for count2 in range(0,len(second_list)):
+    if "a" in second_list[count2]:
+        a_list2+=1
+    else:
+        a_list2=a_list2
+
+print('In Liste 1 gibt es ', a_list1, ' Mal das a. In Liste 2 gibt es ', a_list2, ' Mal das a.')
