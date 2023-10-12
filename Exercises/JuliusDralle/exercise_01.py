@@ -21,15 +21,13 @@ print(input_string.count("(") - input_string.count(")"))
 first_list = ['ybk', 'zcg', 'dhw', 'gua', 'mqh', 'yel', 'fpk', 'imk', 'nkt', 'tpl', 'guc', 'ozk', 'dip', 'thn', 'pxc', 'obk', 'orl', 'rdc', 'vto', 'wen', 'tbw', 'itj', 'qfb', 'ymd', 'txb', 'vgw', 'wgd', 'tcg', 'ezm', 'gnt', 'ehf', 'pfo', 'alf']
 second_list = ['ybk', 'zcg', 'dhw', 'gua', 'mqh', 'yel', 'fpk', 'imk', 'nkt', 'tpl', 'guc', 'ozk', 'dip', 'thn', 'pxc', 'obk', 'orl', 'rdc', 'vto', 'wen', 'tbw', 'itj', 'qfb', 'ymd', 'txb', 'vgw', 'wgd', 'tcg', 'ezm', 'gnt', 'ehf', 'pfo', 'alf']
 
-print("1. Liste: ", len(first_list))
-print("2. Liste: ", len(second_list))
+print("1. Liste: ", len(first_list),"2. Liste: ", len(second_list))
 
 # which and how many elements are common to the two lists above? 
 first_list_set = set(first_list)
 second_list_set = set(second_list)
 
-print("Folgende Inhalte sind in beiden Listen gleich: ", first_list_set.intersection(second_list_set))
-print("Es sind genau: ", len(first_list_set.intersection(second_list_set)))
+print("Folgende Inhalte sind in beiden Listen gleich: ", first_list_set.intersection(second_list_set), "Es sind genau: ", len(first_list_set.intersection(second_list_set)))
 
 # how often does the character 'a' occur in each of the lists above?
 
