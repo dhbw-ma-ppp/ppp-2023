@@ -53,12 +53,15 @@ print(f'\nthere are {count_com_elements} elements in common\n')
 # how often does the character 'a' occur in each of the lists above?
 
 # Using a loop to check how often the caracter 'a' appears.
-for word in first_list:
-    count = word.count('a')
 
-print(f"The word {word} contains {count}'a's.")
+count = 0
+
+for word in first_list:
+    count += word.count('a')
+
+print(f"The first list contains {count}'a's.")
+
+count = 0
 
 for word2 in second_list:
-    count = word2.count('a')
-
-print(f"The word {word} contains {count}'a's.")
+    count += word2.count('a')
