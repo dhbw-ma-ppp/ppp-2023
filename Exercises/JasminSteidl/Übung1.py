@@ -8,6 +8,8 @@ x=2711274328912
 y=23369245575
 print(x//y)
 print(x%y)
+#Chance 1
+print(f'Der Quotient der Division: {x//y}\nDer Rest der Division: {x%y}')
 
 
 # assume the variable below is a temperature in degrees Fahrenheit. Print the same temperature converted to °C.
@@ -40,6 +42,8 @@ for i in data:
             res |= set(i) & set(j)
 
 print (res)
+#change 2
+res = set(first_list) & set(second_list)
 
 
 # how often does the character 'a' occur in each of the lists above?
