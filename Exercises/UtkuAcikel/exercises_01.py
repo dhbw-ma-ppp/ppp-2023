@@ -65,3 +65,5 @@ count = 0
 
 for word2 in second_list:
     count += word2.count('a')
+
+print(f"The first list contains {count}'a's.")
