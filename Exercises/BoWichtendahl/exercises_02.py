@@ -36,7 +36,62 @@ def compute(storage):
                 return storage[0]
     raise Exception('The passed Array of Memory is not valid for this Function!')
 
-    # print out which value is returned by your function for the following list:
-commands = [1, 12, 2, 3, 1, 1, 2, 3, 1, 3, 4, 3, 1, 5, 0, 3, 2, 1, 9, 19, 1, 5, 19, 23, 1, 6, 23, 27, 1, 27, 10, 31, 1, 31, 5, 35, 2, 10, 35, 39, 1, 9, 39, 43, 1, 43, 5, 47, 1, 47, 6, 51, 2, 51, 6, 55, 1, 13, 55, 59, 2, 6, 59, 63, 1, 63, 5, 67, 2, 10, 67, 71, 1, 9, 71, 75, 1, 75, 13, 79, 1, 10, 79, 83, 2, 83, 13, 87, 1, 87, 6, 91, 1, 5, 91, 95, 2, 95, 9, 99, 1, 5, 99, 103, 1, 103, 6, 107, 2, 107, 13, 111, 1, 111, 10, 115, 2, 10, 115, 119, 1, 9, 119, 123, 1, 123, 9, 127, 1, 13, 127, 131, 2, 10, 131, 135, 1, 135, 5, 139, 1, 2, 139, 143, 1, 143, 5, 0, 99, 2, 0, 14, 0]
+# print out which value is returned by your function for the following list:
 
-print(f'The array of commands resulted in: {compute(commands)}')
+
+commands = [1, 12, 2, 3, 1, 1, 2, 3, 1, 3, 4, 3, 1, 5, 0, 3, 2, 1, 9, 19, 1, 5, 19, 23, 1, 6, 23, 27, 1, 27, 10, 31, 1,
+            31, 5, 35, 2, 10, 35, 39, 1, 9, 39, 43, 1, 43, 5, 47, 1, 47, 6, 51, 2, 51, 6, 55, 1, 13, 55, 59, 2, 6, 59,
+            63, 1, 63, 5, 67, 2, 10, 67, 71, 1, 9, 71, 75, 1, 75, 13, 79, 1, 10, 79, 83, 2, 83, 13, 87, 1, 87, 6, 91, 1,
+            5, 91, 95, 2, 95, 9, 99, 1, 5, 99, 103, 1, 103, 6, 107, 2, 107, 13, 111, 1, 111, 10, 115, 2, 10, 115, 119,
+            1, 9, 119, 123, 1, 123, 9, 127, 1, 13, 127, 131, 2, 10, 131, 135, 1, 135, 5, 139, 1, 2, 139, 143, 1, 143, 5,
+            0, 99, 2, 0, 14, 0]
+
+print(f'The array of commands resulted in: {compute(commands)}\n')
+
+
+###########################################
+# Write a function that takes an arbitrary number of unnamed arguments
+# All inputs will be of type string.
+# the function should return two lists:
+#   The first list should contain all arguments which can be interpreted
+#   as a number.
+#   The second list should contain all strings which contain just one character.
+# Think of some good inputs to test this functionality, write down at least three
+# examples and verify that the output for these examples is correct.
+
+def try_to_num(x):
+    try:
+        return float(x)
+    except ValueError:
+        return None
+
+
+def arg_filter(*args):
+    numbers = [try_to_num(x) for x in args if try_to_num(x) is not None]
+    single_chars = [x for x in args if len(x) == 1]
+    return numbers, single_chars
+
+
+input1 = [*'abcdefghijklmnopqrstuvwxyz', '13.76', '97456739', '8763789.238746', '78346', 'aksjghdfk', 'sd', 'ase']
+# should return numbers     : [13.76, 97456739.0, 8763789.238746, 78346.0]
+#               single_chars: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
+#                              's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+input2 = [*'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890', 'sad', '2344.9876']
+# should return numbers     : [2344.9876]
+#               single_chars: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
+#                              'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
+input3 = [*'!"§$;CXMVH)=´?==', 'w3cg4', ' 234sa', ' ', '342.09']
+# should return numbers     : [342.09]
+#               single_chars: ['!', '"', '§', '$', ';', 'C', 'X', 'M', 'V', 'H', ')', '=', '´', '?', '=', '=', ' ']
+
+
+numbers1, single_chars1 = arg_filter(*input1)
+numbers2, single_chars2 = arg_filter(*input2)
+numbers3, single_chars3 = arg_filter(*input3)
+
+print(f'{"numbers1": <13}:{numbers1}')
+print(f'single_chars1:{single_chars1}')
+print(f'{"numbers1": <13}:{numbers2}')
+print(f'single_chars1:{single_chars2}')
+print(f'{"numbers1": <13}:{numbers3}')
+print(f'single_chars1:{single_chars3}')
