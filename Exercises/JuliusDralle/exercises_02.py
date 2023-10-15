@@ -25,41 +25,27 @@
 # [1, 1, 1, 4, 99, 5, 6, 0, 99] should become [30, 1, 1, 4, 2, 5, 6, 0, 99]
 # Your function should return 30.
 
-
 # print out which value is returned by your function for the following list:
 commands = [1, 12, 2, 3, 1, 1, 2, 3, 1, 3, 4, 3, 1, 5, 0, 3, 2, 1, 9, 19, 1, 5, 19, 23, 1, 6, 23, 27, 1, 27, 10, 31, 1, 31, 5, 35, 2, 10, 35, 39, 1, 9, 39, 43, 1, 43, 5, 47, 1, 47, 6, 51, 2, 51, 6, 55, 1, 13, 55, 59, 2, 6, 59, 63, 1, 63, 5, 67, 2, 10, 67, 71, 1, 9, 71, 75, 1, 75, 13, 79, 1, 10, 79, 83, 2, 83, 13, 87, 1, 87, 6, 91, 1, 5, 91, 95, 2, 95, 9, 99, 1, 5, 99, 103, 1, 103, 6, 107, 2, 107, 13, 111, 1, 111, 10, 115, 2, 10, 115, 119, 1, 9, 119, 123, 1, 123, 9, 127, 1, 13, 127, 131, 2, 10, 131, 135, 1, 135, 5, 139, 1, 2, 139, 143, 1, 143, 5, 0, 99, 2, 0, 14, 0]
-newList = []
-def calculate(memoryList, *args):
-    opcode = args[0]
-    returnValue = -1
-    match opcode:
-        case 1:
-            returnValue = memoryList[args[1]] + memoryList[args[2]]
-        case 2:
-            returnValue = memoryList[args[1]] * memoryList[args[2]]
-        case 99:
-            return -1
-        case default:
-            return -1
-    newList.append(returnValue)
-    newList.append(args[1])
-    newList.append(args[2])
-    newList.append(args[3])
-    return 0
-    
-
-
-def calculatorMachine( memoryList, *args):
-    for i in range(0,len(args),4):
-        exitCode = calculate(memoryList,*args[i:i+4])
-        if exitCode == -1:
-            break
-    #print(args)
-    #print(newList)
-    return(newList[0])
+def calculating():
+    print(commands)
+    pointer = 0
+    while(pointer < len(commands)):
+        opcode = commands[pointer]
+        match opcode:
+            case 1:
+                commands[commands[pointer + 3]] = commands[commands[pointer + 1]] + commands[commands[pointer + 2]]
+            case 2:
+                commands[commands[pointer + 3]] = commands[commands[pointer + 1]] * commands[commands[pointer + 2]]
+            case 99:
+                return(commands[0])
+                break
+            case default:
+                print("Fehlerhafter OPCode")
+        pointer += 4
+    print(commands)
             
-
-print(calculatorMachine(commands, *commands))
+print(alculating())
 
 ###########################################
 # Write a function that takes an arbitrary number of unnamed arguments
@@ -81,8 +67,8 @@ def splittingMachine(*args):
             charList.append(i)
     return numberList, charList
 
-print(splittingMachine(*["1","a","b","5","6"]))
-print(splittingMachine(*"i3t2ingejkgsnfi325823wengkjs"))
-print(splittingMachine(*"sYaxNnvkA6SfkcQiJIpYT4rO7Y2tDoaJnIipi5g8PxCqEh0jqUl9UML1axs1zbVmj99wHQVwh"))
+#print(splittingMachine(*["1","a","b","5","6"]))
+#print(splittingMachine(*"i3t2ingejkgsnfi325823wengkjs"))
+#print(splittingMachine(*"sYaxNnvkA6SfkcQiJIpYT4rO7Y2tDoaJnIipi5g8PxCqEh0jqUl9UML1axs1zbVmj99wHQVwh"))
 
 
