@@ -29,9 +29,9 @@ def compute(storage):
     for op_index in range(0, len(storage), 4):
         match storage[op_index]:
             case 1:
-                storage[storage[op_index + 3]] = storage[op_index + 1] + storage[op_index + 2]
+                storage[storage[op_index + 3]] = storage[storage[op_index + 1]] + storage[storage[op_index + 2]]
             case 2:
-                storage[storage[op_index + 3]] = storage[op_index + 1] * storage[op_index + 2]
+                storage[storage[op_index + 3]] = storage[storage[op_index + 1]] * storage[storage[op_index + 2]]
             case 99:
                 return storage[0]
     raise Exception('The passed Array of Memory is not valid for this Function!')
@@ -60,6 +60,11 @@ print(f'The array of commands resulted in: {compute(commands)}\n')
 # examples and verify that the output for these examples is correct.
 
 def try_to_num(x):
+    """
+    Tries to convert a string into a float, returns None otherwise.
+    :param x:
+    :return:
+    """
     try:
         return float(x)
     except ValueError:
@@ -77,7 +82,7 @@ input1 = [*'abcdefghijklmnopqrstuvwxyz', '13.76', '97456739', '8763789.238746', 
 #               single_chars: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
 #                              's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 input2 = [*'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890', 'sad', '2344.9876']
-# should return numbers     : [2344.9876]
+# should return numbers     : [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 0.0, 2344.9876]
 #               single_chars: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
 #                              'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
 input3 = [*'!"§$;CXMVH)=´?==', 'w3cg4', ' 234sa', ' ', '342.09']
@@ -91,7 +96,7 @@ numbers3, single_chars3 = arg_filter(*input3)
 
 print(f'{"numbers1": <13}:{numbers1}')
 print(f'single_chars1:{single_chars1}')
-print(f'{"numbers1": <13}:{numbers2}')
-print(f'single_chars1:{single_chars2}')
-print(f'{"numbers1": <13}:{numbers3}')
-print(f'single_chars1:{single_chars3}')
+print(f'{"numbers2": <13}:{numbers2}')
+print(f'single_chars2:{single_chars2}')
+print(f'{"numbers3": <13}:{numbers3}')
+print(f'single_chars3:{single_chars3}')
