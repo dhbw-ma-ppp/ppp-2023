@@ -71,3 +71,18 @@ print(calculatorMachine(commands, *commands))
 # Think of some good inputs to test this functionality, write down at least three
 # examples and verify that the output for these examples is correct.
 
+def splittingMachine(*args):
+    numberList = []
+    charList = []
+    for i in args:
+        if i >= "0" and i <= "9":
+            numberList.append(i)
+        else:
+            charList.append(i)
+    return numberList, charList
+
+print(splittingMachine(*["1","a","b","5","6"]))
+print(splittingMachine(*"i3t2ingejkgsnfi325823wengkjs"))
+print(splittingMachine(*"sYaxNnvkA6SfkcQiJIpYT4rO7Y2tDoaJnIipi5g8PxCqEh0jqUl9UML1axs1zbVmj99wHQVwh"))
+
+
