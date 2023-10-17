@@ -36,12 +36,12 @@ def computerSim(listCS):
         match listCS[counter]:
             case 1: #addition
                 #print(f'detected operator 1')#troubleshooting
-                sum = (listCS[counter+1] + listCS[counter+2])
+                sum = (listCS[listCS[counter+1]] + listCS[listCS[counter+2]])
                 placeToInsert = listCS[counter+3]
                 listCS[placeToInsert] = sum
             case 2: #multiplication
                 #print(f'detected operator 2')#troubleshooting
-                prod = (listCS[counter+1] * listCS[counter+2])
+                prod = (listCS[listCS[counter+1]] * listCS[listCS[counter+2]])
                 placeToInsert = listCS[counter+3]
                 listCS[placeToInsert] = prod
             case 99:    #halt
@@ -65,6 +65,9 @@ print(computerSim(commands)) #execute the function and print the return statemen
 
 def collector():    #collecting all input-Strings and putting them in a list
     list = []
+    #list = [1,2,3,a,b,c,123,sfd3,3fe]
+    #list = [sdf,1234rfe,waew,12134321,wdaefsf,d,3,3,45,dds]
+    #list = [3456789,ghi,ndyjc,auwz6387456789,wdgkwahdousgfsegeufzeshiffseilflkögrvp]
     temp = None
     print('type in some strings. a \'break\' ends the collecting process...')
     #temp = input()
