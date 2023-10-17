@@ -38,9 +38,9 @@ print(f"The first list has {len(first_list)} elements and the second list has {l
 first_set = set(first_list)
 second_set = set(second_list)
 
-union_set = first_set.union(second_set)
+intersection_set = first_set.intersection(second_set)
 
-print(f"The first and second set have the following elements in common: {union_set} ({len(union_set)} elements)")
+print(f"The first and second set have the following elements in common: {intersection_set} ({len(intersection_set)} elements)")
 
 
 # how often does the character 'a' occur in each of the lists above?
