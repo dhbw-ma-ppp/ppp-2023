@@ -66,7 +66,7 @@ def args_list(*args):
     for element in args:
         if len(element) == 1:
             single_char.append(element) 
-        if element.isnumeric()==True:
+        if element.isdigit()  or element[0]=="-" and element[1:].isdigit():
             num_list.append(element)
     return "numbers:",num_list,"single characters:", single_char
 
