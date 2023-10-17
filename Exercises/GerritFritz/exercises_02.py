@@ -33,7 +33,7 @@ for i in range(3):
 
 testArgs1 = ("test", "hi", "a","-1","123", "hey456")
 testArgs2 = ("a","bc","123325g3","1,2","1","4")
-testArgs3 = ("a1233","b","123325g3","-0","2","99.9999")
+testArgs3 = ("a1233","b","123325g3","-0","--2","99..9999")
 
 def getArgLists(*args):
     numberList = []
@@ -42,7 +42,7 @@ def getArgLists(*args):
         if len(element)==1:
             singleList.append(element)
         num = str("".join([char for char in element if char in "-.1234567890"]))
-        if num == element:
+        if num == element and element.count(".")<=1 and element.count("-")<=1:
             numberList.append(element)
     return numberList,singleList
 
