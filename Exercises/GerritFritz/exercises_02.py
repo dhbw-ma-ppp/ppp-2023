@@ -32,7 +32,7 @@ for i in range(3):
 # Aufgabe 2
 
 testArgs1 = ("test", "hi", "a","-1","123", "hey456")
-testArgs2 = ("a","bc","123325g3","1,2","1","4")
+testArgs2 = ("a","bc","123325g3","1,2","1.5","4")
 testArgs3 = ("a1233","b","123325g3","1-0","-2","99..9999")
 
 def getArgLists(*args):
