@@ -30,51 +30,54 @@
 commands = [1, 12, 2, 3, 1, 1, 2, 3, 1, 3, 4, 3, 1, 5, 0, 3, 2, 1, 9, 19, 1, 5, 19, 23, 1, 6, 23, 27, 1, 27, 10, 31, 1, 31, 5, 35, 2, 10, 35, 39, 1, 9, 39, 43, 1, 43, 5, 47, 1, 47, 6, 51, 2, 51, 6, 55, 1, 13, 55, 59, 2, 6, 59, 63, 1, 63, 5, 67, 2, 10, 67, 71, 1, 9, 71, 75, 1, 75, 13, 79, 1, 10, 79, 83, 2, 83, 13, 87, 1, 87, 6, 91, 1, 5, 91, 95, 2, 95, 9, 99, 1, 5, 99, 103, 1, 103, 6, 107, 2, 107, 13, 111, 1, 111, 10, 115, 2, 10, 115, 119, 1, 9, 119, 123, 1, 123, 9, 127, 1, 13, 127, 131, 2, 10, 131, 135, 1, 135, 5, 139, 1, 2, 139, 143, 1, 143, 5, 0, 99, 2, 0, 14, 0]
 
 def commandAdd(currentIndex, memoryStream):
-    """Command add:\n
-        This function adds the values at positions specified at currentIndex + 1 and currnetIndex + 2 and saves the value in the slot at currentIndex + 3\n
-        \n
-        Input:\n
-            \tcurrentIndex: The current position of the computer in the memory stream\n
-            \tmemoryStream: The memory stream the computer is running on\n
-        \n
-        Output:\n
-            \tA tuple of:\n
-            \t[0] the new position of the computer (int)\n
-            \t[1] the modified memory stream (int[])    
+    """
+        Command add:
+            This function adds the values at positions specified at currentIndex + 1 and currnetIndex + 2 and saves the value in the slot at currentIndex + 3
+        
+        Input:
+            currentIndex: The current position of the computer in the memory stream\n
+            memoryStream: The memory stream the computer is running on\n
+        
+        Output:
+            A tuple of:
+                [0] the new position of the computer (int)
+                
+                [1] the modified memory stream (int[])    
     """
     memoryStream[memoryStream[currentIndex + 3]] = memoryStream[memoryStream[currentIndex + 1]] + memoryStream[memoryStream[currentIndex + 2]]
     return currentIndex + 4, memoryStream
 
 def commandMultiply(currentIndex, memoryStream):
-    """Command multiply:\n
-        This function multiplies the values at positions specified at currentIndex + 1 and currnetIndex + 2 and saves the value in the slot at currentIndex + 3\n
-        \n
-        Input:\n
-            \tcurrentIndex: The current position of the computer in the memory stream\n
-            \tmemoryStream: The memory stream the computer is running on\n
-        \n
-        Output:\n
-            \tA tuple of:\n
-            \t[0] the new position of the computer (int)\n
-            \t[1] the modified memory stream (int[])
+    """
+        Command multiply:
+            This function multiplies the values at positions specified at currentIndex + 1 and currnetIndex + 2 and saves the value in the slot at currentIndex + 3
         
+        Input:
+            currentIndex: The current position of the computer in the memory stream\n
+            memoryStream: The memory stream the computer is running on\n
+        
+        Output:
+            A tuple of:
+                [0] the new position of the computer (int)
+                
+                [1] the modified memory stream (int[])
     """    
     memoryStream[memoryStream[currentIndex + 3]] = memoryStream[memoryStream[currentIndex + 1]] * memoryStream[memoryStream[currentIndex + 2]]
     return currentIndex + 4, memoryStream
 
 def commandHalt(currentIndex, memoryStream):
-    """Command Halt:\n
-        Stops the execution of the computer\n
-        \n
-        Input:\n
-            \tcurrentIndex: The current position of the computer in the memory stream\n
-            \tmemoryStream: The memory stream the computer is running on\n
-        \n
-        Output:\n
-            \tA tuple of:\n
-            \t[0] the new position of the computer -1, telling the program that the computer finished successfully (int)\n
-            \t[1] the memoryStream inputet via the input (int[])
+    """
+        Command Halt:
+            Stops the execution of the computer
         
+        Input:
+            currentIndex: The current position of the computer in the memory stream
+            memoryStream: The memory stream the computer is running on
+        Output:
+            A tuple of:
+                [0] the new position of the computer -1, telling the program that the computer finished successfully (int)
+            
+                [1] the memoryStream inputet via the input (int[])
     """
     return -1, memoryStream
 
@@ -117,16 +120,17 @@ print(f"mini computer returned the value {returnValue}")
 # examples and verify that the output for these examples is correct.
 
 def inputSplitter(*args):
-    """Input Splitter:\n
-        This Method takes an arbitrary amount of unnamed input arguments and returns the numbers and chars found in the arguments in seperate arrays\n
-        \n
-        Input:\n
-            \t*args: The number of arguments the method will run on\n
-        \n
-        Output:\n
-            \tA tuple of:\n
-            \t[0] the array of all numbers found (including complex numbers) in the arguments as complex numbers\n
-            \t[1] the array of all chars found in the arguments\n
+    """Input Splitter:
+        This Method takes an arbitrary amount of unnamed input arguments and returns the numbers and chars found in the arguments in seperate arrays
+        
+        Input:
+            *args: The number of arguments the method will run on
+        
+        Output:
+            A tuple of:
+                [0] the array of all numbers found (including complex numbers) in the arguments as complex numbers
+                
+                [1] the array of all chars found in the arguments
     """
     numbers = []
     chars = []
