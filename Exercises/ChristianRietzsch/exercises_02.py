@@ -45,7 +45,7 @@ def execute(memory):
             case 99:
                 return memory[0];
             case _:
-                print("Error, Illegal Instruction: {memory[current]}")
+                print(f"Error, Illegal Instruction: {memory[current]}")
                 break;
         current += 4
 
@@ -67,10 +67,11 @@ def sort_elements(*argv):
         try:
             list_num.append(float(x))
         except:
-            if(len(x) == 1):
-                list_string.append(x)
+            pass
+        if(len(x) == 1):
+            list_string.append(x)
     return (list_num, list_string)
 
-print(sort_elements("test", "test123", "t3st", "1e", "1224235", "1 2", "9")) # [1224235, 9][]
+print(sort_elements("test", "test123", "t3st", "1e", "1224235", "1 2", "9")) # [1224235, 9]["9"]
 print(sort_elements("e", "-e", "f", "gg", "-e3", "1.01")) # [1.01]["e", "f"]
-print(sort_elements("t", "1", "23", "est")) # [1, 23]["t"]
+print(sort_elements("t", "1", "23", "est")) # [1, 23]["t", "1"]
