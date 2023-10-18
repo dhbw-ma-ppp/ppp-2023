@@ -46,7 +46,7 @@ def commandMultiply(currentIndex, memoryStream): #Function for the computer to m
 def commandHalt(currentIndex, memoryStream): #Function for the computer to stop the execution
     return -1, memoryStream
 
-commandDictionary = {
+optCodeDictionary = {
     1: commandAdd,
     2: commandMultiply,
     99: commandHalt
@@ -56,8 +56,8 @@ def miniComputer(memoryStream):
     currentIndex = 0
     while currentIndex >= 0:
         optCode = memoryStream[currentIndex]
-        if optCode in commandDictionary:
-            currentIndex, memoryStream = commandDictionary[optCode](currentIndex, memoryStream)
+        if optCode in optCodeDictionary:
+            currentIndex, memoryStream = optCodeDictionary[optCode](currentIndex, memoryStream)
         else:
             raise LookupError(f"Couldn't read optCode with value {optCode} at position {currentIndex}")
     
