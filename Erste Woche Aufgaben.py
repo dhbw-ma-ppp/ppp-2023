@@ -11,7 +11,7 @@
 
 x=2711274328912
 y=23369245575
-print("Quotient:",x/y,"\nInt. Div. Rest:",x%y)
+print("Quotient:",x//y,"\nInt. Div. Rest:",x%y)
 
 # assume the variable below is a temperature in degrees Fahrenheit. Print the same temperature converted to °C.
 
