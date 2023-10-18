@@ -75,4 +75,8 @@ while i < len(inputList):
 print("Numbers: ", number_list)
 print("Characters: ", character_list)
 
-
+# Elements get checked if they are hex numbers. If they are, they get added to the number_list even though they technically are text, since
+# they can still be interpreted as numbers, e.g. "A" = 10, "B" = 11, "C" = 12, "D" = 13, "E" = 14, "F" = 15 or consequently "FFFFFF" = 16777215
+# My only issue is that strings like 5$4 get added to the number_list even though they are no valid hex numbers. I didn't want to write a wall
+# of code to check for every possible invalid hex number, so I just left it like that and I just hope the user never inputs something like that.
+# It could be done with re.search but that would've added a lot of code and is, in my opinion beyond the scope of this exercise.
