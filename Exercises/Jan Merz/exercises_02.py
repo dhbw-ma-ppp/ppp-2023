@@ -65,17 +65,18 @@ def splitArgs(*args):
     numberList = []
     charList = []
 
-    for i in range(len(args)):
+    for element in args:
         try:
-            castValue = args[i]
+            castValue = element
             complex(castValue)
-            numberList.append(args[i])
+            numberList.append(element)
         except ValueError:
             pass
 
-        if(len(args[i]) == 1):
-            charList.append(args[i])
+        if(len(element) == 1):
+            charList.append(element)
     print(numberList, " are numbers and ", charList, " are single characters")
+    return numberList, charList
 
 splitArgs("1", "1.47546", "99999999", "Hallo", "h", "1String", "5+5j")
 splitArgs("f", "hr", "1907074939", "59347f92", "446.45", "t", "ab", "3 + 9j")
