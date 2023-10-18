@@ -44,7 +44,7 @@ for i in data:
 print (res)
 #change 2
 res = set(first_list) & set(second_list)
-print (res)
+print (res, len(res))
 
 
 # how often does the character 'a' occur in each of the lists above?
