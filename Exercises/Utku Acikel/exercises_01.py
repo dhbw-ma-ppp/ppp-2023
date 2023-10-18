@@ -35,7 +35,7 @@ second_list = ['ybk', 'zcg', 'dhw', 'gua', 'mqh', 'yel', 'fpk', 'imk', 'nkt', 't
 
 # Using len function to see how many Elements are in the lists
 print(f'\nThere are {len(first_list)} Elements in the first list')
-print(f'There are {len(first_list)} Elements in the second list\n')
+print(f'\nThere are {len(first_list)} Elements in the second list\n')
 
 # which and how many elements are common to the two lists above? 
 
@@ -47,7 +47,7 @@ second_set = set(second_list)
 com_elements = first_set.intersection(second_list)
 count_com_elements = len(com_elements)
 
-print(f'These elements are common:\n{com_elements}')
+print(f'\nThese elements are common:\n{com_elements}')
 print(f'\nthere are {count_com_elements} elements in common\n')
 
 # how often does the character 'a' occur in each of the lists above?
@@ -66,4 +66,4 @@ count = 0
 for word2 in second_list:
     count += word2.count('a')
 
-print(f"The first list contains {count}'a's.")
+print(f"The second list contains {count}'a's.")
