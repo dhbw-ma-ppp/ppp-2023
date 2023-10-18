@@ -70,18 +70,18 @@ print(result) #returns number at pointer 0
 # examples and verify that the output for these examples is correct.
 #test1="1","2","3","4"
 #test2="q","q","w","e","r"
-example="1","0","w","2.4","F","G","-6","F","123"
+example="1","0","w","2.4","F","G","-6","F","123","qwww","!$$§$§","3..2","--6","-6-",".2",
 
 def function(*args):
-    randos = []
-    sillies = []
+    numbers = []
+    strings = []
     
     for arg in args:
-        if arg.isdigit () or (arg[0]=="-" and arg[1:].isdigit()): #for negative numbers, floats
-            randos.append(arg)
+        if arg.isdigit () or (arg[0]=="-" and arg[1:].isdigit()) or (arg[0].isdigit() and arg[1]=="." and arg[2].isdigit()) or (arg[0]=="." and arg[1].isdigit()): #for negative numbers and floats
+            numbers.append(arg)
         elif len(arg)==1:
-            sillies.append(arg)
-    return randos, sillies
+            strings.append(arg)
+    return numbers, strings
 result=function(*example)
 
 print("Numbers:",result[0])
