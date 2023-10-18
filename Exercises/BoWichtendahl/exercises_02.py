@@ -85,8 +85,8 @@ input2 = [*'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890', 'sad', '2344.9876']
 # should return numbers     : [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 0.0, 2344.9876]
 #               single_chars: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
 #                              'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
-input3 = [*'!"§$;CXMVH)=´?==', 'w3cg4', ' 234sa', ' ', '342.09']
-# should return numbers     : [342.09]
+input3 = [*'!"§$;CXMVH)=´?==', 'w3cg4', ' 234sa', ' ', '342.09', 'NaN', 'Infinity', '-Infinity', 'infinity']
+# should return numbers     : [342.09, nan, inf, -inf, inf]
 #               single_chars: ['!', '"', '§', '$', ';', 'C', 'X', 'M', 'V', 'H', ')', '=', '´', '?', '=', '=', ' ']
 
 
