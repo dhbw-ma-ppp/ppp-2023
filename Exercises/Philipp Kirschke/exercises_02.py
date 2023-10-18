@@ -59,16 +59,24 @@ print("############################################# Task 2 ####################
 #   The second list should contain all strings which contain just one character.
 # Think of some good inputs to test this functionality, write down at least three
 # examples and verify that the output for these examples is correct.
-inputList = ["#", "-", ">", "P", "y", "245", "Hello", "23", "Test", "73a", "72", "2457965", "t", "7a", "Python", "py", "o", "-23", "sort", "431", "82ac", "n", "0", "2", "Whitespace", " ", "."]
+
+def checkHex(s):
+    for char in s:
+        # Check if the character is invalid
+        if ((char < '0' or char > '9') and (char < 'A' or char > 'F')):
+            return False
+        else: #If char is a valid hex number
+            return True
+
+inputList = ["#", "-", ">", "P", "y", "245", "Hello", "23", "FFFFFF", "Test", "73a", "72", "2457965", "t", "7a", "Python", "py", "o", "-23", "sort", "431", "82ac", "n", "0", "2", "Whitespace", " ", ".", "2.3"]
 number_list = []
 character_list = []
 i = 0
 while i < len(inputList):
     l = len(inputList[i])
-    if inputList[i].lstrip("-").isdigit():
+
+    if(checkHex(inputList[i].lstrip("-"))):
         number_list.append(inputList[i])
-        if (l == 1):
-            character_list.append(inputList[i])
     elif (l == 1):
         character_list.append(inputList[i])
     i += 1
