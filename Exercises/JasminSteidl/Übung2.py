@@ -57,7 +57,7 @@ def simComputer (input):
     return modInput[0]
     
 result=simComputer(commands)
-print(result) #returns number at pointer 0  
+print("The value at the first location:", result) #returns number at pointer 0  
 
 ###########################################
 # Write a function that takes an arbitrary number of unnamed arguments
@@ -70,14 +70,17 @@ print(result) #returns number at pointer 0
 # examples and verify that the output for these examples is correct.
 #test1="1","2","3","4"
 #test2="q","q","w","e","r"
-example="1","0","w","2.4","F","G","-6","F","123","qwww","!$$§$§","3..2","--6","-6-",".2",
+example="1","0","w","2.45","F","G","-6","F","123","qwww","!$$§$§","3..2","--6","-6-",".2","-0.34","-6"
 
 def function(*args):
     numbers = []
     strings = []
     
     for arg in args:
-        if arg.isdigit () or (arg[0]=="-" and arg[1:].isdigit()) or (arg[0].isdigit() and arg[1]=="." and arg[2].isdigit()) or (arg[0]=="." and arg[1].isdigit()): #for negative numbers and floats
+        if arg.isdigit () or (arg[0]=="-" and arg[1:].isdigit()) \
+            or (arg[0].isdigit() and arg[1]=="." and arg[2].isdigit()) \
+            or (arg[0]=="." and arg[1].isdigit()) \
+            or (arg[0]=="-" and arg[1].isdigit() and arg[2]=="." and arg[3:].isdigit()): #for negative numbers and floats
             numbers.append(arg)
         elif len(arg)==1:
             strings.append(arg)
