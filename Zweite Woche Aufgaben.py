@@ -68,7 +68,7 @@ def args_list(*args):
             single_char.append(element) 
         if element.isdigit()  or element[0]=="-" and element[1:].isdigit():
             num_list.append(element)
-    return "numbers:",num_list,"single characters:", single_char
+    return num_list, single_char
 
 print(args_list("5985834r2","q","2","eee","45","3"))
 print(args_list("154645765","z","45F","t","ppoeqwrui22222","33333"))
