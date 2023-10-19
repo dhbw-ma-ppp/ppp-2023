@@ -45,8 +45,7 @@ def simulated_computer(commands):
                     return commands
                 case _:
                     return "Error"
-        else: 
-            pass
+                    
 print(simulated_computer(commands),"\n\noutput:",commands[0],"\n")
 
 
