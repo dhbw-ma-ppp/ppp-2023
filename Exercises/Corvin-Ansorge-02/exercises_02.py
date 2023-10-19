@@ -1,5 +1,5 @@
 # Write a function that takes as input a list of integers and returns a single integer number.
-#print("Task 1\n")
+print("Task 1\n")
 
 # the numbers passed as argument form the working memory of a simulated computer.
 # this computer will start by looking at the first value in the list passed to the function.
@@ -65,32 +65,33 @@ print(computer_simulation(commands))
 
 #create some test inputs for sort_strings.
 
-test_input = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "a", "b", "c", "-10", "abcdef", ",", "!", " "]
+test_input_1 = ["42", "-3.14", "hello", "x", "A", "1.23j"]
+test_input_2 = ["5", "0x2B", "test", "H", "3.5", "1e-3"]
+test_input_3 = ["1+2j", "12.345", "A", "B", "C", "D", "E"]
 
-
-
-
-
-
-
-
-
-
-
-
-#print("\nTask 2\n")
+print("\nTask 2\n")
 
 
 def sort_strings(*args):
     numbers = []
     characters = []
+
     for arg in args:
-        if arg.lstrip("-").isdigit():
-            numbers.append(arg)
-        elif len(arg) == 1:
+        try:
+            number = eval(arg)
+            if isinstance(number, (int, float, complex)):
+                numbers.append(arg)
+        except (SyntaxError, NameError, TypeError):
+            pass
+
+        if len(arg) == 1 and arg.isalpha():
             characters.append(arg)
+
     return numbers, characters
 
+print(sort_strings(*test_input_1))
+print(sort_strings(*test_input_2))
+print(sort_strings(*test_input_3))
 
-print(sort_strings(*test_input))
+
 
