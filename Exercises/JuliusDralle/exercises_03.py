@@ -7,6 +7,68 @@
 # Printing a cards string representation should give me a nice, 
 # readable description of that card.
 
+cardtype_dict = {
+    "01" : "Ace",
+    "02" : "2",
+    "03" : "3",
+    "04" : "4",
+    "05" : "5",
+    "06" : "6",
+    "07" : "7",
+    "08" : "8",
+    "09" : "9",
+    "10" : "10",
+    "11" : "Jack",
+    "12" : "Queen",
+    "12" : "King"
+}
+suits_dict = {
+    "01" : "2-Ace of Diamonds",
+    "02" : "Hearts",
+    "03" : "Spades",
+    "04" : "Clubs"
+}
+
+class DeckOfCards:
+    list_of_cards = []
+    def __init__(self):
+        for iterator_through_suits in suits_dict:
+            for iterator_through_cardstype in cardtype_dict:
+                self.list_of_cards.append(Card(iterator_through_suits, iterator_through_cardstype))
+
+    def __getitem__(self, index):
+        return(self.list_of_cards[index])
+
+    def __iter__(self):
+        return(i for i in self.list_of_cards)
+
+
+    def print_cards(self):
+        for iterator_through_cards in self.list_of_cards:
+            iterator_through_cards.print_value()
+        return 0
+
+
+
+
+
+
+class Card:  
+    def __init__(self, card_suite_id, card_type_id):
+        self.card_suite = card_suite_id
+        self.card_type = card_type_id
+
+    def print_value(self):
+        print(f"This card is a \t{cardtype_dict[self.card_type]} \tin this suite: {suits_dict[self.card_suite]}")
+
+    def get_value(self):
+        return(cardtype_dict[self.card_type], suits_dict[self.card_suite])
+    
+
+meinKartendeck = DeckOfCards()
+print(meinKartendeck[2].get_value())
+ 
+
 
 # PART 2:
 # Create a second class that represents a deck of cards usable for Skat -- it should only contain cards from 7 upwards.
