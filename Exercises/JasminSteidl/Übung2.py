@@ -30,31 +30,33 @@
 # print out which value is returned by your function for the following list:
 commands = [1, 12, 2, 3, 1, 1, 2, 3, 1, 3, 4, 3, 1, 5, 0, 3, 2, 1, 9, 19, 1, 5, 19, 23, 1, 6, 23, 27, 1, 27, 10, 31, 1, 31, 5, 35, 2, 10, 35, 39, 1, 9, 39, 43, 1, 43, 5, 47, 1, 47, 6, 51, 2, 51, 6, 55, 1, 13, 55, 59, 2, 6, 59, 63, 1, 63, 5, 67, 2, 10, 67, 71, 1, 9, 71, 75, 1, 75, 13, 79, 1, 10, 79, 83, 2, 83, 13, 87, 1, 87, 6, 91, 1, 5, 91, 95, 2, 95, 9, 99, 1, 5, 99, 103, 1, 103, 6, 107, 2, 107, 13, 111, 1, 111, 10, 115, 2, 10, 115, 119, 1, 9, 119, 123, 1, 123, 9, 127, 1, 13, 127, 131, 2, 10, 131, 135, 1, 135, 5, 139, 1, 2, 139, 143, 1, 143, 5, 0, 99, 2, 0, 14, 0]
 
-def simComputer (input):
-    modInput=input.copy() #input copy not to f with original
+def simComputer (Input):
+    #modInput=input.copy()
     pointer=0 #pointer starts at index 0
     
-    while pointer<len(modInput):
-        opcode=modInput[pointer]
+    while pointer<len(Input):
+        opcode=Input[pointer]
+        
         
         if opcode==1:
-            value1=modInput[modInput[pointer+1]]
-            value2=modInput[modInput[pointer+2]]
-            placeResult=modInput[pointer+3]
-            modInput[placeResult]=value1+value2
-            pointer+=4
+            value1=Input[Input[pointer+1]]
+            value2=Input[Input[pointer+2]]
+            placeResult=Input[pointer+3]
+            Input[placeResult]=value1+value2
+            #pointer+=4
         elif opcode==2:
-            value1=modInput[modInput[pointer+1]]
-            value2=modInput[modInput[pointer+2]]
-            placeResult=modInput[pointer+3]
-            modInput[placeResult]=value1*value2
-            pointer+=4
+            value1=Input[Input[pointer+1]]
+            value2=Input[Input[pointer+2]]
+            placeResult=Input[pointer+3]
+            Input[placeResult]=value1*value2
+            #pointer+=4
         elif opcode==99:
             break 
         else:
-            raise ValueError(f"Error! {opcode} is invalid")  
+            raise ValueError(f"Error! {opcode} is invalid")
+        pointer+=4 
         
-    return modInput[0]
+    return Input[0]
     
 result=simComputer(commands)
 print(result) #returns number at pointer 0  
@@ -70,20 +72,21 @@ print(result) #returns number at pointer 0
 # examples and verify that the output for these examples is correct.
 #test1="1","2","3","4"
 #test2="q","q","w","e","r"
-example="1","0","w","2.45","F","G","-6","F","123","qwww","!$$§$§","3..2","--6","-6-",".2","-0.34","-6"
+example="1","0","w","2.4","F","G","-6","F","123","qwww","!$$§$§","3..2","--6","-6-",".2","-0.34","-6"
 
-def stringFunction(*args):
+def stringFunction(*args, arbNumbers=float):
     numbers = []
     singleCharStrings = []
     
     for arg in args:
-        if arg.isdigit () or (arg[0]=="-" and arg[1:].isdigit()) \
-            or (arg[0].isdigit() and arg[1]=="." and arg[2].isdigit()) \
-            or (arg[0]=="." and arg[1].isdigit()) \
-            or (arg[0]=="-" and arg[1].isdigit() and arg[2]=="." and arg[3:].isdigit()): #for negative numbers and floats
-            numbers.append(arg)
-        elif len(arg)==1:
+        if len(arg)==1:
             singleCharStrings.append(arg)
+        try:
+            numbers.append(arbNumbers(arg))
+        except ValueError:
+            pass
+            
+
     return numbers, singleCharStrings
 result=stringFunction(*example)
 
