@@ -4,7 +4,7 @@ Zahl2 = 23369245575
 Ergebnis = 0
 
 ErgebnisModulu = Zahl1 % Zahl2
-ErgebnisQuotient = Zahl1 / Zahl2
+ErgebnisQuotient = Zahl1 // Zahl2
 
 print ("Der Quotient der beiden obigen Zahlen ist:", ErgebnisQuotient)
 print ("Der Restbetrag nach der Division der obigen Zahlen beträgt",ErgebnisModulu)
