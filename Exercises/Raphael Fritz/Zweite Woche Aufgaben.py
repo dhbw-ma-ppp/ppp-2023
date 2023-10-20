@@ -42,11 +42,11 @@ def simulated_computer(commands):
                 case 2:
                     commands[writelocation] = value2 * value3
                 case 99:
-                    return commands
+                    return commands[0]
                 case _:
                     return "Error"
                     
-print(simulated_computer(commands),"\n\noutput:",commands[0],"\n")
+print("\noutput:",simulated_computer(commands),"\n")
 
 
 ###########################################
