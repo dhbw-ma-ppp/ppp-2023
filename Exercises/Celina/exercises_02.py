@@ -37,15 +37,15 @@ def weird_shuffle(commands):
             case 1:
                 first_pos= commands[i+1]
                 second_pos=commands[i+2]
-                thierd_pos=commands[i+3]
+                third_pos=commands[i+3]
                 sum=commands[first_pos] + commands[second_pos]
-                commands[thierd_pos]=sum
+                commands[third_pos]=sum
             case 2:
                 first_pos= commands[i+1]
                 second_pos=commands[i+2]
-                thierd_pos=commands[i+3]
-                sum=commands[first_pos] * commands[second_pos]
-                commands[thierd_pos]=sum
+                third_pos=commands[i+3]
+                product=commands[first_pos] * commands[second_pos]
+                commands[third_pos]=product
             case 99:
                 break
         i+=4
@@ -70,17 +70,19 @@ list_2=[nan,1/3,"abs","23a","1234",678.9]
 
 def split_list(list):
     number_list=[]
-    not_number_list=[]
+    one_charakter_string_list=[]
     for i in list:
+        if isinstance(i, str):
+            if len(i) == 1:
+                one_charakter_string_list.append(i)
         try:
             float(i)
-            if i != i:
-                not_number_list.append(i)
-            else:
+            #to put nan out of number_list:
+            if i == i:
                 number_list.append(i)
         except ValueError:
-            not_number_list.append(i)
-    return number_list, not_number_list
+            pass
+    return number_list, one_charakter_string_list
 
 print(split_list(list))
 print(split_list(list_1))
