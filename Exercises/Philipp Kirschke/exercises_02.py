@@ -32,19 +32,19 @@ commands = [1, 12, 2, 3, 1, 1, 2, 3, 1, 3, 4, 3, 1, 5, 0, 3, 2, 1, 9, 19, 1, 5, 
 
 
 def intcode(commands):
-    i = 0
-    while i < len(commands):
-        if commands[i] == 1:
-            commands[commands[i+3]] = commands[commands[i+1]] + commands[commands[i+2]]
-        elif commands[i] == 2:
-            commands[commands[i+3]] = commands[commands[i+1]] * commands[commands[i+2]]
-        elif commands[i] == 99:
+    index = 0
+    while index < len(commands):
+        if commands[index] == 1:
+            commands[commands[index+3]] = commands[commands[index+1]] + commands[commands[index+2]]
+        elif commands[index] == 2:
+            commands[commands[index+3]] = commands[commands[index+1]] * commands[commands[index+2]]
+        elif commands[index] == 99:
             print(commands[0])
             return commands[0]
         else:
-            print("Unknown operator encountered at index " + str(i) + ". Aborting.")
+            print("Unknown operator encountered at index " + str(index) + ". Aborting.")
             return -1
-        i += 4
+        index += 4
     return commands[0]
 intcode(commands)
 
@@ -60,8 +60,8 @@ print("############################################# Task 2 ####################
 # Think of some good inputs to test this functionality, write down at least three
 # examples and verify that the output for these examples is correct.
 
-def checkHex(s):
-    for char in s:
+def checkHex(string):
+    for char in string:
         # Check if the character is invalid
         if ((char < '0' or char > '9') and (char < 'A' or char > 'F')):
             return False
@@ -71,15 +71,15 @@ def checkHex(s):
 inputList = ["#", "-", ">", "P", "y", "245", "Hello", "23", "FFFFFF", "Test", "73a", "72", "2457965", "t", "7a", "Python", "py", "o", "-23", "sort", "431", "82ac", "n", "0", "2", "Whitespace", " ", ".", "2.3"]
 number_list = []
 character_list = []
-i = 0
-while i < len(inputList):
-    l = len(inputList[i])
+index = 0
+while index < len(inputList):
+    length = len(inputList[index])
 
-    if(checkHex(inputList[i].lstrip("-"))):
-        number_list.append(inputList[i])
-    elif (l == 1):
-        character_list.append(inputList[i])
-    i += 1
+    if(checkHex(inputList[index].lstrip("-"))):
+        number_list.append(inputList[index])
+    elif (length == 1):
+        character_list.append(inputList[index])
+    index += 1
 print("Numbers: ", number_list)
 print("Characters: ", character_list)
 
