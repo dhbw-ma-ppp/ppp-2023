@@ -20,7 +20,7 @@
 # at position 0 twice. That value is 1. Adding 1 and 1 gives you two. You then look at the value in the fourth
 # position, which is again 0, so you write the result to position 0. You then step forward by 4 steps, arriving at 99
 # and ending the program. The final memory looks like [2, 0, 0, 0, 99]. Your function should return 2.
-    
+  
 # Here's another testcase:
 # [1, 1, 1, 4, 99, 5, 6, 0, 99] should become [30, 1, 1, 4, 2, 5, 6, 0, 99]
 # Your function should return 30.
@@ -30,36 +30,34 @@
 # print out which value is returned by your function for the following list:
 commands = [1, 12, 2, 3, 1, 1, 2, 3, 1, 3, 4, 3, 1, 5, 0, 3, 2, 1, 9, 19, 1, 5, 19, 23, 1, 6, 23, 27, 1, 27, 10, 31, 1, 31, 5, 35, 2, 10, 35, 39, 1, 9, 39, 43, 1, 43, 5, 47, 1, 47, 6, 51, 2, 51, 6, 55, 1, 13, 55, 59, 2, 6, 59, 63, 1, 63, 5, 67, 2, 10, 67, 71, 1, 9, 71, 75, 1, 75, 13, 79, 1, 10, 79, 83, 2, 83, 13, 87, 1, 87, 6, 91, 1, 5, 91, 95, 2, 95, 9, 99, 1, 5, 99, 103, 1, 103, 6, 107, 2, 107, 13, 111, 1, 111, 10, 115, 2, 10, 115, 119, 1, 9, 119, 123, 1, 123, 9, 127, 1, 13, 127, 131, 2, 10, 131, 135, 1, 135, 5, 139, 1, 2, 139, 143, 1, 143, 5, 0, 99, 2, 0, 14, 0]
 
-def simComputer (Input):
-    #modInput=input.copy()
-    pointer=0 #pointer starts at index 0
-    
-    while pointer<len(Input):
-        opcode=Input[pointer]
-        
-        
-        if opcode==1:
-            value1=Input[Input[pointer+1]]
-            value2=Input[Input[pointer+2]]
-            placeResult=Input[pointer+3]
-            Input[placeResult]=value1+value2
-            #pointer+=4
-        elif opcode==2:
-            value1=Input[Input[pointer+1]]
-            value2=Input[Input[pointer+2]]
-            placeResult=Input[pointer+3]
-            Input[placeResult]=value1*value2
-            #pointer+=4
-        elif opcode==99:
-            break 
+
+def sim_computer(input):
+    pointer = 0
+
+    while pointer < len(input):
+        opcode = input[pointer]
+
+        if opcode == 1:
+            value1 = input[input[pointer+1]]
+            value2 = input[input[pointer+2]]
+            place_result = input[pointer+3]
+            input[place_result] = value1+value2
+        elif opcode == 2:
+            value1 = input[input[pointer+1]]
+            value2 = input[input[pointer+2]]
+            place_result = input[pointer+3]
+            input[place_result] = value1*value2
+        elif opcode == 99:
+            break
         else:
             raise ValueError(f"Error! {opcode} is invalid")
-        pointer+=4 
-        
-    return Input[0]
-    
-result=simComputer(commands)
-print(result) #returns number at pointer 0  
+        pointer += 4
+
+    return input[0]
+
+
+result = sim_computer(commands)
+print("The number at the first location is", result)
 
 ###########################################
 # Write a function that takes an arbitrary number of unnamed arguments
@@ -71,25 +69,28 @@ print(result) #returns number at pointer 0
 # Think of some good inputs to test this functionality, write down at least three
 # examples and verify that the output for these examples is correct.
 #test1="1","2","3","4"
-#test2="q","q","w","e","r"
-example="1","0","w","2.4","F","G","-6","F","123","qwww","!$$§$§","3..2","--6","-6-",".2","-0.34","-6"
+#test2="q","q","w","e","R"
+example = "1", "0", "w", "2.4", "F", "G", "-6", "F", "123", "qwww", "!$$§$§", "3..2", "--6", "-6-", ".2", "-0.34", "-6"
 
-def stringFunction(*args, arbNumbers=float):
+
+def string_function(*args, arb_numbers=float):
     numbers = []
-    singleCharStrings = []
-    
+    single_char_strings = []
+
     for arg in args:
-        if len(arg)==1:
-            singleCharStrings.append(arg)
+        if len(arg) == 1:
+            single_char_strings.append(arg)
         try:
-            numbers.append(arbNumbers(arg))
+            numbers.append(arb_numbers(arg))
         except ValueError:
             pass
-            
+    return numbers, single_char_strings
 
-    return numbers, singleCharStrings
-result=stringFunction(*example)
 
-print("Numbers:",result[0])
+result = string_function(*example)
+#result = string_function(*test1)
+#result = string_function(*test2)
+
+print("Numbers:", result[0])
 print("Single Character Strings:", result[1])
         
