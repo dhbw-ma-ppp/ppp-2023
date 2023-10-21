@@ -55,19 +55,33 @@ assert str([str(card) for card in fr_deck]) == "['2 of Diamonds', '3 of Diamonds
 assert str([str(card) for card in sk_deck]) == "['7 of Diamonds', '8 of Diamonds', '9 of Diamonds', '10 of Diamonds', 'Jack of Diamonds', 'Queen of Diamonds', 'King of Diamonds', 'Ace of Diamonds', '7 of Hearts', '8 of Hearts', '9 of Hearts', '10 of Hearts', 'Jack of Hearts', 'Queen of Hearts', 'King of Hearts', 'Ace of Hearts', '7 of Spades', '8 of Spades', '9 of Spades', '10 of Spades', 'Jack of Spades', 'Queen of Spades', 'King of Spades', 'Ace of Spades', '7 of Clubs', '8 of Clubs', '9 of Clubs', '10 of Clubs', 'Jack of Clubs', 'Queen of Clubs', 'King of Clubs', 'Ace of Clubs']"
 
 
-# PART 3:
-# write a function that accepts two numbers, a lower bound and an upper bound.
-# the function should then return the count of all numbers that meet certain criteria:
-# - they are within the (left-inclusive and right-exclusive) bounds passed to the function
-# - there is at least one group of exactly two adjacent digits within the number which are the same (like 33 in 123345)
-# - digits only increase going from left to right
-#
-# Examples:
-# - 123345 is a valid number
-# - 123341 is not a valid number, as the digits do not increase from left to right
-# - 123334 is not a valid number as there is no group of exactly two repeated digits
-# - 111334 is a valid number. while there are three 1s, there is also a group of exactly two 3s.
-# - 112233 is a valid number. At least one group of two is fulfilled, there is no maximum to the number of such groups.
-#
-# run your function with the lower bound `134564` and the upper bound `585159`. Note the resulting count
-# in your pull request, please.
+
+def is_valid(digits):
+    has_adjacent = False
+    has_increase = True
+    for i, digit in enumerate(digits):
+        if i > 0 and digit < digits[i-1]:
+            has_increase = False
+        if i < len(digits)-2 and digit == digits[i+1] and digits.count(digit)<=2:
+            has_adjacent = True
+    return has_adjacent and has_increase
+
+def get_count(lower, upper):
+    count = 0
+    for number in range(lower, upper):
+        digits = []
+        while number > 0:
+            digits.append(number % 10)
+            number //= 10
+        digits.reverse()
+        if is_valid(digits):
+            count+=1
+    return count
+
+assert is_valid([1,2,3,3,4,5])
+assert not is_valid([1,2,3,3,4,1])
+assert not is_valid([1,2,3,3,3,4])
+assert is_valid([1,1,1,3,3,4])
+assert is_valid([1,1,2,2,3,3])
+
+print(get_count(134564, 585159))
