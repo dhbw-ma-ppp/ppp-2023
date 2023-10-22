@@ -94,6 +94,28 @@ print(meinKartendeck[2])
 # Create a second class that represents a deck of cards usable for Skat -- it should only contain cards from 7 upwards.
 # It should offer all the same functionality of the first class.
 
+class DeckOfSkatCards:
+    wanted_cards = ["07","08","09","10","11","12"]
+    list_of_cards = []
+    def __init__(self):
+        for iterator_through_suits in suits_dict:
+            for iterator_through_cardstype in self.wanted_cards:
+                self.list_of_cards.append(Card(iterator_through_suits, iterator_through_cardstype))
+
+    def __getitem__(self, index):
+        return(self.list_of_cards[index])
+
+    def __iter__(self):
+        return(i for i in self.list_of_cards)
+
+
+    def print_cards(self):
+        for iterator_through_cards in self.list_of_cards:
+            iterator_through_cards.print_value()
+        return 0
+
+MeinSkatDeck = DeckOfSkatCards()
+MeinSkatDeck.print_cards()
 
 # Write some code to test the functionality of both kinds of decks. (You can use `assert` to make sure your classes behave the way you expect them to.)
 
