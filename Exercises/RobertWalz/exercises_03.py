@@ -13,6 +13,12 @@ from collections import UserList
 
 class Card:
     def __init__(self, suit, value):
+        """Intitializes an object of type card.
+
+        Args:
+            suit (string): The suit of the card (e.g. Hearts)
+            value (string): The value of the card (e.g. 2, Ace, ...)
+        """
         self.suit = suit
         self.value = value
 
@@ -21,6 +27,8 @@ class Card:
 
 
 class FrenchDeck(UserList):
+    """A type of list containing the standard card of a french deck."""
+
     _suits = ["Diamond", "Heart", "Spade", "Club"]
     _values = [
         "2",
@@ -39,28 +47,49 @@ class FrenchDeck(UserList):
     ]
 
     def __init__(self):
-        self.data = []
-        for suit in self.__class__._suits:
-            for value in self.__class__._values:
-                self.data.append(Card(suit, value))
+        # self.data = []
+        # for suit in self.__class__._suits:
+        #     for value in self.__class__._values:
+        #         self.data.append(Card(suit, value))
+        self.data = [
+            Card(suit, value)
+            for suit in self.__class__._suits
+            for value in self.__class__._values
+        ]
 
 
-class SkatDeck(FrenchDeck):
-    """A French deck without the cards 2-6"""
-    _values = FrenchDeck._values[5:]
-
-
-deck = SkatDeck()
-print(*(x for x in deck), sep="\n")
+french_deck = FrenchDeck()
 
 
 # PART 2:
 # Create a second class that represents a deck of cards usable for Skat -- it should only contain cards from 7 upwards.
 # It should offer all the same functionality of the first class.
+class SkatDeck(FrenchDeck):
+    """A French deck without the cards 2-6"""
+
+    _values = FrenchDeck._values[5:]
+
+
+skat_deck = SkatDeck()
 
 
 # Write some code to test the functionality of both kinds of decks. (You can use `assert` to make sure your classes behave the way you expect them to.)
 
+
+# this proves that the deck behaves like a sequence,
+# that iterating is also implemented
+# and that a card can be displayed with a 'nice' string
+print("\nFrench Deck:\n", *(x for x in french_deck), sep="\n")
+
+# this proves that you can index a card in the deck
+print("\nFrench Deck indexing:\n", french_deck[42])
+
+
+# this proves that the same functionality of a french deck works
+# for a skat deck as well
+
+print("\nSkat Deck:\n", *(x for x in skat_deck), sep="\n")
+print("\nSkat Deck indexing:\n", skat_deck[42 - 21])
 
 # PART 3:
 # write a function that accepts two numbers, a lower bound and an upper bound.
@@ -78,3 +107,46 @@ print(*(x for x in deck), sep="\n")
 #
 # run your function with the lower bound `134564` and the upper bound `585159`. Note the resulting count
 # in your pull request, please.
+
+
+def find_nums(lower_bound, upper_bound):
+    found_numbers = []
+    for num in range(lower_bound, upper_bound + 1):
+        # convert int to int array to use indexing
+        arr = [int(x) for x in str(num)]
+
+        # check if array has ascending numbers
+        if arr != sorted(arr.copy()):
+            continue
+
+        # check if two same digits follow eachother
+        for index, digit in enumerate(arr):
+            found_number = False
+            if index == 0:
+                found_number = True if check_upper_digit(arr, digit, index) else False
+            elif index < len(arr):
+                found_number = True if check_lower_digit(arr, digit, index) else False
+            else:
+                found_number = (
+                    True
+                    if check_lower_digit(arr, digit, index)
+                    and check_upper_digit(arr, digit, index)
+                    else False
+                )
+
+            if found_number:
+                found_numbers.append(int("".join(map(str, arr))))
+                break
+
+    return len(found_numbers)
+
+
+def check_upper_digit(arr, digit, index):
+    return True if (digit == arr[index + 1]) else False
+
+
+def check_lower_digit(arr, digit, index):
+    return True if (digit == arr[index - 1]) else False
+
+
+print(find_nums(134564, 585159))
