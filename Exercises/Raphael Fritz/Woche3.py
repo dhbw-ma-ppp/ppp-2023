@@ -31,7 +31,7 @@ class FrenchDeck(DeckOfCards):
     def __init__(self):
         deck = []
         for suits in ["diamonds", "hearts", "spades", "clubs"]:
-            for type in ["2","3","4","5","6","7","8","9","10","Jack","Queen","King"]:
+            for type in ["2","3","4","5","6","7","8","9","10","Jack","Queen","King","Ace"]:
                 deck.append(type+" of "+suits)
         super().__init__(deck)
                 
@@ -39,19 +39,19 @@ class SkatDeck(DeckOfCards):
     def __init__(self):
         deck = []
         for suits in ["diamonds", "hearts", "spades", "clubs"]:
-            for type in ["7","8","9","10","Jack","Queen","King"]:
+            for type in ["7","8","9","10","Jack","Queen","King","Ace"]:
                 deck.append(type+" of "+suits)
         super().__init__(deck)
 
 french_deck=FrenchDeck()
-assert str(french_deck) == "2 of diamonds, 3 of diamonds, 4 of diamonds, 5 of diamonds, 6 of diamonds, 7 of diamonds, 8 of diamonds, 9 of diamonds, 10 of diamonds, Jack of diamonds, Queen of diamonds, King of diamonds, 2 of hearts, 3 of hearts, 4 of hearts, 5 of hearts, 6 of hearts, 7 of hearts, 8 of hearts, 9 of hearts, 10 of hearts, Jack of hearts, Queen of hearts, King of hearts, 2 of spades, 3 of spades, 4 of spades, 5 of spades, 6 of spades, 7 of spades, 8 of spades, 9 of spades, 10 of spades, Jack of spades, Queen of spades, King of spades, 2 of clubs, 3 of clubs, 4 of clubs, 5 of clubs, 6 of clubs, 7 of clubs, 8 of clubs, 9 of clubs, 10 of clubs, Jack of clubs, Queen of clubs, King of clubs"
-assert [i for i in french_deck] == ['2 of diamonds', '3 of diamonds', '4 of diamonds', '5 of diamonds', '6 of diamonds', '7 of diamonds', '8 of diamonds', '9 of diamonds', '10 of diamonds', 'Jack of diamonds', 'Queen of diamonds', 'King of diamonds', '2 of hearts', '3 of hearts', '4 of hearts', '5 of hearts', '6 of hearts', '7 of hearts', '8 of hearts', '9 of hearts', '10 of hearts', 'Jack of hearts', 'Queen of hearts', 'King of hearts', '2 of spades', '3 of spades', '4 of spades', '5 of spades', '6 of spades', '7 of spades', '8 of spades', '9 of spades', '10 of spades', 'Jack of spades', 'Queen of spades', 'King of spades', '2 of clubs', '3 of clubs', '4 of clubs', '5 of clubs', '6 of clubs', '7 of clubs', '8 of clubs', '9 of clubs', '10 of clubs', 'Jack of clubs', 'Queen of clubs', 'King of clubs']
-assert french_deck[37] == "3 of clubs"
+assert str(french_deck) == "2 of diamonds, 3 of diamonds, 4 of diamonds, 5 of diamonds, 6 of diamonds, 7 of diamonds, 8 of diamonds, 9 of diamonds, 10 of diamonds, Jack of diamonds, Queen of diamonds, King of diamonds, Ace of diamonds, 2 of hearts, 3 of hearts, 4 of hearts, 5 of hearts, 6 of hearts, 7 of hearts, 8 of hearts, 9 of hearts, 10 of hearts, Jack of hearts, Queen of hearts, King of hearts, Ace of hearts, 2 of spades, 3 of spades, 4 of spades, 5 of spades, 6 of spades, 7 of spades, 8 of spades, 9 of spades, 10 of spades, Jack of spades, Queen of spades, King of spades, Ace of spades, 2 of clubs, 3 of clubs, 4 of clubs, 5 of clubs, 6 of clubs, 7 of clubs, 8 of clubs, 9 of clubs, 10 of clubs, Jack of clubs, Queen of clubs, King of clubs, Ace of clubs"
+assert [i for i in french_deck] == ['2 of diamonds', '3 of diamonds', '4 of diamonds', '5 of diamonds', '6 of diamonds', '7 of diamonds', '8 of diamonds', '9 of diamonds', '10 of diamonds', 'Jack of diamonds', 'Queen of diamonds', 'King of diamonds', 'Ace of diamonds', '2 of hearts', '3 of hearts', '4 of hearts', '5 of hearts', '6 of hearts', '7 of hearts', '8 of hearts', '9 of hearts', '10 of hearts', 'Jack of hearts', 'Queen of hearts', 'King of hearts', 'Ace of hearts', '2 of spades', '3 of spades', '4 of spades', '5 of spades', '6 of spades', '7 of spades', '8 of spades', '9 of spades', '10 of spades', 'Jack of spades', 'Queen of spades', 'King of spades', 'Ace of spades', '2 of clubs', '3 of clubs', '4 of clubs', '5 of clubs', '6 of clubs', '7 of clubs', '8 of clubs', '9 of clubs', '10 of clubs', 'Jack of clubs', 'Queen of clubs', 'King of clubs', 'Ace of clubs']
+assert french_deck[37] == "King of spades"
 
 
 skat_deck=SkatDeck()
-assert str(skat_deck) =="7 of diamonds, 8 of diamonds, 9 of diamonds, 10 of diamonds, Jack of diamonds, Queen of diamonds, King of diamonds, 7 of hearts, 8 of hearts, 9 of hearts, 10 of hearts, Jack of hearts, Queen of hearts, King of hearts, 7 of spades, 8 of spades, 9 of spades, 10 of spades, Jack of spades, Queen of spades, King of spades, 7 of clubs, 8 of clubs, 9 of clubs, 10 of clubs, Jack of clubs, Queen of clubs, King of clubs"
-assert [i for i in skat_deck] == ['7 of diamonds', '8 of diamonds', '9 of diamonds', '10 of diamonds', 'Jack of diamonds', 'Queen of diamonds', 'King of diamonds', '7 of hearts', '8 of hearts', '9 of hearts', '10 of hearts', 'Jack of hearts', 'Queen of hearts', 'King of hearts', '7 of spades', '8 of spades', '9 of spades', '10 of spades', 'Jack of spades', 'Queen of spades', 'King of spades', '7 of clubs', '8 of clubs', '9 of clubs', '10 of clubs', 'Jack of clubs', 'Queen of clubs', 'King of clubs']
+assert str(skat_deck) =="7 of diamonds, 8 of diamonds, 9 of diamonds, 10 of diamonds, Jack of diamonds, Queen of diamonds, King of diamonds, Ace of diamonds, 7 of hearts, 8 of hearts, 9 of hearts, 10 of hearts, Jack of hearts, Queen of hearts, King of hearts, Ace of hearts, 7 of spades, 8 of spades, 9 of spades, 10 of spades, Jack of spades, Queen of spades, King of spades, Ace of spades, 7 of clubs, 8 of clubs, 9 of clubs, 10 of clubs, Jack of clubs, Queen of clubs, King of clubs, Ace of clubs"
+assert [i for i in skat_deck] == ['7 of diamonds', '8 of diamonds', '9 of diamonds', '10 of diamonds', 'Jack of diamonds', 'Queen of diamonds', 'King of diamonds', 'Ace of diamonds', '7 of hearts', '8 of hearts', '9 of hearts', '10 of hearts', 'Jack of hearts', 'Queen of hearts', 'King of hearts', 'Ace of hearts', '7 of spades', '8 of spades', '9 of spades', '10 of spades', 'Jack of spades', 'Queen of spades', 'King of spades', 'Ace of spades', '7 of clubs', '8 of clubs', '9 of clubs', '10 of clubs', 'Jack of clubs', 'Queen of clubs', 'King of clubs', 'Ace of clubs']
 assert skat_deck[4] == "Jack of diamonds"
 
 
@@ -72,22 +72,23 @@ assert skat_deck[4] == "Jack of diamonds"
 # run your function with the lower bound `134564` and the upper bound `585159`. Note the resulting count
 # in your pull request, please.
 
-def increase(num):
-    for index in range(len(num)-1):
-        if num[index]>num[index+1]:
-            return False   
-    return True
 
-def grouping(num): 
+
+def analyser(num):
+    increase=True
+    grouping=False
     for index in range(len(num)-1):
         if num[index]==num[index+1] and num.count(num[index])==2: 
-            return True
-    return False
-        
+            grouping = True
+        if num[index]>num[index+1]:
+            increase = False   
+    if increase == True and grouping == True:
+        return True
+
 def validator(low,high):
     valid_count = 0
     for number in range(low,high):
-        if increase(str(number)) == True and grouping(str(number)) == True:
+        if analyser(str(number)) == True:
             valid_count+=1
     return valid_count
 
