@@ -46,6 +46,11 @@ description_dict = {# COPYRIGHT INFORMATION: Following return values are generat
 }
 
 class DeckOfCards:
+    """
+    This Class is a whole Bundle of Cards. It does not take any argument but acts as a standard 52 cards french deck. 
+    It requires the global dictionaries: cardtype_dict, suits_dict, description_dict
+    Those dictionaries do not come with this class itself
+    """
     list_of_cards = []
     def __init__(self):
         for iterator_through_suits in suits_dict:
@@ -69,7 +74,10 @@ class DeckOfCards:
 
 
 
-class Card:  
+class Card: 
+    """
+    This is the Card's class. It is a single card which does only contain two values for the card type and the suite it is in. Cards are the elements a card-deck is made of
+    """ 
     def __init__(self, card_suite_id, card_type_id):
         self.card_suite = card_suite_id
         self.card_type = card_type_id
@@ -85,8 +93,8 @@ class Card:
     
     
 
-#meinKartendeck = DeckOfCards()
-#print(meinKartendeck[2])
+meinKartendeck = DeckOfCards()
+print(meinKartendeck[2])
  
 
 
@@ -95,6 +103,9 @@ class Card:
 # It should offer all the same functionality of the first class.
 
 class DeckOfSkatCards:
+    """
+    The DeckOfSkatCards class is a Deck of cards for a Skat game. It only contains cards from the 7 up beginning
+    """
     wanted_cards = ["07","08","09","10","11","12"]
     list_of_cards = []
     def __init__(self):
@@ -114,8 +125,8 @@ class DeckOfSkatCards:
             iterator_through_cards.print_value()
         return 0
 
-#MeinSkatDeck = DeckOfSkatCards()
-#MeinSkatDeck.print_cards()
+MeinSkatDeck = DeckOfSkatCards()
+MeinSkatDeck.print_cards()
 
 # Write some code to test the functionality of both kinds of decks. (You can use `assert` to make sure your classes behave the way you expect them to.)
 
@@ -138,6 +149,14 @@ class DeckOfSkatCards:
 # in your pull request, please.
 
 def numberCriteriaCheckerCounter(bound_lower, bound_higher):
+    """
+    This function takes two arguments: lower bound and higher bound, both as int
+    This function first tests if a number contains a adjacent pair of digits.
+    After that is tests if the number is sorted already
+    If both tests come out positive, the amount of numbers in the bounds is being represented
+    """
+    bound_lower = int(bound_lower)
+    bound_higher = int(bound_higher)
     validNumbers = []
     for iterator_numbers in range(bound_lower, bound_higher+1):
         number_string = str(iterator_numbers)
@@ -154,7 +173,7 @@ def numberCriteriaCheckerCounter(bound_lower, bound_higher):
                 isValid = True
         if isValid:
             validNumbers.append(number_string)
-    return(validNumbers)
+    return(len(validNumbers))
 
-# print(len(numberCriteriaCheckerCounter(134564,585159)))
+# print(numberCriteriaCheckerCounter(134564,585159))
 # The Result to this is: 19
