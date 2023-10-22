@@ -85,8 +85,8 @@ class Card:
     
     
 
-meinKartendeck = DeckOfCards()
-print(meinKartendeck[2])
+#meinKartendeck = DeckOfCards()
+#print(meinKartendeck[2])
  
 
 
@@ -114,8 +114,8 @@ class DeckOfSkatCards:
             iterator_through_cards.print_value()
         return 0
 
-MeinSkatDeck = DeckOfSkatCards()
-MeinSkatDeck.print_cards()
+#MeinSkatDeck = DeckOfSkatCards()
+#MeinSkatDeck.print_cards()
 
 # Write some code to test the functionality of both kinds of decks. (You can use `assert` to make sure your classes behave the way you expect them to.)
 
@@ -136,3 +136,25 @@ MeinSkatDeck.print_cards()
 #
 # run your function with the lower bound `134564` and the upper bound `585159`. Note the resulting count
 # in your pull request, please.
+
+def numberCriteriaCheckerCounter(bound_lower, bound_higher):
+    validNumbers = []
+    for iterator_numbers in range(bound_lower, bound_higher+1):
+        number_string = str(iterator_numbers)
+        number_string_sorted = "".join(sorted(number_string))
+        adjacence = False
+        isValid = False
+        for iterator_charsInString in range(0, len(number_string)):
+            if iterator_charsInString > 0:
+                if number_string[iterator_charsInString - 1] == number_string[iterator_charsInString]:
+                    adjacence = True
+                    #print("adjacence given")
+        if adjacence == True:
+            if number_string == number_string_sorted:
+                isValid = True
+        if isValid:
+            validNumbers.append(number_string)
+    return(validNumbers)
+
+# print(len(numberCriteriaCheckerCounter(134564,585159)))
+# The Result to this is: 19
