@@ -60,7 +60,7 @@ def is_valid(digits):
     for i, digit in enumerate(digits):
         if i > 0 and digit < digits[i-1]:
             has_increase = False
-        if i < len(digits)-2 and digit == digits[i+1] and digits.count(digit)<=2:
+        if i < len(digits)-1 and digit == digits[i+1] and digits.count(digit)<=2:
             has_adjacent = True
     return has_adjacent and has_increase
 
@@ -83,5 +83,6 @@ assert not is_valid([1,2,3,3,4,1])
 assert not is_valid([1,2,3,3,3,4])
 assert is_valid([1,1,1,3,3,4])
 assert is_valid([1,1,2,2,3,3])
+assert is_valid([1,3,4,5,6,6])
 
 print(get_count(134564, 585159))
