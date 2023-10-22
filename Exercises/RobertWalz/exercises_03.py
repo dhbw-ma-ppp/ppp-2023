@@ -109,9 +109,12 @@ print("\nSkat Deck indexing:\n", skat_deck[42 - 21])
 # in your pull request, please.
 
 
+import timeit
+
+
 def find_nums(lower_bound, upper_bound):
     found_numbers = []
-    for num in range(lower_bound, upper_bound + 1):
+    for num in range(lower_bound, upper_bound):
         # convert int to int array to use indexing
         arr = [int(x) for x in str(num)]
 
@@ -121,32 +124,36 @@ def find_nums(lower_bound, upper_bound):
 
         # check if two same digits follow eachother
         for index, digit in enumerate(arr):
-            found_number = False
-            if index == 0:
-                found_number = True if check_upper_digit(arr, digit, index) else False
-            elif index < len(arr):
-                found_number = True if check_lower_digit(arr, digit, index) else False
-            else:
-                found_number = (
-                    True
-                    if check_lower_digit(arr, digit, index)
-                    and check_upper_digit(arr, digit, index)
-                    else False
-                )
+            # if index == 0:
+            if index < len(arr) - 3:
+                if check_upper_digit(arr, digit, index) and not check_upper_digit(
+                    arr, digit, index + 1) and not check_lower_digit(arr, digit, index):
+                    found_numbers.append(int("".join(map(str, arr))))
+                    break
+            # elif index < len(arr):
+            #     found_number = True if check_lower_digit(arr, digit, index) else False
+            # else:
+            #     found_number = (
+            #         True
+            #         if check_lower_digit(arr, digit, index)
+            #         and check_upper_digit(arr, digit, index)
+            #         else False
+            #     )
 
-            if found_number:
-                found_numbers.append(int("".join(map(str, arr))))
-                break
-
+    print(found_numbers)
     return len(found_numbers)
 
 
 def check_upper_digit(arr, digit, index):
-    return True if (digit == arr[index + 1]) else False
+    result = True if (digit == arr[index + 1]) else False
+    # if result:
+    #     print("true")
+    return result
 
 
 def check_lower_digit(arr, digit, index):
     return True if (digit == arr[index - 1]) else False
 
 
+# print(timeit.timeit(find_nums(134564, 585159), number=3) / 3)
 print(find_nums(134564, 585159))
