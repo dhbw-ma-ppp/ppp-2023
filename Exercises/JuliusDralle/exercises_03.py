@@ -8,7 +8,6 @@
 # readable description of that card.
 
 cardtype_dict = {
-    "01" : "Ace",
     "02" : "2",
     "03" : "3",
     "04" : "4",
@@ -20,10 +19,11 @@ cardtype_dict = {
     "10" : "10",
     "11" : "Jack",
     "12" : "Queen",
-    "12" : "King"
+    "13" : "King",
+    "01" : "Ace"
 }
 suits_dict = {
-    "01" : "2-Ace of Diamonds",
+    "01" : "Ace of Diamonds",
     "02" : "Hearts",
     "03" : "Spades",
     "04" : "Clubs"
@@ -106,7 +106,7 @@ class DeckOfSkatCards:
     """
     The DeckOfSkatCards class is a Deck of cards for a Skat game. It only contains cards from the 7 up beginning
     """
-    wanted_cards = ["07","08","09","10","11","12"]
+    wanted_cards = ["07","08","09","10","11","12","13","01"]
     list_of_cards = []
     def __init__(self):
         for iterator_through_suits in suits_dict:
@@ -158,14 +158,14 @@ def numberCriteriaCheckerCounter(bound_lower, bound_higher):
     bound_lower = int(bound_lower)
     bound_higher = int(bound_higher)
     validNumbers = []
-    for iterator_numbers in range(bound_lower, bound_higher+1):
+    for iterator_numbers in range(bound_lower, bound_higher):
         number_string = str(iterator_numbers)
         number_string_sorted = "".join(sorted(number_string))
         adjacence = False
         isValid = False
         for iterator_charsInString in range(0, len(number_string)):
             if iterator_charsInString > 0:
-                if number_string[iterator_charsInString - 1] == number_string[iterator_charsInString]:
+                if number_string[iterator_charsInString - 1] == number_string[iterator_charsInString] and number_string.count(number_string[iterator_charsInString]) == 2:
                     adjacence = True
                     #print("adjacence given")
         if adjacence == True:
@@ -175,5 +175,5 @@ def numberCriteriaCheckerCounter(bound_lower, bound_higher):
             validNumbers.append(number_string)
     return(len(validNumbers))
 
-# print(numberCriteriaCheckerCounter(134564,585159))
-# The Result to this is: 19
+print(numberCriteriaCheckerCounter(134564,585159))
+# The Result to this is: 1306
