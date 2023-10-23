@@ -1,6 +1,7 @@
 from enum import Enum
 from collections import UserList
 
+
 class SUITE(Enum):
     CLUBS = "C"
     SPADES = "S"
@@ -11,12 +12,16 @@ class SUITE(Enum):
 RANKS = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J",  "Q",   "K",  "A"}
 
 
-#TODO: - Add Comments
-
 class Card:
+    """
+    The Card stores basic information about a card in the deck 
+    and implements operations like string conversion and equality check
+    """
     def __init__(self, suite: SUITE, rank: RANKS) -> None:
+        # if invalid rank is passed, throw exception
         if rank not in RANKS:
             raise Exception("Invalid rank.")
+
         self.suite = suite
         self.rank = rank
 
@@ -27,6 +32,9 @@ class Card:
         return isinstance(__value, Card) and self.rank == __value.rank and self.suite == __value.suite
     
     def get_name(self) -> str:
+        """
+        Returns a more readable name like "Ace of Spades"
+        """
         s = ""
         s += {"2":"Two", "3":"Three", "4":"Four", 
               "5":"Five", "6":"Six", "7":"Seven", 
@@ -38,13 +46,24 @@ class Card:
         return s
     
     def get_short_name(self) -> str:
+        """
+        Returns a short formatted name like "<A-S>"
+        """
         return f'<{self.rank}-{self.suite.value}>'
 
 class CardDeck(UserList):
+    """
+    CardDeck is superclass of FrenchDeck and SkatDeck.
+    It stores the cards of the deck and inherits from UserList
+    in order to provide the functionality of an iterable.
+    """
     def __init__(self, cards = []) -> None:
         super().__init__(cards)
 
     def __str__(self) -> str:
+        """
+        Returns the cards in this deck in table format (string).
+        """
         output = "Cards in deck:\n"
         cards_per_line = 4
         temp = 0
@@ -66,6 +85,9 @@ class CardDeck(UserList):
 # readable description of that card.
 
 class FrenchDeck(CardDeck):
+    """
+    Inherits from CardDeck and adds cards typically present in a french deck on initialization.
+    """
     def __init__(self) -> None:
         super().__init__(self._generateDeck())
 
@@ -83,6 +105,9 @@ class FrenchDeck(CardDeck):
 
 
 class SkatDeck(CardDeck):
+    """
+    Inherits from CardDeck and adds cards typically present in a skat deck on initialization.
+    """
     def __init__(self) -> None:
         super().__init__(self._generateDeck())
 
@@ -145,39 +170,53 @@ print(f'This is my favorite card: {Card(suite=SUITE.HEARTS, rank="A")}')
 # in your pull request, please.
 
 def _validate_number(number: int) -> bool:
-    last_char = "-1"
-    eq_chars = 1
-    has_group = False
+    """
+    Checks if a number is valid in terms of the assignment.
+    """
+    last_char = "-1" 
+    eq_chars = 1        # number of equal characters counted in a row
+    has_group = False   # stores if a group of two equal numbers has already been found
+    # casts number into a string and iterates over every character
     for char in str(number):
+        # checks if number only has increasing digits from left to right
         if int(char) < int(last_char):
-            return False # the numbers are decreasing
+            return False # the numbers are decreasing so return false
         
+        # if current character is equal to last, increase counter
         if last_char == char: eq_chars += 1
+        # if current character is not equal, check if there was a group of exactly 2 equal characters
+        # before this. If so, set has_group to True. If not, reset counter
         else:
             if eq_chars == 2: has_group = True
             eq_chars = 1
 
         last_char = char
-    # also reg
+
+    # when at end of number, check if last two digits where
     if eq_chars == 2:
-        return True
+        has_group = True
     return has_group
         
 
 def part_3_solution(lowerBound: int, upperBound: int) -> int:
+    """
+    Given a range of numbers, this function returns the count of numbers within the range, 
+    that are valid, in terms of the assignment.
+    """
     count = 0
     # for every number within bounds
     for number in range(lowerBound, upperBound):
         if _validate_number(number): count += 1
     return count
 
-
+# check if solution works (it does)
 assert _validate_number(123345) == True
 assert _validate_number(123341) == False
 assert _validate_number(123334) == False
 assert _validate_number(111334) == True
 assert _validate_number(112233) == True
 
+# print solution
 print(f"Solution to part 3: {part_3_solution(134564, 585159)}")
 
 
