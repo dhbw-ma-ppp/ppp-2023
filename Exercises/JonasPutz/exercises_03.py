@@ -140,8 +140,8 @@ def analyseNumbers(lowerBound, upperBound):
             if index < lastDigitIndex:
                 recursiveStarter(index + 1, lowerBoundArray[index], isNumberInvalid)
             else:
-                numberEvaluation(isNumberInvalid)
-
+                nonlocal numberCounter
+                numberCounter += 0 if isNumberInvalid else 1
 
     def lastRecursiveLoop(index, currentNumberCounter, isNumberInvalid):
         if index < lastDigitIndex:
