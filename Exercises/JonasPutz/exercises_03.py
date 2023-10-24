@@ -145,23 +145,29 @@ def analyseNumbers(lowerBound, upperBound):
 
     def lastRecursiveLoop(index, currentNumberCounter, isNumberInvalid):
         if index < lastDigitIndex:
-            lowerBoundArray[index + 1] = lowerBoundArray[index]
-            recursiveLoop(index + 1, currentNumberCounter - lowerBoundArray[index], isNumberInvalid)
+            if upperBoundArray[index] == lowerBoundArray[index]:
+                lastRecursiveLoop(index + 1, currentNumberCounter - upperBoundArray[index], isNumberInvalid)
+            else:
+                lowerBoundArray[index + 1] = lowerBoundArray[index]
+                recursiveLoop(index + 1, currentNumberCounter - lowerBoundArray[index], isNumberInvalid)
 
-            isNumberInvalid &= bool(currentNumberCounter)
+                isNumberInvalid &= bool(currentNumberCounter)
 
-            for i in range(lowerBoundArray[index] + 1, upperBoundArray[index]):
-                lowerBoundArray[index + 1] = i
-                recursiveLoop(index + 1, i, isNumberInvalid)
+                for i in range(lowerBoundArray[index] + 1, upperBoundArray[index]):
+                    lowerBoundArray[index + 1] = i
+                    recursiveLoop(index + 1, i, isNumberInvalid)
 
-            lowerBoundArray[index + 1] = upperBoundArray[index]
-            lastRecursiveLoop(index + 1, upperBoundArray[index], isNumberInvalid)
+                lowerBoundArray[index + 1] = upperBoundArray[index]
+                lastRecursiveLoop(index + 1, upperBoundArray[index], isNumberInvalid)
         else:
             recursiveEnd(isNumberInvalid, currentNumberCounter, lowerBoundArray[index], upperBoundArray[index])
 
     def firstRecursiveLoop(index, currentNumberCounter, isNumberInvalid):
         if index < lastDigitIndex:
-            firstRecursiveLoop(index + 1, currentNumberCounter - lowerBoundArray[index], isNumberInvalid)
+            if lowerBoundArray[index] == lowerBoundArray[index - 1]:
+                firstRecursiveLoop(index + 1, currentNumberCounter - lowerBoundArray[index], isNumberInvalid)
+            else:
+                firstRecursiveLoop(index + 1, lowerBoundArray[index], isNumberInvalid)
             
             isNumberInvalid &= bool(currentNumberCounter)
 
