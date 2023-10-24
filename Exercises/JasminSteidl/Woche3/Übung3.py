@@ -7,83 +7,84 @@
 # Printing a cards string representation should give me a nice, 
 # readable description of that card.
 
+# PART 2:
+# Create a second class that represents a deck of cards usable for Skat -- it should only contain cards from 7 upwards.
+# It should offer all the same functionality of the first class.
+
+# Write some code to test the functionality of both kinds of decks. (You can use `assert` to make sure your classes behave the way you expect them to.)
 
 #import timeit
 
-
-class FrenchCardDeck:
-    def __init__(self):
-        ranks = [Rank(str(number), number) for number in range(2, 11)] + \
-         [Rank('Jack', 11), Rank('Queen', 12), Rank('King', 13), Rank('Ace', 14)]
-        suits = [Suit('Hearts'), Suit('Diamonds'), Suit('Clubs'), Suit('Spades')]
-        self.cards = [Card(rank, suit) for suit in suits for rank in ranks]
-
-    def __getitem__(self, position):
-        return self.cards[position]
+class CardDeck:
+    def __init__(self, ranks, suits):
+        self.cards = [{'rank': rank, 'suit': suit} for suit in suits for rank in ranks]
 
     def __len__(self):
         return len(self.cards)
+
+    def __getitem__(self, position):
+        if 0 <= position < len(self.cards):
+            return self.cards[position]
+        else:
+            raise IndexError("Index out of range")
 
     def __iter__(self):
         return iter(self.cards)
 
     def __str__(self):
-        return f"{self.rank.name} of {self.suit.symbol}"
+        return f"\nYou have a {self.__class__.__name__} with {len(self)} cards"
+
+    def card_description(self, card):
+        return f"{card['rank']} of {card['suit']}"
 
 
-class Rank(FrenchCardDeck):
-    def __init__(self, name, value):
-        self.name = name
-        self.value = value
-
-
-class Suit(FrenchCardDeck):
-    def __init__(self, symbol):
-        self.symbol = symbol
-
-
-class Card(FrenchCardDeck):
-    def __init__(self, rank, suit):
-        self.rank = rank
-        self.suit = suit
-
-
-f_deck = FrenchCardDeck()
-
-print("This is the deck you have:")
-for card in f_deck:
-    print(card)
-
-
-print("\nYour 12th card is:")
-print(f_deck[11])
-
-
-# PART 2:
-# Create a second class that represents a deck of cards usable for Skat -- it should only contain cards from 7 upwards.
-# It should offer all the same functionality of the first class.
-
-class SkatDeck(FrenchCardDeck):
+class FrenchDeck(CardDeck):
     def __init__(self):
-        skat_ranks = [Rank(str(value), value) for value in range(7, 11)] + \
-            [Rank('Jack', 11), Rank('Queen', 12), Rank('King', 13), Rank('Ace', 14)]
-        skat_suits = [Suit('Hearts'), Suit('Diamonds'), Suit('Clubs'), Suit('Spades')]
-        self.cards = [Card(rank, suit) for suit in skat_suits for rank in skat_ranks]
+        ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace']
+        suits = ['Diamonds', 'Hearts', 'Spades', 'Clubs']
+        super().__init__(ranks, suits)
 
 
-s_deck = SkatDeck()
+class SkatDeck(CardDeck):
+    def __init__(self):
+        ranks = ['7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace']
+        suits = ['Diamonds', 'Hearts', 'Spades', 'Clubs']
+        super().__init__(ranks, suits)
+
+
+french_deck = FrenchDeck()
+
+# For FrenchDeck:
+
+# Accessing cards by index
+print("This is your first card:")
+card_index = 0
+specific_card = french_deck[card_index]
+print(french_deck.card_description(specific_card))
+
+# Showing all cards
+print("\nThis is the deck you have:")
+for card in french_deck:
+    print(french_deck.card_description(card))
+
+# Printing number of cards
+print(french_deck)
+
+skat_deck = SkatDeck()
+
+# For SkatDeck:
+
+print("\nThis is your first card:")
+card_index = 0 
+specific_card = skat_deck[card_index]
+print(skat_deck.card_description(specific_card))
+
 
 print("\nThis is the deck you have:")
-for card in s_deck:
-    print(card)
+for card in skat_deck:
+    print(skat_deck.card_description(card))
 
-
-print("\nYour 7th card is:")
-print(s_deck[6])
-
-
-# Write some code to test the functionality of both kinds of decks. (You can use `assert` to make sure your classes behave the way you expect them to.)
-
+print(skat_deck)
 
 # PART 3:
 # write a function that accepts two numbers, a lower bound and an upper bound.
@@ -92,23 +93,27 @@ print(s_deck[6])
 # - there is at least one group of exactly two adjacent digits within the number which are the same (like 33 in 123345)
 # - digits only increase going from left to right
 
-def valid_number(digit):
+
+def ascending(digit):
     str_num = str(digit)
-    has_double = False
     for index in range(len(str_num) - 1):
-        if str_num[index] == str_num[index + 1] and \
-            (index == 0 or str_num[index] != str_num[index - 1]) and \
-           (index == len(str_num) - 2 or str_num[index] != str_num[index + 2]):
-            has_double = True
         if str_num[index] > str_num[index + 1]:
             return False
-    return has_double
+    return True
+
+
+def double(digit):
+    str_num = str(digit)
+    for index in set(str_num):
+        if str_num.count(index) == 2:
+            return True
+    return False
 
 
 def count_valid_numbers(lower_bound, upper_bound):
     count = 0
-    for number in range(lower_bound, upper_bound):
-        if valid_number(number):
+    for digit in range(lower_bound, upper_bound):
+        if ascending(digit) and double(digit):
             count += 1
     return count
 
@@ -131,3 +136,4 @@ print("\nCount of valid numbers:", result)
 #
 # run your function with the lower bound `134564` and the upper bound `585159`. Note the resulting count
 # in your pull request, please.
+
