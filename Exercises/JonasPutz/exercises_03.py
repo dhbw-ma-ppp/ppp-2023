@@ -185,12 +185,9 @@ def analyseNumbers(lowerBound, upperBound):
             recursiveEnd(isNumberInvalid, currentNumberCounter, lowerBoundArray[index])
 
     def recursiveEnd(isNumberInvalid, currentNumberCounter, lowerBoundValue, upperBoundValue = 9):
-        numberEvaluation(isNumberInvalid & bool(currentNumberCounter - lowerBoundValue))
-        numberEvaluation(isNumberInvalid & bool(currentNumberCounter), upperBoundValue - lowerBoundValue)
-
-    def numberEvaluation(isNumberInvalid, count = 1):
         nonlocal numberCounter
-        numberCounter += 0 if isNumberInvalid else count
+        numberCounter += 0 if isNumberInvalid & bool(currentNumberCounter - lowerBoundValue) else 1
+        numberCounter += 0 if isNumberInvalid & bool(currentNumberCounter) else upperBoundValue - lowerBoundValue
 
     recursiveStarter(0, -1, True)
 
