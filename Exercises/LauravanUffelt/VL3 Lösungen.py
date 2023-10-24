@@ -88,53 +88,21 @@ def count(a, b):
         digits = [int(digit) for digit in str(number)]
         # controls if number increases by comparing to the sorted number
         if digits == sorted(digits.copy()):
-            for index, element in enumerate(digits):
-                # controls if the number has the pair of numbers, for each index
-                match index:
-                    case 0:
-                        if element == digits[1] and element != digits[2]:
-                            # print(number)
-                            counter += 1
-                            break
-                        else:
-                            pass
-                    case 1:
-                        if element == digits[2] and element != digits[3] and element != digits[0]:
-                            # print(number)
-                            counter += 1
-                            break
-                        else:
-                            pass
-                    case 2:
-                        if element == digits[3] and element != digits[4] and element != digits[1]:
-                            # print(number)
-                            counter += 1
-                            break
-                        else:
-                            pass
-                    case 3:
-                        if element == digits[4] and element != digits[5] and element != digits[2]:
-                            # print(number)
-                            counter += 1
-                            break
-                        else:
-                            pass
-                    case 4:
-                        if element == digits[5] and element != digits[3]:
-                            # print(number)
-                            counter += 1
-                            break
-                        else:
-                            pass
-                    case 5:
-                        if element == digits[4] and element != digits[3]:
-                            # print(number)
-                            counter += 1
-                            break
-                        else:
-                            pass
+            a = digits.count(1)
+            b = digits.count(2)
+            c = digits.count(3)
+            d = digits.count(4)
+            e = digits.count(5)
+            f = digits.count(6)
+            g = digits.count(7)
+            h = digits.count(8)
+            i = digits.count(9)
+            if a == 2 or b == 2 or c == 2 or d == 2 or e == 2 or f == 2 or g == 2 or h == 2 or i == 2:
+                print(number)
+                counter += 1
         else:
             continue
+    print(counter)
 
 
 count(134564,  585159)
