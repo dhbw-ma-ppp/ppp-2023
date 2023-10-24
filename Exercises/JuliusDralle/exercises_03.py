@@ -23,7 +23,7 @@ cardtype_dict = {
     "01" : "Ace"
 }
 suits_dict = {
-    "01" : "Ace of Diamonds",
+    "01" : "Diamonds",
     "02" : "Hearts",
     "03" : "Spades",
     "04" : "Clubs"
