@@ -55,26 +55,23 @@ assert str([str(card) for card in sk_deck]) == "['7 of Diamonds', '8 of Diamonds
 
 
 def is_valid(digits):
-    has_adjacent = False
-    has_increase = True
-    for i, digit in enumerate(digits):
-        if i > 0 and digit < digits[i-1]:
-            has_increase = False
-        if i < len(digits)-1 and digit == digits[i+1] and digits.count(digit)<=2:
-            has_adjacent = True
-    return has_adjacent and has_increase
-
+    i=0
+    while i<len(digits)-1:
+        if digits[i] < digits[i+1]: return False
+        i+=1
+    i=0
+    while i<len(digits)-1:
+        if digits.count(digits[i])==2: return True
+        i+=1
 
 def get_count(lower, upper):
     count = 0
     for number in range(lower, upper):
         digits = []
-        while number > 0:
+        while number:
             digits.append(number % 10)
             number //= 10
-        digits.reverse()
-        if is_valid(digits):
-            count+=1
+        if is_valid(digits): count += 1
     return count
 
 def get_count_2(lower, upper): return len([0 for dig in [list(str(num)) for num in range(lower, upper)] if dig==sorted(dig) and [0 for m in dig if dig.count(m)==2]])
