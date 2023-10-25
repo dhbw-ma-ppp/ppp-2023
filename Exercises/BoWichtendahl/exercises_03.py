@@ -1,21 +1,30 @@
 # PART 1:
 # Write a class for a French deck of cards (2-Ace of diamonds, hearts, spades, clubs).
 # The deck of cards should behave like a sequence.
-# When initialized the cards should all be in a well-defined order (2-Ace of each suite, suites in the order above
+# When initialized the cards should all be in a well-defined order (2-Ace of each suite, suites in the order above)
 # I should be able to index into the deck to retrieve one card.
 # I should be able to iterate over all cards in the deck.
 # Printing a cards string representation should give me a nice, 
 # readable description of that card.
 
 class CardDeck:
-    __card_colors = ['diamonds', 'hearts', 'spades', 'clubs']
-    __card_values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'jack', 'queen', 'king', 'ace']
+    """
+    This class represents a deck of cards.
 
+    It can be initialized with a minimum card value. The default is 2.
+    This class should not be used directly. This class is used as a base class which provides the basic functionality
+    for other card decks.
+    """
     def __init__(self, min_card='2'):
+        card_colors = ['diamonds', 'hearts', 'spades', 'clubs']
+        card_values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'jack', 'queen', 'king', 'ace']
         self.__cards = []
-        for color in self.__card_colors:
-            for i in range(self.__card_values.index(min_card), len(self.__card_values)):
-                self.__cards.append((' of '.join([self.__card_values[i], color])))
+        for color in card_colors:
+            for i in range(card_values.index(min_card), len(card_values)):
+                self.__cards.append((' of '.join([card_values[i], color])))
+
+    def __len__(self):
+        return len(self.__cards)
 
     def __iter__(self):
         self.__index = 0
@@ -42,9 +51,12 @@ class CardDeck:
 
 
 class FrenchDeck(CardDeck):
+    """
+    This class represents a French deck of cards. It inherits its functionality from the CardDeck class and has all the
+    cards from 2 to the ace.
+    """
     def __init__(self):
         super().__init__()
-        pass
 
 
 # PART 2:
@@ -53,9 +65,12 @@ class FrenchDeck(CardDeck):
 
 
 class SkatDeck(CardDeck):
+    """
+    This class represents a Skat deck of cards. It inherits its functionality from the CardDeck class and has all the
+    cards from 7 to the ace.
+    """
     def __init__(self):
         super().__init__(min_card='7')
-        pass
 
 
 # Write some code to test the functionality of both kinds of decks. (You can use `assert` to make sure your classes
