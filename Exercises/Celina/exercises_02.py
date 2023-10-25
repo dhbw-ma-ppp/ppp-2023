@@ -62,11 +62,14 @@ print(weird_shuffle(commands))
 #   The second list should contain all strings which contain just one character.
 # Think of some good inputs to test this functionality, write down at least three
 # examples and verify that the output for these examples is correct.
+
 from math import nan
 
-list= [1,4,6,"a","kgr"]
-list_1=[1,3,"hallo",7,"0",7.8,0,3/4,678.9785,"abcde"]
-list_2=[nan,1/3,"abs","23a","1234",678.9]
+
+
+list= ["1","4","6","a","kgr"]
+list_1=["1","3","hallo","7","0","7.8","0","678.9785","abcde"]
+list_2=["nan","abs","23a","1234","678.9","e","+"]
 
 def split_list(list):
     number_list=[]
@@ -78,7 +81,7 @@ def split_list(list):
         try:
             float(i)
             #to put nan out of number_list:
-            if i == i:
+            if float(i) == float(i):
                 number_list.append(i)
         except ValueError:
             pass
