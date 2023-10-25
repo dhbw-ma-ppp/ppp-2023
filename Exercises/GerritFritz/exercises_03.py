@@ -64,6 +64,7 @@ def is_valid(digits):
         if digits.count(digits[i])==2: return True
         i+=1
 
+
 def get_count(lower, upper):
     count = 0
     for number in range(lower, upper):
@@ -74,14 +75,13 @@ def get_count(lower, upper):
         if is_valid(digits): count += 1
     return count
 
+
 def get_count_2(lower, upper): return len([0 for dig in [list(str(num)) for num in range(lower, upper)] if dig==sorted(dig) and [0 for m in dig if dig.count(m)==2]])
 
 
-assert is_valid([1,2,3,3,4,5])
-assert not is_valid([1,2,3,3,4,1])
-assert not is_valid([1,2,3,3,3,4])
-assert is_valid([1,1,1,3,3,4])
-assert is_valid([1,1,2,2,3,3])
-assert is_valid([1,3,4,5,6,6])
+testpos = [is_valid(list(reversed(element))) for element in [[1,2,3,3,4,5],[1,1,1,3,3,4],[1,1,2,2,3,3],[1,3,4,5,6,6]]]
+testneg = [not is_valid(list(reversed(element))) for element in [[1,2,3,3,4,1],[1,2,3,3,3,4]]]
+testtot = testpos+testneg
+assert not [element for element in testtot if not element]
 assert get_count(134564, 585159) == 1306
 assert get_count_2(134564, 585159) == 1306
