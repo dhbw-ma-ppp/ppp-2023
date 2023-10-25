@@ -11,8 +11,7 @@ def listRechnung(arr):
         else: 
             print("Fehler an Stelle ", i)
             break
-
-    return arr
+    return arr[0]
 
 print(listRechnung(commands))
 
