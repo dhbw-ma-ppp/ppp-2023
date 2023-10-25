@@ -1,0 +1,39 @@
+git status -- show the current branch and which files are untracked/changed/staged
+git checkout <branch_name> -- change into the branch specified
+git checkout -b <branch_name> -- create the specified branch and change into that branch
+git pull -- sync changes from remote (github.com) to local branch
+git push -- sync changes from local to remote (github.com)
+
+git add <filename> -- add files to 'staging area'
+git add -u -- add all already tracked but changed files to staging area
+git commit -- create commit of staged changes
+
+
+git stash -- store local changes to 'temporary' stash
+git stash pop -- restore changes from the stash
+
+
+# step-by-step
+- first: checkout main branch: git checkout main
+- make sure remote changes are pulled: git pull
+- checkout working branch for current exercises: git checkout -b <exercise_N_NAME>
+< MAKE ALL NECESSARY CHANGES > 
+- add the new file to the staging area: git add <filename>
+- verify the correct files/changes are staged: git status
+- detailed diff of staged changes: git diff --staged
+- commit changes: git commit -m "<commit-message>"
+- push changes upstream: git push --set-upstream origin <branch_name>
+< CREATE PULL REQUEST, WAIT FOR REVIEW >
+< MAKE NECESSARY CHANGES >
+- add the new file to the staging area: git add <filename>
+- verify the correct files/changes are staged: git status
+- detailed diff of staged changes: git diff --staged
+- commit changes: git commit -m "<commit-message>"
+- push changes upstream: git push
+
+< NEW EXERCISES WEEK N+1 > 
+- first: checkout main branch: git checkout main
+- make sure remote changes are pulled: git pull
+- checkout working branch for current exercises (NEW NAME!): git checkout -b <exercise_N+1_NAME>
+< PROCEED AS ABOVE > 
+
