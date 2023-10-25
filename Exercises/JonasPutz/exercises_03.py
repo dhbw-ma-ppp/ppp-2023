@@ -11,14 +11,38 @@ from collections import UserList
 
 
 class Card:
+    """ Placeholder for Card elements.
+        A Card is defined by its value (self.value) and its suit (self.suit).
+
+        These values must be specified in the constructor.
+    """
     def __init__(self, value, suit):
+        """ The constructor returnes a new card with the specified values.
+
+            Parameters
+            ----------
+            value (str)
+                the face value of the card (usually 2 - ace)
+            suit (str)
+                the suit of the card (usually diamonds, hearts, spades, clubs)
+        """
         self.value = value
         self.suit = suit
 
     def __str__(self) -> str:
+        """ Returns a string representation of the card in the form:
+            
+            "{self.value} of {self.suit}"
+            
+            e.g: 7 of hearts, Ace of spades, ...
+        """
         return f"{self.value} of {self.suit}"
     
 class FrenchDeck(UserList):
+    """ A french deck
+
+        (using the values: 2 - Ace and suits: diamonds, hearts, spades, clubs)
+    """
     _values = [
         '2',
         '3',
@@ -53,6 +77,10 @@ class FrenchDeck(UserList):
 # It should offer all the same functionality of the first class.
 
 class SkatDeck(FrenchDeck):
+    """ A skat deck
+
+        same as a french deck but just using the values: 7 - Ace
+    """
     _values = [
         '7',
         '8',
@@ -96,31 +124,86 @@ print(f"Card at position [1]: {skatDeck[1]}")
 # in your pull request, please.
 
 def analyseNumbers(lowerBound, upperBound):
-    lowerBoundArray = [int(char) for char in list(str(lowerBound))]
+    """ Analyse numbers:
+
+        returns all numbers from lower bound (inclusiv) to upper bound (exclusiv) 
+        which digits are in ascending order and include at least one digit exactly twice
+    """
+
+    numbers = []        #stores all valid numbers
+    digitCounter = []   #stores the count of 0's, 1's, ..., 9's
+    lastDigit = 0       #stores the last used digit
+    isValid = True      #stores if the number is valid
+
+    for number in range(lowerBound, upperBound):
+        lastDigit = 0           #resets all used values
+        isValid = True
+        digitCounter = [0] * 10
+
+        for digit in map(int,str(number)):  #execute for each digit in the number (from left to right)
+            if digit < lastDigit:    
+                isValid = False             #if the digit is smaller than the last one, set the number to invalid
+                break                       #this means, the digits are not ascending order
+            lastDigit = digit
+
+            digitCounter[digit] += 1        #increase the digit counter
+
+        isValid &= any(d == 2 for d in digitCounter)    #if the number is valid, test if any digit is included exactly twice
+
+        if isValid:
+            numbers.append(number)          #add the number to the list, if it is valid
+
+    return len(numbers)         #returns the number of numbers found
+
+print(f"\n\nThe function found {analyseNumbers(134564, 585159)} valid numbers")
+
+
+##########################################################################
+# The function below is much faster but very complicated. 
+# It is not well documented and should be seen as an inspiration of what could have been done.
+def analyseNumbersFast(lowerBound, upperBound):
+    #calculate the 'real' lower bound (134564 is not a valid number, it will be set to 134566, the first ordered one)
+    lowerBoundArray = [int(char) for char in list(str(lowerBound))] #the array containing all digits (e.g:[1,3,4,5,6,6])
     buffer = lowerBoundArray[0]
     for index in range(1, len(lowerBoundArray)):
         buffer = max(buffer, lowerBoundArray[index])
         lowerBoundArray[index] = buffer
     lowerBound = int("".join(map(str,lowerBoundArray)))
 
-    upperBoundArray = [int(char) for char in list(str(upperBound - 1))]
+    #calculate the 'real' upper bound (585159 will be set to 579999)
+    upperBoundArray = [int(char) for char in list(str(upperBound - 1))] #same as before (e.g:[5,7,9,9,9,9])
     buffer = -1
-    for index in range(0, len(upperBoundArray) - 1):
+    for index in range(0, len(upperBoundArray) - 1): #finds the index, where the order first breaks (e.g:1 - between 8 and 5)
         if upperBoundArray[index] > upperBoundArray[index + 1]:
             buffer = index
             break
     if buffer >= 0:
-        upperBoundArray[buffer] -= 1
-        for index in range(buffer + 1, len(upperBoundArray)):
+        upperBoundArray[buffer] -= 1 #counts the buffer value one down (e.g: 8 -> 7)
+        for index in range(buffer + 1, len(upperBoundArray)): #sets all other value to 9
             upperBoundArray[index] = 9
     upperBound = int("".join(map(str,upperBoundArray)))
 
-    for _ in range(len(upperBoundArray) - len(lowerBoundArray)):
+    for _ in range(len(upperBoundArray) - len(lowerBoundArray)): #fills the lowerBound with leading 0's, if necessary
         lowerBoundArray.insert(0, 0)
 
-    numberCounter = 0
-    lastDigitIndex = len(upperBoundArray) - 1
+    numberCounter = 0 #this value will be used to find the necessary double
+    lastDigitIndex = len(upperBoundArray) - 1 #last value being processed by the recursive functions
 
+    #generall Idea:
+    #use for a number with n digits n nested for loops with each one starting from the current digit from the last one
+    #this will only generate ordered numbers
+
+    #used arguments in the recursive tree:
+    #index (int): the current index of the digit being handeled e.g: at the beginning 0 and in the end lastDigitIndex
+    #currentNumberCounter (int): this value will follow the following pattern:
+    #   >0: first occurence of the given digit              bool(7) = True
+    #   =0: second occurence of the given digit             bool(0) = False
+    #   <0: third and more occurences of the given digit    bool(-7) = True
+    #isNumberInvalid (bool): will contain only false (number is valid) if the double constraint is already matched by digits before
+    #   otherwise this will always be true (not yet valid)
+
+    #the start method for the recursiv tree
+    #will be executed below with recursiveStarter(0, -1, true)
     def recursiveStarter(index, currentNumberCounter, isNumberInvalid):
         if lowerBoundArray[index] < upperBoundArray[index]:
             if index < lastDigitIndex:
@@ -199,5 +282,25 @@ def analyseNumbers(lowerBound, upperBound):
 
     return numberCounter
 
-print(f"Execution time: {timeit(lambda: analyseNumbers(134564, 585159), number=5000) / 5000}s")
-print(analyseNumbers(134564, 585159))
+print(f"--------Extra data below--------")
+print(f"Function time comparison: (134564 to 585159)")
+t1 = timeit(lambda: print(f"Result: {analyseNumbers(134564, 585159)}"), number=1)
+print(f"analyseNumbers: {t1}s")
+t2 = timeit(lambda: analyseNumbersFast(134564, 585159), number=500) / 500
+print(f"Result: {analyseNumbersFast(134564, 585159)}")
+print(f"analyseNumbers: {t2}s")
+print(f"The fast algorithem is {(t1 / t2 - 1) * 100:.10}% faster")
+
+print(f"\nFunction time comparison: (1345640 to 5851590)")
+t3 = timeit(lambda: print(f"Result: {analyseNumbers(1345640, 5851590)}"), number=1)
+print(f"analyseNumbers: {t3}s")
+t4 = timeit(lambda: analyseNumbersFast(1345640, 5851590), number=100) / 100
+print(f"Result: {analyseNumbersFast(1345640, 5851590)}")
+print(f"analyseNumbersFast: {t4}s")
+print(f"The fast algorithem is {(t3 / t4 - 1) * 100:.10}% faster")
+
+print(f"\nFunction time comparison: (1345640000000000000 to 5851590000000000000)")
+print(f"analyseNumbers: to slow to be run on numbers as large")
+t5 = timeit(lambda: print(f"Result: {analyseNumbersFast(1345640000000000000, 5851590000000000000)}"), number=1)
+print(f"analyseNumbersFast: {t5}s")
+print(f"The fast algorithem is {(t1 / t5 - 1) * 100:.10}% faster than analyseNumbers(134564, 585159)")
