@@ -17,7 +17,7 @@ class Card:
     def __str__(self):
         return f"{self.rank} of {self.suit}"
     
-class French_Deck:
+class FrenchDeck:
     suits = ["Diamonds", "Hearts", "Spadess", "Clubs"]
     ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"]
 
@@ -42,13 +42,13 @@ class French_Deck:
 # Create a second class that represents a deck of cards usable for Skat -- it should only contain cards from 7 upwards.
 # It should offer all the same functionality of the first class.
 
-class Skat_Deck(French_Deck):
+class SkatDeck(FrenchDeck):
     def __init__(self):
         super().__init__(5)
 
 
 # Write some code to test the functionality of both kinds of decks. (You can use `assert` to make sure your classes behave the way you expect them to.)
-french_deck = French_Deck()
+french_deck = FrenchDeck()
 
 print(french_deck)
 for card in french_deck.cards:
@@ -56,7 +56,7 @@ for card in french_deck.cards:
 
 print(french_deck.__get__(10))
 
-skat_deck = Skat_Deck()
+skat_deck = SkatDeck()
 
 print(skat_deck)
 for card in skat_deck.cards:
