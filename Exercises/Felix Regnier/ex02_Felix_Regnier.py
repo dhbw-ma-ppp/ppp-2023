@@ -59,7 +59,6 @@ def listCalculation(arr):
       
 
 
-
 ###########################################
 # Write a function that takes an arbitrary number of unnamed arguments
 # All inputs will be of type string.
