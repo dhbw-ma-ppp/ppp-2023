@@ -205,81 +205,142 @@ def analyseNumbersFast(lowerBound, upperBound):
     #the start method for the recursiv tree
     #will be executed below with recursiveStarter(0, -1, true)
     def recursiveStarter(index, currentNumberCounter, isNumberInvalid):
-        if lowerBoundArray[index] < upperBoundArray[index]:
-            if index < lastDigitIndex:
-                firstRecursiveLoop(index + 1, currentNumberCounter - lowerBoundArray[index], isNumberInvalid)
+        #this function will represent the for loop from the lowerBoundArray[index] to upperBoundIndex[index]
 
+        if lowerBoundArray[index] < upperBoundArray[index]:
+            #for loop required, the digit isnt clearly determined by the bounds (e.g lowerBound:2, upperBound:7)
+
+            if index < lastDigitIndex:
+                #recursion will continue for the next index
+
+                #will loop over the next digit from lowerBoundArray[index + 1] to 9
+                if lowerBoundArray[index] == lowerBoundArray[index + 1]: #count currentNumberCounter down if the digit is a double digit
+                    firstRecursiveLoop(index + 1, currentNumberCounter - lowerBoundArray[index], isNumberInvalid)
+                else:
+                    firstRecursiveLoop(index + 1, lowerBoundArray[index], isNumberInvalid)
+
+                #set isNumberInvalid to false (number is now valid) if a doubleDigit is found.
+                #in the future, only digits will be evaluated, that are larger -> no chance for the double to change to a triple
                 isNumberInvalid &= bool(currentNumberCounter)
 
+                #loop from lowerBoundArray[index] + 1 to upperBoundArray[index]: lowerBoundArray[index] is already handled before!
                 for i in range(lowerBoundArray[index] + 1, upperBoundArray[index]):
-                    lowerBoundArray[index + 1] = i
-                    recursiveLoop(index + 1, i, isNumberInvalid)
+                    lowerBoundArray[index + 1] = i #set the nex numbers lower bound to be this digit
+                    #continue with the next digit: currentNumberCounter will be reset (to i), 
+                    #as i is now different from the last handeled digit
+                    recursiveLoop(index + 1, i, isNumberInvalid) 
 
+                #the last digit will be handeled seperatly by the "lastRecursiveLoop",
+                #as the loop in this function will only count to the upperBound
                 lowerBoundArray[index + 1] = upperBoundArray[index]
                 lastRecursiveLoop(index + 1, upperBoundArray[index], isNumberInvalid)
             else:
+                #end the recursive loop and lets the end method count the valid numbers
                 recursiveEnd(isNumberInvalid, currentNumberCounter, lowerBoundArray[index], upperBoundArray[index])
         else:
+            #for loop not required, the digit is clearly determined by the bounds (e.g lowerBound:4, upperBound:4)
+
             if index < lastDigitIndex:
+                #start again with the next digit in the array
                 recursiveStarter(index + 1, lowerBoundArray[index], isNumberInvalid)
             else:
+                #adds a valid number to the count, if the recursive loop should be exited and the current number is valid
                 nonlocal numberCounter
                 numberCounter += 0 if isNumberInvalid else 1
 
     def lastRecursiveLoop(index, currentNumberCounter, isNumberInvalid):
+        #this function will count from 0 to upperBoundArray[index]
+
         if index < lastDigitIndex:
+            #recursive loop
+
             if upperBoundArray[index] == lowerBoundArray[index]:
+                #number is determined by the bounds, continue with next number
+                #as the lower bound is set by the function before to be the lowest possible digit (same as last one),
+                #the currentNumberCounter will count down
                 lastRecursiveLoop(index + 1, currentNumberCounter - upperBoundArray[index], isNumberInvalid)
             else:
+                #go to the next digit with this digit one being the digit before -> currentNumberCounter will count down
                 lowerBoundArray[index + 1] = lowerBoundArray[index]
                 recursiveLoop(index + 1, currentNumberCounter - lowerBoundArray[index], isNumberInvalid)
 
+                #the digit finally changed -> check if the number is now valid (isNumberInvalid will be false)
                 isNumberInvalid &= bool(currentNumberCounter)
 
+                #run through the loop from lowerBoundArray[index] + 1 to upperBoundArray[index]
                 for i in range(lowerBoundArray[index] + 1, upperBoundArray[index]):
                     lowerBoundArray[index + 1] = i
-                    recursiveLoop(index + 1, i, isNumberInvalid)
+                    recursiveLoop(index + 1, i, isNumberInvalid) #continue with the next digit (currentNumberCounter is reset)
 
+                #the last digit will be handeled by a last recursive loop again (respecting the upper bound)
                 lowerBoundArray[index + 1] = upperBoundArray[index]
                 lastRecursiveLoop(index + 1, upperBoundArray[index], isNumberInvalid)
         else:
+            #stop of recursive loop
             recursiveEnd(isNumberInvalid, currentNumberCounter, lowerBoundArray[index], upperBoundArray[index])
 
     def firstRecursiveLoop(index, currentNumberCounter, isNumberInvalid):
+        #this function will count from lowerBoundArray[index] to 9
+        
         if index < lastDigitIndex:
+            #recursive loop
+
+            #run the next recursive step again with a first loop (respecting the preset lowerBounds)
             if lowerBoundArray[index] == lowerBoundArray[index - 1]:
+                #digit is same as last one, decreasing currentNumberCounter
                 firstRecursiveLoop(index + 1, currentNumberCounter - lowerBoundArray[index], isNumberInvalid)
             else:
+                #digit is not the same, reset currentNumberCounter and set the number to valid if necessary
+                isNumberInvalid &= bool(currentNumberCounter)
                 firstRecursiveLoop(index + 1, lowerBoundArray[index], isNumberInvalid)
             
+            #set the number to valid if necessary
             isNumberInvalid &= bool(currentNumberCounter)
 
+            #run through the loop from lowerBoundArray[index] + 1 (inclusive) to 10 (exclusive)
             for i in range(lowerBoundArray[index] + 1, 10):
+                #set the next lowerBound to be the current digit
                 lowerBoundArray[index + 1] = i
+                #continue with next digit (currnetNumberCounter reset, digit is not the same as the last one)
                 recursiveLoop(index + 1, i, isNumberInvalid)
         else:
+            #stop the recursive loop
             recursiveEnd(isNumberInvalid, currentNumberCounter, lowerBoundArray[index])
 
     def recursiveLoop(index, currentNumberCounter, isNumberInvalid):
+        #this function will count from a new (non preset by the pre recursiv) lower Bound to 9
+
         if index < lastDigitIndex:
+            #recursive loop
+
+            #the digit is the same as the last one -> currentNumberCounter decrease
             lowerBoundArray[index + 1] = lowerBoundArray[index]
             recursiveLoop(index + 1, currentNumberCounter - lowerBoundArray[index], isNumberInvalid)
 
+            #update isNumberInvalid (digit has now changed)
             isNumberInvalid &= bool(currentNumberCounter)
 
+            #execute next recursive step (currentNumberCounter reset, digit has changed)
             for i in range(lowerBoundArray[index] + 1, 10):
                 lowerBoundArray[index + 1] = i
                 recursiveLoop(index + 1, i, isNumberInvalid)
         else:
+            #stop the recursive function
             recursiveEnd(isNumberInvalid, currentNumberCounter, lowerBoundArray[index])
+
 
     def recursiveEnd(isNumberInvalid, currentNumberCounter, lowerBoundValue, upperBoundValue = 9):
         nonlocal numberCounter
+        #add one number to the counter (this number has the format _______xx), if the currentNumberCounter reaches 0 after one more subtraction
         numberCounter += 0 if isNumberInvalid & bool(currentNumberCounter - lowerBoundValue) else 1
+
+        #add remaining numbers to the counter (these numbers have the format _______xy), if the currentNumberCounter was 0 before -> ______xxy
         numberCounter += 0 if isNumberInvalid & bool(currentNumberCounter) else upperBoundValue - lowerBoundValue
 
-    recursiveStarter(0, -1, True)
 
+    #start the recursive loop
+    recursiveStarter(0, -1, True)
+    #and return the count after the loop finished
     return numberCounter
 
 print(f"--------Extra data below--------")
