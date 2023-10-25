@@ -77,6 +77,8 @@ def get_count(lower, upper):
             count+=1
     return count
 
+def get_count_2(lower, upper): return len([0 for dig in [list(str(num)) for num in range(lower, upper)] if dig==sorted(dig) and [0 for m in dig if dig.count(m)==2]])
+
 
 assert is_valid([1,2,3,3,4,5])
 assert not is_valid([1,2,3,3,4,1])
@@ -84,5 +86,5 @@ assert not is_valid([1,2,3,3,3,4])
 assert is_valid([1,1,1,3,3,4])
 assert is_valid([1,1,2,2,3,3])
 assert is_valid([1,3,4,5,6,6])
-
-print(get_count(134564, 585159))
+assert get_count(134564, 585159) == 1306
+assert get_count_2(134564, 585159) == 1306
