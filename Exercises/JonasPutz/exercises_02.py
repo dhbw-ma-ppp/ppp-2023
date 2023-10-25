@@ -133,7 +133,8 @@ def mini_computer(memory_stream):
             the value in the first slot of th memory_stream
     """
     current_index = 0
-    while current_index >= 0:
+    command_length = len(memory_stream)
+    while current_index >= 0 and current_index < command_length:
         opt_code = memory_stream[current_index]
         if opt_code in opt_code_dictionary:
             current_index = opt_code_dictionary[opt_code](current_index, memory_stream)
