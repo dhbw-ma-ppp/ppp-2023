@@ -3,9 +3,9 @@ commands = [1, 12, 2, 3, 1, 1, 2, 3, 1, 3, 4, 3, 1, 5, 0, 3, 2, 1, 9, 19, 1, 5, 
 def listRechnung(arr):
     for i in range(0,len(arr),4):
         if arr[i] == 1:
-            arr[arr[i+3]-1] = arr[i+1] + arr[i+2]
+            arr[arr[i+3]] = arr[i+1] + arr[i+2]
         elif arr[i] == 2:
-            arr[arr[i+3]-1] = arr[i+1] * arr[i+2]
+            arr[arr[i+3]] = arr[i+1] * arr[i+2]
         elif arr[i] == 99:
             break
         else: 
@@ -24,18 +24,22 @@ liste4 = ["pferd", "1", "lotto", "a", "7"]
 liste5 = ["2", "+", "2,78", "h", "H", "k"]
 # Ich habe "number" als integer interpretiert und Nummern sind nicht in der char Liste
 
-def listSort(arr):
+def listSort(*args):
     zahlen = []
     character = []
-    for i in range(0,len(arr)):
+    for i in range(0,len(args)):
         try:
-            int(arr[i])
+            int(args[i])
+            zahlen.append(int(args[i]))
         except(ValueError):      
-            if len(arr[i]) == 1:
-                character.append(arr[i])
-        else:     
-            zahlen.append(int(arr[i]))
+            if len(args[i]) == 1:
+                character.append(args[i])
       
     return zahlen, character
 
-print(listSort(liste1))
+
+print(listSort(*liste1))
+print(listSort(*liste2))
+print(listSort(*liste3))
+print(listSort(*liste4))
+print(listSort(*liste5))
