@@ -283,8 +283,7 @@ def analyse_numbers_fast(lower_bound, upper_bound):
             methodPreset[index][1](index + 1, current_number_counter - lower_bound_array[index], is_number_invalid, 9)
         else:
             #digit is not the same, reset current_number_counter and set the number to valid if necessary
-            is_number_invalid &= bool(current_number_counter)
-            methodPreset[index][1](index + 1, lower_bound_array[index], is_number_invalid, 9)
+            methodPreset[index][1](index + 1, lower_bound_array[index], is_number_invalid & bool(current_number_counter), 9)
             
         #set the number to valid if necessary
         is_number_invalid &= bool(current_number_counter)
@@ -318,7 +317,7 @@ def analyse_numbers_fast(lower_bound, upper_bound):
         
         #add remaining numbers to the counter (these numbers have the format _______xy), if the current_number_counter was 0 before -> ______xxy
         number_counter += 0 if is_number_invalid & bool(current_number_counter) else count_to_value - lower_bound_array[index]
-        
+
     #this removes the need for many if statements to check for the end of the recursion. 
     #By iterating the index, you will eventually land on the end function, ending the recursion 
     methodPreset = [(recursive_starter, first_recursive_loop, recursive_loop, last_recursive_loop)] * (last_digit_index - 1)
