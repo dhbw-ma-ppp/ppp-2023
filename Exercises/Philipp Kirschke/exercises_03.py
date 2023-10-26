@@ -17,7 +17,7 @@ class Card:
     def __str__(self):
         return self.name
 
-class Deck:
+class FrenchDeck:
     def __init__(self):
         self.cards = []
         self.suits = ["diamonds", "hearts", "spades", "clubs"]
@@ -35,22 +35,22 @@ class Deck:
 
 
 
-deck = Deck()
-cardIndex = input("Enter the index of the card you want to see or press enter to see all cards in the deck: ")
+frenchdeck = FrenchDeck()
+cardIndex = input("Enter the index of the French deck card you want to see or press enter to see all cards in the deck: ")
 if (cardIndex == ""):
-    deck.iterate()
-    for card in deck.iterate():
+    frenchdeck.iterate()
+    for card in frenchdeck.iterate():
         print(card)
 elif (int(cardIndex) > 51):
     print("There are only 52 cards in a deck.")
 else:
-    print("The card at index " + cardIndex + " is a " + str(deck.getcard(int(cardIndex))))
+    print("The card at index " + cardIndex + " is a " + str(frenchdeck.getcard(int(cardIndex))))
 
 
 # PART 2:
 # Create a second class that represents a deck of cards usable for Skat -- it should only contain cards from 7 upwards.
 # It should offer all the same functionality of the first class.
-class skat:
+class Skat:
     def __init__(self):
         self.cards = []
         self.suits = ["diamonds", "hearts", "spades", "clubs"]
@@ -68,7 +68,16 @@ class skat:
 
 
 # Write some code to test the functionality of both kinds of decks. (You can use `assert` to make sure your classes behave the way you expect them to.)
-
+scatdeck = FrenchDeck()
+cardIndex = input("Enter the index of the Skat card you want to see or press enter to see all cards in the deck: ")
+if (cardIndex == ""):
+    scatdeck.iterate()
+    for card in scatdeck.iterate():
+        print(card)
+elif (int(cardIndex) > 51):
+    print("There are only 52 cards in a deck.")
+else:
+    print("The card at index " + cardIndex + " is a " + str(scatdeck.getcard(int(cardIndex))))
 
 # PART 3:
 # write a function that accepts two numbers, a lower bound and an upper bound.
@@ -91,6 +100,7 @@ def checkNumber(lowerBound, upperBound):
             if(checkDouble(number)):
                 numberCount += 1
     print(numberCount)
+    return numberCount
 
 def checkIncrease(number):
     number = str(number)
@@ -102,7 +112,7 @@ def checkIncrease(number):
 def checkDouble(number):
     number = str(number)
     for index in range(len(number)-1):
-        if (number[index] == number[index+1] and number.count(number[index]) == 2):
+        if (number.count(number[index]) == 2):
             return True
     return False
 
