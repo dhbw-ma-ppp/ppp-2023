@@ -43,9 +43,6 @@ class CardDeck:
         except IndexError:
             print('Index out of bounds')
 
-    def __repr__(self):
-        return self.__cards
-
     def __str__(self):
         return str(self.__cards)
 
@@ -53,7 +50,7 @@ class CardDeck:
 class FrenchDeck(CardDeck):
     """
     This class represents a French deck of cards. It inherits its functionality from the CardDeck class and has all the
-    cards from 2 to the ace.
+    cards from the 2 to the ace.
     """
     def __init__(self):
         super().__init__()
@@ -67,7 +64,7 @@ class FrenchDeck(CardDeck):
 class SkatDeck(CardDeck):
     """
     This class represents a Skat deck of cards. It inherits its functionality from the CardDeck class and has all the
-    cards from 7 to the ace.
+    cards from the 7 to the ace.
     """
     def __init__(self):
         super().__init__(min_card='7')
@@ -155,11 +152,11 @@ def pair_checker(number):
 
 def num_checker(lower_bound, upper_bound):
     """
-    This function checks how many numbers in a given range meet the following criteria.
+    This function checks how many numbers in a given range meet both of the following criteria.
 
     1: The digits of the number are in increasing order
 
-    2: There is at least one digit that is exactly 2 times in the number
+    2: There is at least one digit that occurs exactly 2 times in the number
     :param lower_bound:
     :param upper_bound:
     :return:
