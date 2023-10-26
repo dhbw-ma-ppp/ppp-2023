@@ -201,10 +201,11 @@ def analyse_numbers_fast(lower_bound, upper_bound):
     #   <0: third and more occurences of the given digit    bool(-7) = True
     #is_number_invalid (bool): will contain only false (number is valid) if the double constraint is already matched by digits before
     #   otherwise this will always be true (not yet valid)
+    #count_to_value (int): this value is only used int the recursive_end and is used to count the numbers fitting the condition
 
     #the start method for the recursiv tree
     #will be executed below with recursive_starter(0, -1, true)
-    def recursive_starter(index, current_number_counter, is_number_invalid):
+    def recursive_starter(index, current_number_counter, is_number_invalid, count_to_value):
         #this function will represent the for loop from the lower_bound_array[index] to upperBoundIndex[index]
 
         if lower_bound_array[index] < upper_bound_array[index]:
@@ -215,9 +216,9 @@ def analyse_numbers_fast(lower_bound, upper_bound):
 
                 #will loop over the next digit from lower_bound_array[index + 1] to 9
                 if lower_bound_array[index] == lower_bound_array[index + 1]: #count current_number_counter down if the digit is a double digit
-                    first_recursive_loop(index + 1, current_number_counter - lower_bound_array[index], is_number_invalid)
+                    methodPreset[index][1](index + 1, current_number_counter - lower_bound_array[index], is_number_invalid, 9)
                 else:
-                    first_recursive_loop(index + 1, lower_bound_array[index], is_number_invalid)
+                    methodPreset[index][1](index + 1, lower_bound_array[index], is_number_invalid, 9)
 
                 #set is_number_invalid to false (number is now valid) if a doubleDigit is found.
                 #in the future, only digits will be evaluated, that are larger -> no chance for the double to change to a triple
@@ -228,118 +229,104 @@ def analyse_numbers_fast(lower_bound, upper_bound):
                     lower_bound_array[index + 1] = i #set the nex numbers lower bound to be this digit
                     #continue with the next digit: current_number_counter will be reset (to i), 
                     #as i is now different from the last handeled digit
-                    recursive_loop(index + 1, i, is_number_invalid) 
+                    methodPreset[index][2](index + 1, i, is_number_invalid, 9) 
 
                 #the last digit will be handeled seperatly by the "last_recursive_loop",
                 #as the loop in this function will only count to the upper_bound
                 lower_bound_array[index + 1] = upper_bound_array[index]
-                last_recursive_loop(index + 1, upper_bound_array[index], is_number_invalid)
+                methodPreset[index][3](index + 1, upper_bound_array[index], is_number_invalid, upper_bound_array[index])
             else:
                 #end the recursive loop and lets the end method count the valid numbers
-                recursive_end(is_number_invalid, current_number_counter, lower_bound_array[index], upper_bound_array[index])
+                methodPreset[index][0](index, current_number_counter, is_number_invalid, upper_bound_array[index])
         else:
             #for loop not required, the digit is clearly determined by the bounds (e.g lower_bound:4, upper_bound:4)
 
             if index < last_digit_index:
                 #start again with the next digit in the array
-                recursive_starter(index + 1, lower_bound_array[index], is_number_invalid)
+                methodPreset[index][0](index + 1, lower_bound_array[index], is_number_invalid, upper_bound_array[index])
             else:
                 #adds a valid number to the count, if the recursive loop should be exited and the current number is valid
                 nonlocal number_counter
                 number_counter += 0 if is_number_invalid else 1
 
-    def last_recursive_loop(index, current_number_counter, is_number_invalid):
+    def last_recursive_loop(index, current_number_counter, is_number_invalid, count_to_value):
         #this function will count from 0 to upper_bound_array[index]
 
-        if index < last_digit_index:
-            #recursive loop
-
-            if upper_bound_array[index] == lower_bound_array[index]:
-                #number is determined by the bounds, continue with next number
-                #as the lower bound is set by the function before to be the lowest possible digit (same as last one),
-                #the current_number_counter will count down
-                last_recursive_loop(index + 1, current_number_counter - upper_bound_array[index], is_number_invalid)
-            else:
-                #go to the next digit with this digit one being the digit before -> current_number_counter will count down
-                lower_bound_array[index + 1] = lower_bound_array[index]
-                recursive_loop(index + 1, current_number_counter - lower_bound_array[index], is_number_invalid)
-
-                #the digit finally changed -> check if the number is now valid (is_number_invalid will be false)
-                is_number_invalid &= bool(current_number_counter)
-
-                #run through the loop from lower_bound_array[index] + 1 to upper_bound_array[index]
-                for i in range(lower_bound_array[index] + 1, upper_bound_array[index]):
-                    lower_bound_array[index + 1] = i
-                    recursive_loop(index + 1, i, is_number_invalid) #continue with the next digit (current_number_counter is reset)
-
-                #the last digit will be handeled by a last recursive loop again (respecting the upper bound)
-                lower_bound_array[index + 1] = upper_bound_array[index]
-                last_recursive_loop(index + 1, upper_bound_array[index], is_number_invalid)
+        if upper_bound_array[index] == lower_bound_array[index]:
+            #number is determined by the bounds, continue with next number
+            #as the lower bound is set by the function before to be the lowest possible digit (same as last one),
+            #the current_number_counter will count down
+            methodPreset[index][3](index + 1, current_number_counter - upper_bound_array[index], is_number_invalid, upper_bound_array[index])
         else:
-            #stop of recursive loop
-            recursive_end(is_number_invalid, current_number_counter, lower_bound_array[index], upper_bound_array[index])
+            #go to the next digit with this digit one being the digit before -> current_number_counter will count down
+            lower_bound_array[index + 1] = lower_bound_array[index]
+            methodPreset[index][2](index + 1, current_number_counter - lower_bound_array[index], is_number_invalid, 9)
 
-    def first_recursive_loop(index, current_number_counter, is_number_invalid):
+            #the digit finally changed -> check if the number is now valid (is_number_invalid will be false)
+            is_number_invalid &= bool(current_number_counter)
+
+            #run through the loop from lower_bound_array[index] + 1 to upper_bound_array[index]
+            for i in range(lower_bound_array[index] + 1, upper_bound_array[index]):
+                lower_bound_array[index + 1] = i
+                methodPreset[index][2](index + 1, i, is_number_invalid, 9) #continue with the next digit (current_number_counter is reset)
+
+            #the last digit will be handeled by a last recursive loop again (respecting the upper bound)
+            lower_bound_array[index + 1] = upper_bound_array[index]
+            methodPreset[index][3](index + 1, upper_bound_array[index], is_number_invalid, upper_bound_array[index])
+
+    def first_recursive_loop(index, current_number_counter, is_number_invalid, count_to_value):
         #this function will count from lower_bound_array[index] to 9
         
-        if index < last_digit_index:
-            #recursive loop
-
-            #run the next recursive step again with a first loop (respecting the preset lowerBounds)
-            if lower_bound_array[index] == lower_bound_array[index - 1]:
-                #digit is same as last one, decreasing current_number_counter
-                first_recursive_loop(index + 1, current_number_counter - lower_bound_array[index], is_number_invalid)
-            else:
-                #digit is not the same, reset current_number_counter and set the number to valid if necessary
-                is_number_invalid &= bool(current_number_counter)
-                first_recursive_loop(index + 1, lower_bound_array[index], is_number_invalid)
-            
-            #set the number to valid if necessary
-            is_number_invalid &= bool(current_number_counter)
-
-            #run through the loop from lower_bound_array[index] + 1 (inclusive) to 10 (exclusive)
-            for i in range(lower_bound_array[index] + 1, 10):
-                #set the next lower_bound to be the current digit
-                lower_bound_array[index + 1] = i
-                #continue with next digit (currnetNumberCounter reset, digit is not the same as the last one)
-                recursive_loop(index + 1, i, is_number_invalid)
+        #run the next recursive step again with a first loop (respecting the preset lowerBounds)
+        if lower_bound_array[index] == lower_bound_array[index - 1]:
+            #digit is same as last one, decreasing current_number_counter
+            methodPreset[index][1](index + 1, current_number_counter - lower_bound_array[index], is_number_invalid, 9)
         else:
-            #stop the recursive loop
-            recursive_end(is_number_invalid, current_number_counter, lower_bound_array[index])
+            #digit is not the same, reset current_number_counter and set the number to valid if necessary
+            is_number_invalid &= bool(current_number_counter)
+            methodPreset[index][1](index + 1, lower_bound_array[index], is_number_invalid, 9)
+            
+        #set the number to valid if necessary
+        is_number_invalid &= bool(current_number_counter)
 
-    def recursive_loop(index, current_number_counter, is_number_invalid):
+        #run through the loop from lower_bound_array[index] + 1 (inclusive) to 10 (exclusive)
+        for i in range(lower_bound_array[index] + 1, 10):
+            #set the next lower_bound to be the current digit
+            lower_bound_array[index + 1] = i
+            #continue with next digit (currnetNumberCounter reset, digit is not the same as the last one)
+            methodPreset[index][2](index + 1, i, is_number_invalid, 9)
+
+    def recursive_loop(index, current_number_counter, is_number_invalid, count_to_value):
         #this function will count from a new (non preset by the pre recursiv) lower Bound to 9
 
-        if index < last_digit_index:
-            #recursive loop
+        #the digit is the same as the last one -> current_number_counter decrease
+        lower_bound_array[index + 1] = lower_bound_array[index]
+        methodPreset[index][2](index + 1, current_number_counter - lower_bound_array[index], is_number_invalid, 9)
 
-            #the digit is the same as the last one -> current_number_counter decrease
-            lower_bound_array[index + 1] = lower_bound_array[index]
-            recursive_loop(index + 1, current_number_counter - lower_bound_array[index], is_number_invalid)
+        #update is_number_invalid (digit has now changed)
+        is_number_invalid &= bool(current_number_counter)
 
-            #update is_number_invalid (digit has now changed)
-            is_number_invalid &= bool(current_number_counter)
+        #execute next recursive step (current_number_counter reset, digit has changed)
+        for i in range(lower_bound_array[index] + 1, 10):
+            lower_bound_array[index + 1] = i
+            methodPreset[index][2](index + 1, i, is_number_invalid, 9)
 
-            #execute next recursive step (current_number_counter reset, digit has changed)
-            for i in range(lower_bound_array[index] + 1, 10):
-                lower_bound_array[index + 1] = i
-                recursive_loop(index + 1, i, is_number_invalid)
-        else:
-            #stop the recursive function
-            recursive_end(is_number_invalid, current_number_counter, lower_bound_array[index])
-
-
-    def recursive_end(is_number_invalid, current_number_counter, lowerBoundValue, upperBoundValue = 9):
+    def recursive_end(index, current_number_counter, is_number_invalid, count_to_value):
         nonlocal number_counter
         #add one number to the counter (this number has the format _______xx), if the current_number_counter reaches 0 after one more subtraction
-        number_counter += 0 if is_number_invalid & bool(current_number_counter - lowerBoundValue) else 1
-
+        number_counter += 0 if is_number_invalid & bool(current_number_counter - lower_bound_array[index]) else 1
+        
         #add remaining numbers to the counter (these numbers have the format _______xy), if the current_number_counter was 0 before -> ______xxy
-        number_counter += 0 if is_number_invalid & bool(current_number_counter) else upperBoundValue - lowerBoundValue
-
+        number_counter += 0 if is_number_invalid & bool(current_number_counter) else count_to_value - lower_bound_array[index]
+        
+    #this removes the need for many if statements to check for the end of the recursion. 
+    #By iterating the index, you will eventually land on the end function, ending the recursion 
+    methodPreset = [(recursive_starter, first_recursive_loop, recursive_loop, last_recursive_loop)] * (last_digit_index - 1)
+    methodPreset.append((recursive_end, recursive_end, recursive_end, recursive_end))
+    methodPreset = tuple(methodPreset)
 
     #start the recursive loop
-    recursive_starter(0, -1, True)
+    recursive_starter(0, -1, True, 9)
     #and return the count after the loop finished
     return number_counter
 
