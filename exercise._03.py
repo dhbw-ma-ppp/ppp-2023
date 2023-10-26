@@ -140,4 +140,6 @@ lower_bound = 134564
 upper_bound = 585159
 result = count_valid_numbers(lower_bound, upper_bound)
 print(f"Count of valid numbers between {lower_bound} and {upper_bound}: {result}")
+
+#Count of valid numbers between 134564 and 585159: 1929
   
