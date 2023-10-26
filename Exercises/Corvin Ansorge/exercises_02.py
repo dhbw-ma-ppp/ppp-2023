@@ -6,17 +6,17 @@ print("Task 1\n")
 # this value will contain an `opcode`. Valid opcodes are 1, 2 or 99.
 # Encountering any other value when you expect an opcode indicates an error in your coding.
 # Meaning of opcodes:
-#  1 indicates addition. If you encounter the opcode 1 you should read values from two positions 
+#  1 indicates addition. If you encounter the opcode 1 you should read values from two positions
 #    of your working memory, add them, and store the result in a third position of your working memory.
 #    The three numbers immediately after your opcode indicate the memory locations to read (first two values)
-#    and write (third value) respectively. 
+#    and write (third value) respectively.
 #    After executing the addition you should move to the next opcode by stepping forward 4 positions.
 #  2 indicates multiplication. Otherwise the same rules apply as for opcode 1.
 # 99 indicates halt. the program should stop after encountering the opcode 99.
-# After the program stops, the function should return the value in the first location (address 0) 
+# After the program stops, the function should return the value in the first location (address 0)
 # of your working memory.
 
-# As an example, if the list of integers passed to your function is 
+# As an example, if the list of integers passed to your function is
 # [1, 0, 0, 0, 99] the 1 in the first position indicates you should read the values
 # at position given by the second and third entries. Both of these indicate position 0, so you should read the value
 # at position 0 twice. That value is 1. Adding 1 and 1 gives you two. You then look at the value in the fourth
