@@ -70,7 +70,7 @@ def get_args(op_pointer, storage, num_args):
     """
     This function returns a list of arguments for the op_code at the specified op_pointer.
 
-    The function takes the required number of arguments as wall as the required modes in to account.
+    The function takes the required number of arguments as well as the required modes in to account.
 
     :param int op_pointer: position of the op_code
     :param list[int] storage: the storage of the "computer"
