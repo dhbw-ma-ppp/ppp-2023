@@ -83,9 +83,9 @@ def adjacent_digits_check(number):
 # Function that checks if given number is ascending        
 def left_right_ascending(number):
     digits = str(number)
-    for i in range(len(digits)-1):  # Iterates over a range of values, starting from to end -1 since digits [i+1] already checks last value
+    for i in range(len(digits)-1):  # Iterates over a range of values, starting from 0 to end -1 since "digits [i+1]" already checks last value
         if digits [i] > digits [i+1]: # Checking if front digit is bigger than the next one
-            return False # Returns True if front digit is bigger
+            return False # Returns False if front digit is bigger
     return True # If its in an ascending order, it returns true
 
 
