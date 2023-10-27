@@ -28,7 +28,7 @@ class Cards():
 
 
 class FrenchDeck():
-    def __init__(self, begin, end):
+    def __init__(self, begin=2, end=14):
         self.cards = [Cards(number, symbol) for symbol in ["Diamonds", "Hearts", "Spades", "Clubs"] for number in range(begin, end+1)]
 
     def __str__(self):
@@ -55,7 +55,7 @@ class SkatDeck(FrenchDeck):
 
 
 sk = SkatDeck()
-fr = FrenchDeck(2, 14)
+fr = FrenchDeck()
 
 # Write some code to test the functionality of both kinds of decks. (You can use `assert` to make sure your classes behave the way you expect them to.)
 
@@ -81,6 +81,7 @@ print(f"your French Deck contains the following cards:\n {fr}")
 
 
 def count(a, b):
+    numbers = []
     counter = 0
     # controls if number is in bound
     for number in range(a, b):
@@ -98,11 +99,13 @@ def count(a, b):
             h = digits.count(8)
             i = digits.count(9)
             if a == 2 or b == 2 or c == 2 or d == 2 or e == 2 or f == 2 or g == 2 or h == 2 or i == 2:
-                print(number)
+                numbers.append(number)
+                print(numbers)
                 counter += 1
         else:
             continue
     print(counter)
+    return counter
 
 
 count(134564,  585159)
