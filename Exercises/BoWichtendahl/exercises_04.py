@@ -53,6 +53,13 @@
 # Please take note of that number in your PR, so I don't need to run all the files myself :)
 
 def get_modes(op_code, num_args):
+    """
+    This function returns a list of modes for the given full op_code.
+
+    :param int op_code: The complete op_code
+    :param int num_args: The amount of modes to extract from op_code
+    :return list[int] modes: The list of extracted modes
+    """
     modes = []
     for mode_pos in range(num_args):
         modes.append(op_code // 10 ** (2 + mode_pos) % 10)
@@ -60,6 +67,16 @@ def get_modes(op_code, num_args):
 
 
 def get_args(op_pointer, storage, num_args):
+    """
+    This function returns a list of arguments for the op_code at the specified op_pointer.
+
+    The function takes the required number of arguments as wall as the required modes in to account.
+
+    :param int op_pointer: position of the op_code
+    :param list[int] storage: the storage of the "computer"
+    :param int num_args: the amount of arguments to extract
+    :return list[int] args: the extracted arguments
+    """
     modes = get_modes(storage[op_pointer], num_args)
     args = []
     for arg_pos in range(num_args):
