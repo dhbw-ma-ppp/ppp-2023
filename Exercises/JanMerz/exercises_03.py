@@ -18,7 +18,7 @@ class Card:
         return f"{self.rank} of {self.suit}"
     
 class FrenchDeck:
-    suits = ["Diamonds", "Hearts", "Spadess", "Clubs"]
+    suits = ["Diamonds", "Hearts", "Spades", "Clubs"]
     ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"]
 
     def __init__(self, fromRank = 0):
@@ -33,7 +33,7 @@ class FrenchDeck:
     def __iter__(self):
         return (card for card in (self.cards))
 
-    def __get__(self, index):
+    def __getitem__(self, index):
         return self.cards[index]
 
 
@@ -50,19 +50,17 @@ class SkatDeck(FrenchDeck):
 # Write some code to test the functionality of both kinds of decks. (You can use `assert` to make sure your classes behave the way you expect them to.)
 french_deck = FrenchDeck()
 
-print(french_deck)
 for card in french_deck.cards:
     print(card)
 
-print(french_deck.__get__(10))
+print("\n", french_deck[10], "\n")
 
 skat_deck = SkatDeck()
 
-print(skat_deck)
 for card in skat_deck.cards:
     print(card)
 
-print(skat_deck.__get__(10))
+print("\n", skat_deck[10], "\n")
 
 
 # PART 3:
