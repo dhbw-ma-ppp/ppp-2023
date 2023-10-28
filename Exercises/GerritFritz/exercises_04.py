@@ -66,7 +66,6 @@ def get_commands(number):
 
 def get_output(commands):
     i=0
-    returnval=0
     while commands[i] != 99:
         opcode, mode = get_commands(commands[i])
         if opcode in opcodes.keys():
