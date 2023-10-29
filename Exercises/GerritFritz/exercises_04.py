@@ -49,13 +49,14 @@ opcodes = {
 }
 
 
-def get_args_index(index, mode, commands):
+def mode_to_index(index, mode, commands):
     positions = []
     for i in range(0,len(mode)):
         if mode[i] == "0" and len(commands)>index+i+1:
             positions.append(commands[index+i+1])
         elif mode[i] == "1" and len(commands)>index+i+1:
             positions.append(index+i+1)
+        else: raise KeyError("Wrong mode")
     return positions
 
 
@@ -69,7 +70,7 @@ def get_output(commands):
     while commands[i] != 99:
         opcode, mode = get_commands(commands[i])
         if opcode in opcodes.keys():
-            positions = get_args_index(i, mode, commands)
+            positions = mode_to_index(i, mode, commands)
             i = opcodes[opcode](i, positions, commands)
         else: raise KeyError("Wrong opcode")
         
