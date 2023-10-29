@@ -56,66 +56,56 @@
 commands = [3,225,1,225,6,6,1100,1,238,225,104,0,1101,40,71,224,1001,224,-111,224,4,224,1002,223,8,223,101,7,224,224,1,224,223,223,1102,66,6,225,1102,22,54,225,1,65,35,224,1001,224,-86,224,4,224,102,8,223,223,101,6,224,224,1,224,223,223,1102,20,80,225,101,92,148,224,101,-162,224,224,4,224,1002,223,8,223,101,5,224,224,1,224,223,223,1102,63,60,225,1101,32,48,225,2,173,95,224,1001,224,-448,224,4,224,102,8,223,223,1001,224,4,224,1,224,223,223,1001,91,16,224,101,-79,224,224,4,224,1002,223,8,223,101,3,224,224,1,224,223,223,1101,13,29,225,1101,71,70,225,1002,39,56,224,1001,224,-1232,224,4,224,102,8,223,223,101,4,224,224,1,223,224,223,1101,14,59,225,102,38,143,224,1001,224,-494,224,4,224,102,8,223,223,101,3,224,224,1,224,223,223,1102,30,28,224,1001,224,-840,224,4,224,1002,223,8,223,101,4,224,224,1,223,224,223,4,223,99,0,0,0,677,0,0,0,0,0,0,0,0,0,0,0,1105,0,99999,1105,227,247,1105,1,99999,1005,227,99999,1005,0,256,1105,1,99999,1106,227,99999,1106,0,265,1105,1,99999,1006,0,99999,1006,227,274,1105,1,99999,1105,1,280,1105,1,99999,1,225,225,225,1101,294,0,0,105,1,0,1105,1,99999,1106,0,300,1105,1,99999,1,225,225,225,1101,314,0,0,106,0,0,1105,1,99999,107,677,226,224,1002,223,2,223,1005,224,329,1001,223,1,223,8,226,226,224,102,2,223,223,1006,224,344,101,1,223,223,7,226,677,224,1002,223,2,223,1005,224,359,101,1,223,223,1007,677,226,224,1002,223,2,223,1005,224,374,1001,223,1,223,1007,677,677,224,1002,223,2,223,1006,224,389,101,1,223,223,1008,226,226,224,1002,223,2,223,1005,224,404,1001,223,1,223,108,677,226,224,1002,223,2,223,1006,224,419,1001,223,1,223,1108,677,226,224,102,2,223,223,1006,224,434,1001,223,1,223,108,226,226,224,1002,223,2,223,1005,224,449,101,1,223,223,7,677,677,224,1002,223,2,223,1006,224,464,1001,223,1,223,8,226,677,224,1002,223,2,223,1005,224,479,1001,223,1,223,107,226,226,224,102,2,223,223,1006,224,494,101,1,223,223,1007,226,226,224,1002,223,2,223,1005,224,509,1001,223,1,223,1107,226,677,224,102,2,223,223,1005,224,524,1001,223,1,223,108,677,677,224,1002,223,2,223,1005,224,539,101,1,223,223,1107,677,226,224,102,2,223,223,1005,224,554,1001,223,1,223,107,677,677,224,1002,223,2,223,1005,224,569,101,1,223,223,8,677,226,224,102,2,223,223,1005,224,584,1001,223,1,223,7,677,226,224,102,2,223,223,1006,224,599,101,1,223,223,1008,677,677,224,1002,223,2,223,1005,224,614,101,1,223,223,1008,677,226,224,102,2,223,223,1006,224,629,1001,223,1,223,1108,677,677,224,102,2,223,223,1006,224,644,101,1,223,223,1108,226,677,224,1002,223,2,223,1005,224,659,1001,223,1,223,1107,226,226,224,102,2,223,223,1006,224,674,1001,223,1,223,4,223,99,226]
 
 
-def checkmodeparam(i,modeparam):
-    if modeparam == "0":
-        return commands[i+1]
-    elif modeparam == "1":
-        return i+1
+def checkmode(i,mode):
+    if mode == "0":
+        return commands[i]
+    elif mode == "1":
+        return i
     else:
         raise ValueError("wrong mode parameter")
     
-def add(i,modeparam1,modeparam2,modeparam3,):
-    value1 = commands[checkmodeparam(i,modeparam1)]
-    value2 = commands[checkmodeparam(i+1,modeparam2)]
-    commands[commands[i + 3]] = value1 + value2
-    return i+4
+def add(i,mode1,mode2,mode3):
+    commands[commands[i + 3]] = commands[checkmode(i+1,mode1)] + commands[checkmode(i+2,mode2)]
+    return i + 4
 
-def multiply(i,modeparam1,modeparam2,modeparam3):
-    value1 = commands[checkmodeparam(i,modeparam1)]
-    value2 = commands[checkmodeparam(i+1,modeparam2)]
-    commands[commands[i + 3]] = value1 * value2
-    return i+4
+def multiply(i,mode1,mode2,mode3):
+    commands[commands[i + 3]] = commands[checkmode(i+1,mode1)] * commands[checkmode(i+2,mode2)]
+    return i + 4
 
-def inp(i,modeparam1,modeparam2,modeparam3):
+def inp(i,mode1,mode2,mode3):
     try:
-        commands[checkmodeparam(i,modeparam1)]=int(input("input an integer:"))
+        commands[checkmode(i+1,mode1)]=int(input("input an integer:"))
     except:
         raise RuntimeError("wrong input")
-    return i+2
+    return i + 2
 
-def outp(i,modeparam1,modeparam2,modeparam3):
-    print(">>>",commands[checkmodeparam(i,modeparam1)])
-    return i+2
+def outp(i,mode1,mode2,mode3):
+    print(">>>",commands[checkmode(i+1,mode1)])
+    return i + 2
 
-def jump_if_true(i,modeparam1,modeparam2,modeparam3):
-    value1 = commands[checkmodeparam(i,modeparam1)]
-    if value1 !=0:
-        return commands[checkmodeparam(i+1,modeparam2)]
-    return i+3
+def jump_if_true(i,mode1,mode2,mode3):
+    if commands[checkmode(i+1,mode1)] != 0:
+        return commands[checkmode(i+2,mode2)]
+    return i + 3
 
-def jump_if_false(i,modeparam1,modeparam2,modeparam3):
-    value1 = commands[checkmodeparam(i,modeparam1)]
-    if value1 ==0:
-        return commands[checkmodeparam(i+1,modeparam2)]
-    return i+3
+def jump_if_false(i,mode1,mode2,mode3):
+    if commands[checkmode(i+1,mode1)] == 0:
+        return commands[checkmode(i+2,mode2)]
+    return i + 3
 
-def less_than(i,modeparam1,modeparam2,modeparam3):
-    value1 = commands[checkmodeparam(i,modeparam1)]
-    value2 = commands[checkmodeparam(i+1,modeparam2)]
-    if value1<value2:
-        commands[checkmodeparam(i+2,modeparam3)]=1
+def less_than(i,mode1,mode2,mode3):
+    if commands[checkmode(i+1,mode1)] < commands[checkmode(i+2,mode2)]:
+        commands[checkmode(i+3,mode3)] = 1
     else:
-        commands[checkmodeparam(i+2,modeparam3)]=0
-    return i+4
+        commands[checkmode(i+3,mode3)] = 0
+    return i + 4
         
-def equals(i,modeparam1,modeparam2,modeparam3):
-    value1 = commands[checkmodeparam(i,modeparam1)]
-    value2 = commands[checkmodeparam(i+1,modeparam2)]
-    if value1==value2:
-        commands[checkmodeparam(i+2,modeparam3)]=1
+def equals(i,mode1,mode2,mode3):
+    if commands[checkmode(i+1,mode1)] == commands[checkmode(i+2,mode2)]:
+        commands[checkmode(i+3,mode3)] = 1
     else:
-        commands[checkmodeparam(i+2,modeparam3)]=0
-    return i+4
+        commands[checkmode(i+3,mode3)] = 0
+    return i + 4
 
 opcodedict = {
     "01" : add,
