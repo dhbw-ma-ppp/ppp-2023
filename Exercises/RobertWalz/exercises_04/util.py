@@ -22,25 +22,33 @@ def get_refs(commands, instruction_pointer, params_to_get):
     # TODO: fill list with default 0
     # 0001
     # [0,0,0,1]
-    opcode = str(commands[instruction_pointer])
-    opcode_arr = [int(x) for x in opcode]
+    params = commands[instruction_pointer] // 100
+    # opcode = str(commands[instruction_pointer])
+    # opcode_arr = [int(x) for x in opcode]
 
-    opcode_arr.reverse()
+    # opcode_arr.reverse()
     
-    while len(opcode_arr) < params_to_get + 2:  #operation_code_length
-        opcode_arr.append(0)
+    # while len(opcode_arr) < params_to_get + 2:  #operation_code_length
+    #     opcode_arr.append(0)
     
-    #get rid of actual opcode
-    opcode_arr = opcode_arr[2:]
+    # #get rid of actual opcode
+    # opcode_arr = opcode_arr[2:]
     
     refs = []
-    for index, opcode in enumerate(opcode_arr):
-        # fill with 
-        if opcode:
-            # immediate mode
+    for index in range(0, params_to_get):
+        if params % 10:
             refs.append(instruction_pointer + 1 + index)
         else:
-            # position mode
+            # postion
             refs.append(commands[instruction_pointer + 1 + index])
+    
+    # for index, opcode in enumerate(opcode_arr):
+    #     # fill with 
+    #     if opcode:
+    #         # immediate mode
+    #         refs.append(instruction_pointer + 1 + index)
+    #     else:
+    #         # position mode
+    #         refs.append(instruction_pointer + 1 + index)
 
     return tuple(refs)

@@ -24,7 +24,8 @@ class Computer:
             value (int): the value to write
             save_pos_from_pointer (int): position to add from instruction_pointer
         """
-        self.commands[self.instruction_pointer + amount_of_params + 1] = value
+        save_ref = self.commands[self.instruction_pointer + amount_of_params + 1]
+        self.commands[save_ref] = value
 
     def add_write(self):
         amount_of_params = 2
@@ -63,7 +64,7 @@ class Computer:
 
     def jump_if_true(self):
         amount_of_params = 1
-        address = util.get_refs(
+        address, = util.get_refs(
             self.commands, self.instruction_pointer, params_to_get=amount_of_params
         )
         if self.commands[address]:
