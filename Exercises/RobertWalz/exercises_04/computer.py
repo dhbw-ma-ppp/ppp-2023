@@ -34,7 +34,8 @@ class Computer:
         )
         result = self.commands[first_reference] + self.commands[second_reference]
         self.write_value_to(value=result, amount_of_params=amount_of_params)
-        self.instruction_pointer += 4
+        self.instruction_pointer += amount_of_params + 2 # 2: opcode + savepos
+
 
     def multiply_write(self):
         amount_of_params = 2
@@ -43,7 +44,8 @@ class Computer:
         )
         result = self.commands[first_reference] * self.commands[second_reference]
         self.write_value_to(value=result, amount_of_params=amount_of_params)
-        self.instruction_pointer += 4
+        self.instruction_pointer += amount_of_params + 2 # 2: opcode + savepos
+
 
     def input_and_write(self):
         user_input = input("Please input an integer value:")
@@ -69,6 +71,8 @@ class Computer:
         )
         if self.commands[value_ref]:
             self.instruction_pointer = self.commands[jump_location_ref]
+        else:
+            self.instruction_pointer += amount_of_params + 2 # 2: opcode + savepos
 
     def jump_if_false(self):
         amount_of_params = 2
@@ -76,7 +80,11 @@ class Computer:
             self.commands, self.instruction_pointer, params_to_get=amount_of_params
         )
         if not self.commands[value_ref]:
-            self.instruction_pointer = commands[jump_location_ref]
+            self.instruction_pointer = self.commands[jump_location_ref]
+        else:
+            self.instruction_pointer += amount_of_params + 2 # 2: opcode + savepos
+
+        
             
             
     def less_than(self):
@@ -89,7 +97,7 @@ class Computer:
 
         else:
             self.write_value_to(0, amount_of_params=amount_of_params)
-        self.instruction_pointer += 4
+        self.instruction_pointer += amount_of_params + 2 # 2: opcode + savepos
 
     def equals(self):
         amount_of_params = 2
@@ -100,7 +108,8 @@ class Computer:
             self.write_value_to(1, amount_of_params=amount_of_params)
         else:
             self.write_value_to(0, amount_of_params=amount_of_params)
-        self.instruction_pointer += 4
+        self.instruction_pointer += amount_of_params + 2 # 2: opcode + savepos
+
 
     def terminate(self, **_):
         self.function_pointer = None
