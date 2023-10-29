@@ -1,16 +1,46 @@
-    
 
-def get_refs(commands, instruction_pointer):
-    """gets references to relevant entrys
+
+def evaluate_opcode(opcode, computer_instance):
+    opcode_arr = [int(x) for x in str(opcode)]
+    operation_to_perform = int("".join(str(x) for x in opcode_arr[-2:]))
+    computer_instance.opcode_map[operation_to_perform]()
+
+
+def get_refs(commands, instruction_pointer, params_to_get):
+    """gets references to a set number of params
 
     Args:
-        commands (list): list in format: [opcode, first_ref, second_ref, save_ref]
-        currentPos (number): starting pos in list_of_nums
+        commands (list): list in format: [opcode, first_ref, second_ref]
+        instruction_pointer (number): starting pos in commands
+        params_to_get (number): amount of arg refs to get
+
 
     Returns:
-        tuple: (first_ref, second_ref, pos_to_write_to)
+        tuple: (first_ref, second_ref, third_ref, ...)
     """
-    first_Ref = list_of_nums[current_pos + 1]
-    second_ref = list_of_nums[current_pos + 2]
-    pos_to_write_to = list_of_nums[current_pos + 3]
-    return (first_Ref, second_ref, pos_to_write_to)
+
+    # TODO: fill list with default 0
+    # 0001
+    # [0,0,0,1]
+    opcode = str(commands[instruction_pointer])
+    opcode_arr = [int(x) for x in opcode]
+
+    opcode_arr.reverse()
+    
+    while len(opcode_arr) < params_to_get + 2:  #operation_code_length
+        opcode_arr.append(0)
+    
+    #get rid of actual opcode
+    opcode_arr = opcode_arr[2:]
+    
+    refs = []
+    for index, opcode in enumerate(opcode_arr):
+        # fill with 
+        if opcode:
+            # immediate mode
+            refs.append(instruction_pointer + 1 + index)
+        else:
+            # position mode
+            refs.append(commands[instruction_pointer + 1 + index])
+
+    return tuple(refs)
