@@ -63,21 +63,22 @@ class Computer:
         self.instruction_pointer += 1
 
     def jump_if_true(self):
-        amount_of_params = 1
-        address, = util.get_refs(
+        amount_of_params = 2
+        value_ref, jump_location_ref = util.get_refs(
             self.commands, self.instruction_pointer, params_to_get=amount_of_params
         )
-        if self.commands[address]:
-            self.instruction_pointer += 1
+        if self.commands[value_ref]:
+            self.instruction_pointer = self.commands[jump_location_ref]
 
     def jump_if_false(self):
-        amount_of_params = 1
-        address = util.get_refs(
+        amount_of_params = 2
+        value_ref, jump_location_ref = util.get_refs(
             self.commands, self.instruction_pointer, params_to_get=amount_of_params
         )
-        if not self.commands[address]:
-            self.instruction_pointer += 1
-
+        if not self.commands[value_ref]:
+            self.instruction_pointer = commands[jump_location_ref]
+            
+            
     def less_than(self):
         amount_of_params = 2
         first_reference, second_reference = util.get_refs(
