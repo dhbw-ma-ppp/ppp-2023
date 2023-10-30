@@ -65,35 +65,46 @@ for cards in test_iterate:
 # - they are within the (left-inclusive and right-exclusive) bounds passed to the function
 # - there is at least one group of exactly two adjacent digits within the number which are the same (like 33 in 123345)
 # - digits only increase going from left to right
-
-# Function that checks if there are adjacent numbers in the var
-def adjacent_digits_check(number):
-    digits = str(number) # Converting number to string
-    two_adjacent = 0 # Initializing a counter for the number of adjacent digits
-    for i in range(len(digits)-1): # Iterating over each digit in string -1 since the last digit already gets checked with "digits [i+1]"
-        if digits [i] == digits [i+1]: # If two adjacent digits are the same, increase "two_adjacent" counter
-            two_adjacent += 1
-        else:
-            if two_adjacent == 1: # if there is exactly two adjacent digits, it returns true
-                return True
-            two_adjacent = 0 # reset counter to 0
-    return two_adjacent == 1 # at the end of the loop checks if counter is 1, if so it returns true. Otherwise returns false.
-
- 
-# Function that checks if given number is ascending        
-def left_right_ascending(number):
-    digits = str(number)
-    for i in range(len(digits)-1):  # Iterates over a range of values, starting from 0 to end -1 since "digits [i+1]" already checks last value
-        if digits [i] > digits [i+1]: # Checking if front digit is bigger than the next one
-            return False # Returns False if front digit is bigger
-    return True # If its in an ascending order, it returns true
-
-
+            
 def number_filter(lowerbound, upperbound):
-    count = 0 # creating a counting var
-    for number in range(lowerbound, upperbound): # goes through the given range
-        if adjacent_digits_check(number) and left_right_ascending(number): # checking if both functions return true
-            count += 1 # adds +1 to the count if both functions are true
+    count = 0
+    
+    for n in range(lowerbound, upperbound):
+        digits = list(str(n)) # Converting the given number into seperate elements in a list
+        # Example: ['1', '3', '4', '5', '6', '4']
+        i = 0
+        
+        if digits != sorted(digits): # Checks if sorted digits is not the same as the given digits.
+            continue # Skips to the next iteration
+        
+        
+        """
+        ADJACENT DIGITS:
+        
+        any: if at least one given element is True, it returns True and 
+        "not" converts the result to a False
+        
+        digits[i] == digits[i+1]: Checks if the digit at index "i" is equal to "i+1"
+        
+        i == 0 or digits[i-1] != digits[i]: Checks if digit before "i" is not equal, i == 0 is needed since
+                                            the would be no digit before the first one
+                                            
+        i == len(digits)-2: Checks if "i" is equal to second-to-last digit, its there to prevent indexing error.
+                            because if we try to access digits[i+2] in the next condition it would return a error.
+        
+        digits[i+2] != digits[i+1]: Checks if digit at "i+2" is not equal to "i+1"
+        
+        for i in range(len(digits)-1): iterating over the list and its -1
+                                       since we compare i to the next element
+        
+        """
+        
+        if not any(digits[i] == digits[i+1] and (i == 0 or digits[i-1] != digits[i])
+                   and (i == len(digits)-2 or digits[i+2] != digits[i+1]) for i in range(len(digits)-1)):
+            continue
+        
+        
+        count += 1 # Adds +1 to the count
 
     return count
 
@@ -109,4 +120,3 @@ def number_filter(lowerbound, upperbound):
 # in your pull request, please.
 
 print(number_filter(134564, 585159))
-
