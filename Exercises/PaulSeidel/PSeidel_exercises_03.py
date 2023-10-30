@@ -111,14 +111,27 @@ def num_counter(min, max):
     min and max bounds and meet the given criteria"""
     counter = 0
     for i in range(min, max):   # includes min, excludes max
-        temp = str(i)
-        num = []
-        for j in range(10): # creating a list that saves every number's count
-            j_as_str = str(j)
-            num.append(temp.count(j_as_str))
-        if num.count(2) != 0:
-            counter += 1
+        if is_String_sorted(i):
+            temp1 = str(i)
+            num = []
+            for j in range(10): # creating a list that saves every number's count
+                j_as_str = str(j)
+                num.append(temp1.count(j_as_str))
+            if num.count(2) != 0:
+                counter += 1
     return counter
+
+def is_String_sorted(value = "nothing Given"):
+    """Checks if the String, it needs as an argument, is in sorted.
+    The function only works with Strings made out of numbers completely!"""
+    str_value = str(value)  # to use string-operators in the following lines.
+    if str_value.isdigit == False:
+        raise ValueError("Argument has to be a number-filled String!")
+    else:
+        for counter in range(len(str_value)-1):
+            if str_value[counter] > str_value[counter+1]:
+                return False
+        return True
 
 
 print(str(num_counter(min = 134564, max = 585159))) # finds 331261 numbers
