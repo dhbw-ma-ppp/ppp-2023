@@ -119,14 +119,14 @@ opcodedict = {
 }
 
 def simulated_computer(commands):
-    i = 0
-    while i != "99": 
+    i=0
+    while True: 
         opcode = str(commands[i]).zfill(5)
         numopcode = opcode[3:]
-        if opcodedict.get(numopcode) != None and numopcode != "99":
-            i = opcodedict[numopcode](i,opcode[2],opcode[1],opcode[0])
-        elif numopcode == "99":
+        if numopcode == "99":
             break
+        elif opcodedict.get(numopcode) != None:
+            i = opcodedict[numopcode](i,opcode[2],opcode[1],opcode[0])
         else:
             raise ValueError("wrong opcode")
 
