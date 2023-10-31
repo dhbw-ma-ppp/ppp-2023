@@ -100,11 +100,13 @@ def count(a, b):
             i = digits.count(9)
             if a == 2 or b == 2 or c == 2 or d == 2 or e == 2 or f == 2 or g == 2 or h == 2 or i == 2:
                 numbers.append(number)
-                print(numbers)
+
                 counter += 1
         else:
             continue
     print(counter)
+    print(numbers)
+
     return counter
 
 
