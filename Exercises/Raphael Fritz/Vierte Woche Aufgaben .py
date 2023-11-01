@@ -57,12 +57,9 @@ commands = [3,225,1,225,6,6,1100,1,238,225,104,0,1101,40,71,224,1001,224,-111,22
 
 
 def checkmode(i,mode):
-    if mode == "0":
-        return commands[i]
-    elif mode == "1":
-        return i
-    else:
-        raise ValueError("wrong mode parameter")
+    if mode == "0": return commands[i]
+    elif mode == "1": return i
+    else:raise ValueError("wrong mode parameter")
     
 def add(i,mode1,mode2,mode3):
     commands[commands[i + 3]] = commands[checkmode(i+1,mode1)] + commands[checkmode(i+2,mode2)]
@@ -73,10 +70,8 @@ def multiply(i,mode1,mode2,mode3):
     return i + 4
 
 def inp(i,mode1,mode2,mode3):
-    try:
-        commands[checkmode(i+1,mode1)]=int(input("input an integer:"))
-    except:
-        raise RuntimeError("wrong input")
+    try: commands[checkmode(i+1,mode1)]=int(input("input an integer:"))
+    except: raise RuntimeError("wrong input")
     return i + 2
 
 def outp(i,mode1,mode2,mode3):
@@ -84,27 +79,21 @@ def outp(i,mode1,mode2,mode3):
     return i + 2
 
 def jump_if_true(i,mode1,mode2,mode3):
-    if commands[checkmode(i+1,mode1)] != 0:
-        return commands[checkmode(i+2,mode2)]
+    if commands[checkmode(i+1,mode1)] != 0: return commands[checkmode(i+2,mode2)]
     return i + 3
 
 def jump_if_false(i,mode1,mode2,mode3):
-    if commands[checkmode(i+1,mode1)] == 0:
-        return commands[checkmode(i+2,mode2)]
+    if commands[checkmode(i+1,mode1)] == 0: return commands[checkmode(i+2,mode2)]
     return i + 3
 
 def less_than(i,mode1,mode2,mode3):
-    if commands[checkmode(i+1,mode1)] < commands[checkmode(i+2,mode2)]:
-        commands[checkmode(i+3,mode3)] = 1
-    else:
-        commands[checkmode(i+3,mode3)] = 0
+    if commands[checkmode(i+1,mode1)] < commands[checkmode(i+2,mode2)]: commands[checkmode(i+3,mode3)] = 1
+    else: commands[checkmode(i+3,mode3)] = 0
     return i + 4
         
 def equals(i,mode1,mode2,mode3):
-    if commands[checkmode(i+1,mode1)] == commands[checkmode(i+2,mode2)]:
-        commands[checkmode(i+3,mode3)] = 1
-    else:
-        commands[checkmode(i+3,mode3)] = 0
+    if commands[checkmode(i+1,mode1)] == commands[checkmode(i+2,mode2)]: commands[checkmode(i+3,mode3)] = 1
+    else: commands[checkmode(i+3,mode3)] = 0
     return i + 4
 
 opcodedict = {
@@ -123,11 +112,8 @@ def simulated_computer(commands):
     while True: 
         opcode = str(commands[i]).zfill(5)
         numopcode = opcode[3:]
-        if numopcode == "99":
-            break
-        elif opcodedict.get(numopcode) != None:
-            i = opcodedict[numopcode](i,opcode[2],opcode[1],opcode[0])
-        else:
-            raise ValueError("wrong opcode")
+        if numopcode == "99": break
+        elif opcodedict.get(numopcode) != None: i = opcodedict[numopcode](i,opcode[2],opcode[1],opcode[0])
+        else: raise ValueError("wrong opcode")
 
 simulated_computer(commands)
