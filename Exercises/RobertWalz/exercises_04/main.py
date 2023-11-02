@@ -59,10 +59,8 @@ from computer import Computer
         
 def main():
     computer_instance = Computer(commands=commands)
-    # this could be outsourced to Computer.run()
-    while computer_instance.instruction_pointer < len(commands) and computer_instance.instruction_pointer is not None:
-        computer_instance.calculate_step()
- 
+    result = computer_instance.run()
+    print(f"\nFinished execution with code: {result}")
  
 if __name__== "__main__":
     main()
