@@ -55,7 +55,7 @@ class Skat:
         self.cards = []
         self.suits = ["diamonds", "hearts", "spades", "clubs"]
         self.values = ["7", "8", "9", "10", "Jack",
-        "Queen", "King", "Ace"]
+                       "Queen", "King", "Ace"]
         for suit in self.suits:
             for value in self.values:
                 self.cards.append(Card(value, suit))
@@ -67,17 +67,18 @@ class Skat:
         return iter(self.cards)
 
 
-# Write some code to test the functionality of both kinds of decks. (You can use `assert` to make sure your classes behave the way you expect them to.)
-scatdeck = FrenchDeck()
+# Testing functionality of both kinds of decks
+
+skatdeck = Skat()
 cardIndex = input("Enter the index of the Skat card you want to see or press enter to see all cards in the deck: ")
-if (cardIndex == ""):
-    scatdeck.iterate()
-    for card in scatdeck.iterate():
+if cardIndex == "":
+    skatdeck.iterate()
+    for card in skatdeck.iterate():
         print(card)
-elif (int(cardIndex) > 51):
-    print("There are only 52 cards in a deck.")
+elif int(cardIndex) >= len(skatdeck.cards):
+    print(f"There are only {len(skatdeck.cards)} cards in a deck.")
 else:
-    print("The card at index " + cardIndex + " is a " + str(scatdeck.getcard(int(cardIndex))))
+    print(f"The card at index {cardIndex} is a {str(skatdeck.getcard(int(cardIndex)))}")
 
 # PART 3:
 # write a function that accepts two numbers, a lower bound and an upper bound.
