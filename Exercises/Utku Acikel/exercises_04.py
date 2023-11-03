@@ -53,6 +53,8 @@ def read_and_save(storage, index, _):
         print("Error, given input is not a number")
     return index + 2
 
+# The "_" is used to flag a non-used variable in the function, but still needs "modes" since the way opcode_dict calls the functions
+
 def output_value(storage, index, modes):
     output_value = get_value(storage, index+1, modes[0])
     print(output_value)
@@ -85,6 +87,8 @@ def equals(storage, index, modes):
 def halt(*args):
     print("Number 99 occured, halting the program")
     return None  # Exits main loop
+
+# Using *args because no variable is used, but still needs them since the way opcode_dict calls the functions
 
 opcode_dict = {
     1: addition,
