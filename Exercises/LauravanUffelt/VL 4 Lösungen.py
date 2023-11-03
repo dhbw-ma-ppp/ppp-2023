@@ -45,25 +45,30 @@ def comp_sim(intake):
     def element_value(mode, element):
         return intake[element] if mode == 0 else element
 
+    def elements(count, mode, intake):
+        element1 = element_value(mode[0], intake[count+1])
+        element2 = element_value(mode[1], intake[count+2])
+        return element1, element2
+
     def opcodes(count):
         operation = str(intake[count]).zfill(5)
         opcode = int(operation[-2:])
         mode = [int(digit) for digit in operation[:-2]][::-1]
-        element1 = element_value(mode[0], intake[count+1])
 
         match opcode:
+
             case 99:
                 exit(0)
 
             case 1:
-                element2 = element_value(mode[1], intake[count+2])
+                element1, element2 = elements(count, mode, intake)
                 sum = element1 + element2
                 adress = intake[count+3]
                 intake[adress] = sum
                 return count + 4
 
             case 2:
-                element2 = element_value(mode[1], intake[count+2])
+                element1, element2 = elements(count, mode, intake)
                 product = element1 * element2
                 adress = intake[count+3]
                 intake[adress] = product
@@ -81,7 +86,7 @@ def comp_sim(intake):
                 return count + 2
 
             case 5:  # jump-if-true: if the first parameter is non-zero, it sets the instruction pointer to the value from the second parameter. Otherwise, it does nothing.
-                element2 = element_value(mode[1], intake[count+2])
+                element1, element2 = elements(count, mode, intake)
                 if element1 != 0:
                     count = element2
                     return count
@@ -89,7 +94,7 @@ def comp_sim(intake):
                     return count + 3
 
             case 6:  # jump-if-false: if the first parameter is zero, it sets the instruction pointer to the value from the second parameter. Otherwise, it does nothing.
-                element2 = element_value(mode[1], intake[count+2])
+                element1, element2 = elements(count, mode, intake)
                 if element1 == 0:
                     count = element2
                     return count
@@ -97,7 +102,7 @@ def comp_sim(intake):
                     return count + 3
 
             case 7:  # less than: if the first parameter is less than the second parameter, it stores 1 in the position given by the third parameter. Otherwise, it stores 0.
-                element2 = element_value(mode[1], intake[count+2])
+                element1, element2 = elements(count, mode, intake)
                 adress = intake[count+3]
                 if element1 < element2:
 
@@ -107,7 +112,7 @@ def comp_sim(intake):
                     intake[adress] = 0
                     return count + 4
             case 8:  # equals: if the first parameters equal to the second parameter, it stores 1 in the position given by the third parameter. Otherwise, it stores 0.
-                element2 = element_value(mode[1], intake[count+2])
+                element1, element2 = elements(count, mode, intake)
                 adress = intake[count+3]
                 if element1 == element2:
                     intake[adress] = 1
