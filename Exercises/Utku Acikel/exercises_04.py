@@ -26,11 +26,19 @@ commands = [3,225,1,225,6,6,1100,1,238,225,104,0,1101,40,71,224,1001,224,-111,22
 def get_value(storage, index, mode):
     return storage[index] if mode else storage[storage[index]]
 
+"""
+def get_value:
+
+This function returns if the mode is in immediate or position mode, so if the mode is 1
+(1 means the true), it returns "storage[index"]" and if its false it returns "storage[storage[index]]"
+"""
+
 def addition(storage, index, modes):
     param1 = get_value(storage, index+1, modes[0])
     param2 = get_value(storage, index+2, modes[1])
     storage[storage[index+3]] = param1 + param2
     return index + 4
+    
     
 def multiply(storage, index, modes):
     param1 = get_value(storage, index+1, modes[0])
@@ -90,6 +98,13 @@ opcode_dict = {
     99: halt 
 }
 
+"""
+opcode_dict is a dictionary where each value is a function and can be called like used under this
+
+That means when the current index number is 8, the opcode_dict will use that to call the equals function,
+then it will be used with the given arguments: storage, index and modes
+"""
+
 def sim_computer(storage):
     index = 0
     while index is not None:
@@ -97,6 +112,29 @@ def sim_computer(storage):
         opcode = instruction % 100
         modes = [(instruction // 100) % 10, (instruction // 1000) % 10, (instruction // 10000) % 10]
         index = opcode_dict[opcode](storage, index, modes)
+
+"""
+def sim_computer(storage):
+
+initializing index to 0
+
+Using a while loop to continue as long index is not none, index will get set to none as soon as the halt
+function gets called (When number 99 appears)
+
+instruction = storage[index]: setting the instruction to the current element in the list "storage"
+
+opcode = instruction % 100: using modulus operator to get the remainder by dividing instruction by 100
+for example when the instruction is at 1105, the remainder will be 05. This is done since the 2 right-most
+digits is the actual opcode
+
+modes = (instruction // 100) % 10, and the other ones are used to specify what parameter mode it has,
+so dividing by //100 (// returning largest operator) would show first parameter, second division by 1000
+would give the second parameter and the division by 10000 would give the third parameter mode.
+
+index = opcode_dict[opcode](storage, index, modes), basically to call a function from the opcode_dict,
+while having 3 arguments, storage, index and modes. Storage being the list, index the current position and modes
+for the current parameter mode its in
+"""
 
 # Running through commands
 sim_computer(commands)
