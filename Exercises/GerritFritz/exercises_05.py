@@ -1,20 +1,31 @@
-# PART 1:
-# Here's a sequence of numbers:
-# [35, 20, 15, 25, 47, 40, 62, 55, 65, 95, 102, 117, 150, 182, 127, 219, 299, 277, 309, 576]
-# numbers in this list can in general be expressed as a sum of some pair of two numbers
-# in the five numbers preceding them.
-# For example, the sixth number (40) cam be expressed as 25 + 15
-# the seventh number (62) can be expressed as 47 + 15 etc.
-# 
-# The only exception to this rule for this example is the number 127.
-# The five preceding numbers are [95, 102, 117, 150, 182], and no possible sum of two of those
-# numbers adds to 127.
-#
-# You can find the ACTUAL input for this exercise under `data/input_sequence.txt`. For this
-# real input you should consider not only the 5 numbers, but the 25 numbers preceding.
-# Find the first number in this list which can not be expressed as a
-# sum of two numbers out of the 25 numbers before it.
-# Please make not of your result in the PR.
+#Gerrit Fritz
+#03.11.2023
+
+import timeit
+import pathlib
+
+numbers1 = [35, 20, 15, 25, 47, 40, 62, 55, 65, 95, 102, 117, 150, 182, 127, 219, 299, 277, 309, 576]
+
+def find_num(numbers, dist):
+    for i in range(dist,len(numbers)):
+        previous = numbers[(i-dist):i]
+        is_sum = False
+        for num in previous:
+            if numbers[i]-num in previous:
+                is_sum = True
+                break
+        if not is_sum:
+            return numbers[i]
+
+directory = str(pathlib.Path(__file__).parent.resolve().parent.parent)+"\data\input_sequence.txt"
+numbers2 = []
+with open(directory) as file:
+    for line in file:
+        numbers2.append(int(line[:-1]))
+
+print(find_num(numbers1, 5))
+print(find_num(numbers2, 25))
+print(timeit.timeit(stmt=lambda:find_num(numbers2, 25), number = 1000)/1000)
 
 
 # PART 2:
@@ -44,3 +55,8 @@
 # and much more deeply nested than the example above. 
 # For the actual inputs, how many bags are inside your single shiny gold bag?
 # As usual, please list the answer as part of the PR.
+
+'''Text in Format überfrühren, regex, genestete listen von beuteln, 
+theoretisch mit bäumen, die Zeilen gehören alle zusammen, 
+man kann contain mit split, rechten teil, linken teil, linker teil in kommas teilen, 
+bag und bags kommen in vielfach vor'''
