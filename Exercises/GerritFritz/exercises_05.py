@@ -17,46 +17,63 @@ def find_num(numbers, dist):
         if not is_sum:
             return numbers[i]
 
-directory = str(pathlib.Path(__file__).parent.resolve().parent.parent)+"\data\input_sequence.txt"
+seq_directory = str(pathlib.Path(__file__).parent.resolve().parent.parent)+"\data\input_sequence.txt"
+
 numbers2 = []
-with open(directory) as file:
+with open(seq_directory) as file:
     for line in file:
         numbers2.append(int(line[:-1]))
 
-print(find_num(numbers1, 5))
 print(find_num(numbers2, 25))
-print(timeit.timeit(stmt=lambda:find_num(numbers2, 25), number = 1000)/1000)
 
 
-# PART 2:
-# The input to this exercise specifies rules for bags containing other bags.
-# It is of the following form:
-#
-# shiny gold bags contain 1 dark olive bag, 2 vibrant plum bags.
-# dark olive bags contain 3 faded blue bags, 4 dotted black bags.
-# vibrant plum bags contain 5 faded blue bags, 6 dotted black bags.
-# faded blue bags contain no other bags.
-# dotted black bags contain no other bags.
-#
-# You have a single 'shiny gold bag'. Consider the rules above. According
-# to those rules your bag contains
-# - 1 dark olive bag, in turn containing
-#   - 3 faded blue bags (no further content)
-#   - 4 dotted black bags (no further content
-# - 2 vibrant plum bags, in turn containing
-#   - 5 faded blue bags (no further content)
-#   - 6 dotted black bags (no further content)
-# 
-# therefore, your single shiny gold bag contains a total of 32 bags
-# (1 dark olive bag, containing 7 other bags, and 2 vibrant plum bags,
-# each of which contains 11 bags, so 1 + 1*7 + 2 + 2*11 = 32)
-#
-# The ACTUAL input to your puzzle is given in `data/input_bags.txt`, and much larger
-# and much more deeply nested than the example above. 
-# For the actual inputs, how many bags are inside your single shiny gold bag?
-# As usual, please list the answer as part of the PR.
+class Node():
+    def __init__(self, parent, name):
+        self.name = name
+        self.nodenum = 0
+        self.subnodes = []
+        self.parent = parent
+        if self.parent != None:
+            self.parent.add_node(self)
+            self.parent.increase()
 
-'''Text in Format überfrühren, regex, genestete listen von beuteln, 
-theoretisch mit bäumen, die Zeilen gehören alle zusammen, 
-man kann contain mit split, rechten teil, linken teil, linker teil in kommas teilen, 
-bag und bags kommen in vielfach vor'''
+    def add_node(self, node):
+        self.subnodes.append(node)
+    
+    def increase(self):
+        self.nodenum += 1
+        if self.parent != None:
+            self.parent.increase()
+    
+    def get_count(self):
+        return self.nodenum
+    
+    def __str__(self):
+        return f"{self.name}: \n({', '.join([str(node)for node in self.subnodes])})\n"
+
+
+def insert_to_tree(bag_dict, parent, proot):
+    bags = bag_dict[parent]
+    for bag in bags:
+        if len(bag)<3:
+            continue
+        name = bag[1]+" "+bag[2]+" "
+        nodes = [Node(proot, name) for n in range(int(bag[0]))]
+        for node in nodes:
+            insert_to_tree(bag_dict, name, node)
+
+
+bag_directory = str(pathlib.Path(__file__).parent.resolve().parent.parent)+"\data\input_bags.txt"
+
+bag_dict = {}
+with open(bag_directory) as file:
+    for line in file:
+        spliced = line.split("bags contain")
+        parent = spliced[0]
+        kid = [chars.split(" ")[(1 if i == 0 else 0):-1] for i, chars in enumerate(spliced[1].split(", "))]
+        bag_dict[parent] = kid         
+
+
+root = Node(None, "shiny gold ")
+insert_to_tree(bag_dict, root.name, root)
+print(root.get_count())
