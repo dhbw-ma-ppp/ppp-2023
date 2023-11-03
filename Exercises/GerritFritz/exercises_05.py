@@ -25,8 +25,7 @@ print(find_num(numbers, 25))
 
 
 class Node():
-    def __init__(self, parent, name):
-        self.name = name
+    def __init__(self, parent):
         self.nodenum = 0
         self.parent = parent
         if self.parent != None:
@@ -41,12 +40,12 @@ class Node():
         return self.nodenum
 
 
-def insert_to_tree(bag_dict, parent, proot):
+def insert_to_tree(bag_dict, parent, parent_node):
     bags = bag_dict[parent]
     for bag in bags:
         if len(bag)<3: continue
         name = f"{bag[1]} {bag[2]} "
-        for node in [Node(proot, name) for n in range(int(bag[0]))]:
+        for node in [Node(parent_node) for n in range(int(bag[0]))]:
             insert_to_tree(bag_dict, name, node)
 
 
@@ -57,10 +56,11 @@ with open(bag_directory) as file:
     for line in file:
         spliced = line.split("bags contain")
         parent = spliced[0]
-        child = [chars.split(" ")[(not i):-1] for i, chars in enumerate(spliced[1].split(", "))]
-        bag_dict[parent] = child
+        arguments = spliced[1].split(", ")
+        children = [chars.split(" ")[(not i):-1] for i, chars in enumerate(arguments)]
+        bag_dict[parent] = children
 
 
-root = Node(None, "shiny gold ")
-insert_to_tree(bag_dict, root.name, root)
+root = Node(None)
+insert_to_tree(bag_dict, "shiny gold ", root)
 print(root.get_count())
