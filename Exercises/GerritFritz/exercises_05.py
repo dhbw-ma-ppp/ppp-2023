@@ -1,7 +1,6 @@
 #Gerrit Fritz
 #03.11.2023
 
-import timeit
 import pathlib
 
 numbers1 = [35, 20, 15, 25, 47, 40, 62, 55, 65, 95, 102, 117, 150, 182, 127, 219, 299, 277, 309, 576]
@@ -55,11 +54,9 @@ class Node():
 def insert_to_tree(bag_dict, parent, proot):
     bags = bag_dict[parent]
     for bag in bags:
-        if len(bag)<3:
-            continue
-        name = bag[1]+" "+bag[2]+" "
-        nodes = [Node(proot, name) for n in range(int(bag[0]))]
-        for node in nodes:
+        if len(bag)<3: continue
+        name = f"{bag[1]} {bag[2]} "
+        for node in [Node(proot, name) for n in range(int(bag[0]))]:
             insert_to_tree(bag_dict, name, node)
 
 
