@@ -57,7 +57,7 @@ with open(bag_directory) as file:
     for line in file:
         spliced = line.split("bags contain")
         parent = spliced[0]
-        child = [chars.split(" ")[(1 if i == 0 else 0):-1] for i, chars in enumerate(spliced[1].split(", "))]
+        child = [chars.split(" ")[(not i):-1] for i, chars in enumerate(spliced[1].split(", "))]
         bag_dict[parent] = child
 
 
