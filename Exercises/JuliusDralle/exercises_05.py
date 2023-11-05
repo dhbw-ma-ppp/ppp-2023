@@ -76,41 +76,65 @@ lines_temp = fp.read().strip()
 
 lines = []
 
-statement_array = [[],[]]
 
 for current_line in lines_temp.split("\n"):
     lines.append(current_line)
 
 
-
+statement_dict_array = [[],[]]  
 for iterator_lines in lines:
     #print(iterator_lines.split(" contain "))
     current_bag, statement = iterator_lines.split(" contain ")
+    current_bag = current_bag[:-5]
     
     
+    statement_array = []   
     # The first index of this array is the amount of bags where as the the second index are the names of the bags
     # statement_array = [[1,2],["blue bag","red bag"]] = 1 blue bag and 2 red bags
     for i in statement.split(", "):
-        statement_array[0].append([i[:1]])
+        statement_array.append(i[:1])
         if i[-4:] == "bags":
-            new_statement = i[:-5]
-            statement_array[1].append(new_statement)
+            new_statement = i[2:-5]
+            statement_array.append(new_statement)
         elif i[-5:] == "bags.":
-            new_statement = i[:-6]
-            statement_array[1].append(new_statement)
+            new_statement = i[2:-6]
+            statement_array.append(new_statement)
         elif i[-3:] == "bag":
-            new_statement = i[:-4]
-            statement_array[1].append(new_statement)
+            new_statement = i[2:-4]
+            statement_array.append(new_statement)
         elif i[-4:] == "bag.":
-            new_statement = i[:-5]
-            statement_array[1].append(new_statement)
+            new_statement = i[2:-5]
+            statement_array.append(new_statement)
         else:
-            statement_array[1].append(str(i[3:]))
+            statement_array.append(str(i[3:]))
+    
+    statement_dict_array[0].append(current_bag)
+    statement_dict_array[1].append(statement_array)
 
-print(statement_array)
 
+#print(statement_dict_array)
 
+def countBags(bagType):
+    print(bagType)
+    counter = 1
+    # look for recursion end
+    for i in range(0,len(statement_dict_array[0])):
+        if statement_dict_array[0][i] ==  bagType and statement_dict_array[1][i][0] == "n":
+            print("No other found")
+            return 1
+    
+    for i in range(0,len(statement_dict_array[0])):
+        if statement_dict_array[0][i] ==  bagType:
+            for multiplicatorOfBags in range(1,len(statement_dict_array[1][i]),2):
+                print(statement_dict_array[1][i][multiplicatorOfBags])
+                counter = counter + int(statement_dict_array[1][i][multiplicatorOfBags-1]) * countBags(statement_dict_array[1][i][multiplicatorOfBags])
 
+    return counter  
+
+print(countBags("shiny gold"))
 
 
 fp.close()
+
+
+# Result 6261
