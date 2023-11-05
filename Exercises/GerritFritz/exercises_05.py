@@ -1,7 +1,15 @@
 #Gerrit Fritz
 #03.11.2023
 
-import pathlib
+from functools import lru_cache
+
+
+def get_numbers(path):
+    numbers = []
+    with open(path) as file:
+        for line in file:
+            numbers.append(int(line[:-1]))
+    return numbers
 
 
 def find_num(numbers, dist):
@@ -16,25 +24,17 @@ def find_num(numbers, dist):
             return numbers[i]
 
 
-def get_numbers(path):
-    numbers = []
-    with open(seq_directory) as file:
-        for line in file:
-            numbers.append(int(line[:-1]))
-    return numbers
-
-
-seq_directory = str(pathlib.Path(__file__).parent.resolve().parent.parent)+"/data/input_sequence.txt"
-numbers = get_numbers(seq_directory)
+numbers = get_numbers("data//input_sequence.txt")
 print(find_num(numbers, 25))
+
 
 
 def get_bag_dict(path):
     bag_dict = {}
-    with open(bag_directory) as file:
+    with open(path) as file:
         for line in file:
             spliced = line.split("bags contain")
-            parent = spliced[0]
+            parent = spliced[0][:-1]
             arguments = spliced[1].split(", ")
             children = [chars.split(" ")[(not i):-1] for i, chars in enumerate(arguments)]
             bag_dict[parent] = children
@@ -42,21 +42,16 @@ def get_bag_dict(path):
 
 
 def get_bag_count(root, bag_dict):
-
-    def count_bags(bag_dict, parent):
-        bags = bag_dict[parent]
-        for bag in bags:
-            if len(bag)<3: continue
-            nonlocal bag_count
-            name = f"{bag[1]} {bag[2]} "
-            for sub_bags in range(int(bag[0])):
-                bag_count += 1
-                count_bags(bag_dict, name)
-
-    bag_count = 0
-    count_bags(bag_dict, root)
-    return bag_count
+    @lru_cache()
+    def count_bags(root, parent):
+        bag_count = (parent!=root)
+        for bag in bag_dict[parent]:
+            if len(bag)<=2: continue
+            name = f"{bag[1]} {bag[2]}"
+            bag_count += int(bag[0]) * count_bags(root, name)
+        return bag_count 
+    return count_bags(root, root)
     
-bag_directory = str(pathlib.Path(__file__).parent.resolve().parent.parent)+"/data/input_bags.txt"
-bag_dict =  get_bag_dict(bag_directory)
-print(get_bag_count("shiny gold ",bag_dict))
+
+bag_dict =  get_bag_dict("data//input_bags.txt")
+print(get_bag_count("shiny gold",bag_dict))
