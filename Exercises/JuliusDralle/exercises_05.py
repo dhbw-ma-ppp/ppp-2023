@@ -115,18 +115,15 @@ for iterator_lines in lines:
 #print(statement_dict_array)
 
 def countBags(bagType):
-    print(bagType)
     counter = 1
     # look for recursion end
     for i in range(0,len(statement_dict_array[0])):
         if statement_dict_array[0][i] ==  bagType and statement_dict_array[1][i][0] == "n":
-            print("No other found")
             return 1
     
     for i in range(0,len(statement_dict_array[0])):
         if statement_dict_array[0][i] ==  bagType:
             for multiplicatorOfBags in range(1,len(statement_dict_array[1][i]),2):
-                print(statement_dict_array[1][i][multiplicatorOfBags])
                 counter = counter + int(statement_dict_array[1][i][multiplicatorOfBags-1]) * countBags(statement_dict_array[1][i][multiplicatorOfBags])
 
     return counter  
