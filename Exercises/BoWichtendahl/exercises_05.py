@@ -22,16 +22,16 @@ import re
 
 def find_invalid_number(file_path, scan_length):
     with open(file_path, 'r') as input_file:
-        nums = []
+        current_nums = []
         for num in range(scan_length):
-            nums.append(int(input_file.readline()))
+            current_nums.append(int(input_file.readline()))
         replace_pointer = 0
         while (in_str := input_file.readline()) != '':
             num_to_check = int(in_str)
-            permutations = list(itertools.permutations(nums, 2))
+            permutations = list(itertools.permutations(current_nums, 2))
             if num_to_check not in [sum(perm) for perm in permutations]:
                 return num_to_check
-            nums[replace_pointer] = num_to_check
+            current_nums[replace_pointer] = num_to_check
             replace_pointer = (replace_pointer + 1) % scan_length
 
 
@@ -66,15 +66,35 @@ print(f'The first invalid number in the given file is: {find_invalid_number('../
 # As usual, please list the answer as part of the PR.
 
 
-# def count_bags(file_path):
-#    bag_dict = {}
-#    with open(file_path, 'r') as input_file:
-#        while (input_line := input_file.readline()) != '':
-#            input_line = input_line.split(' contain ')
-#            print(input_line[1].split(', '))
+def count_bags(bag_dict, bag):
+    if bag_dict[bag][0][0] == 'no':
+        return None
+    total_bags = 0
+    for content in bag_dict[bag]:
+        contained_bags = count_bags(bag_dict, content[1])
+        amount_bags = int(content[0])
+        total_bags += amount_bags + contained_bags * amount_bags if contained_bags else amount_bags
+    return total_bags
 
 
-#count_bags('../../data/input_bags.txt')
+def fill_bag_dict(file_path):
+    bag_dict = {}
+    with open(file_path, 'r') as input_file:
+        while (input_line := input_file.readline()) != '':
+            input_line = re.split(r' bags\.| bag\.| bags, | bag, | bags contain ', input_line)[:-1]
+            key = input_line[0]
+            data = [re.split(r' ', content, 1) for content in input_line[1:]]
+            bag_dict[key] = data
+    return bag_dict
 
-s_nums = 'drab white bags contain 1 drab lavender bag, 1 plaid maroon bag.'
-print(re.split(r" bags\.| bag\.| bags, | bag, | bags contain ", s_nums))
+
+my_bag_dict = fill_bag_dict('../../data/input_bags.txt')
+
+test_bag_dict = {'shiny gold': [['1', 'dark olive'], ['2', 'vibrant plum']],
+                 'dark olive': [['3', 'faded blue'], ['4', 'dotted black']],
+                 'vibrant plum': [['5', 'faded blue'], ['6', 'dotted black']],
+                 'faded blue': [['no', 'other']],
+                 'dotted black': [['no', 'other']]}
+
+print(f'The test shiny gold bag contains {count_bags(test_bag_dict, 'shiny gold')} bags.')
+print(f'The real shiny gold bag contains {count_bags(my_bag_dict, 'shiny gold')} bags.')
