@@ -38,18 +38,11 @@ def find_first_unsummed_number(number_sequence):
         input_numbers.remove(number_sequence[index - 25])
         input_numbers.add(target_number)
 
-    return target_number
-
 
 result = find_first_unsummed_number(number_sequence)
 print("The first number that doesn't match the pattern is:", result)
-#1639024365
-""" in case of uncertainty about the existence of an unsummed number:
-if result is not None:
-    print (as above)
-else:
-    print("input_sequence completely matches pattern") """
 file.close()
+#1639024365
 
 # PART 2:
 # The input to this exercise specifies rules for bags containing other bags.
