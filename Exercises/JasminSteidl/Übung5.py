@@ -49,7 +49,7 @@ if result is not None:
     print (as above)
 else:
     print("input_sequence completely matches pattern") """
-
+file.close()
 
 # PART 2:
 # The input to this exercise specifies rules for bags containing other bags.
@@ -108,6 +108,7 @@ def contain_rules():
             bag_input[outer_bag] = inner_rules
         else:
             bag_input[outer_bag] = {}
+    file.close()
     return bag_input
 
 
