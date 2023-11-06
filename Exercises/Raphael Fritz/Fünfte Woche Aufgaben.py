@@ -22,7 +22,9 @@ def get_bag_dict(fp):
     with open(fp, 'r') as file:
         bagdict = {}
         for line in file:
-            bagdict[line.split("contain")[0].replace(" ","").replace("bags","bag")] = line.split("contain")[1].replace(".\n", "").replace(" ","").replace("bags","bag")
+            key = line.split("contain")[0].replace(" ","").replace("bags","bag")
+            value = line.split("contain")[1].replace(".\n", "").replace(" ","").replace("bags","bag")
+            bagdict[key] = value
         return bagdict
     
 def count_of_bags(bag,bagdict):
