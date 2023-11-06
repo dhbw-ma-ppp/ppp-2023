@@ -18,10 +18,11 @@
 
 import itertools
 import re
+from pathlib import Path
 
 
 def find_invalid_number(file_path, scan_length):
-    with open(file_path, 'r') as input_file:
+    with file_path.open() as input_file:
         current_nums = []
         for num in range(scan_length):
             current_nums.append(int(input_file.readline()))
@@ -35,7 +36,8 @@ def find_invalid_number(file_path, scan_length):
             replace_pointer = (replace_pointer + 1) % scan_length
 
 
-print(f'The first invalid number in the given file is: {find_invalid_number('../../data/input_sequence.txt', 25)}')
+numbers_path = Path('../../data/input_sequence.txt')
+print(f'The first invalid number in the given file is: {find_invalid_number(numbers_path, 25)}')
 
 # PART 2:
 # The input to this exercise specifies rules for bags containing other bags.
@@ -88,7 +90,8 @@ def fill_bag_dict(file_path):
     return bag_dict
 
 
-my_bag_dict = fill_bag_dict('../../data/input_bags.txt')
+bags_path = Path('../../data/input_bags.txt')
+my_bag_dict = fill_bag_dict(bags_path)
 
 test_bag_dict = {'shiny gold': [['1', 'dark olive'], ['2', 'vibrant plum']],
                  'dark olive': [['3', 'faded blue'], ['4', 'dotted black']],
