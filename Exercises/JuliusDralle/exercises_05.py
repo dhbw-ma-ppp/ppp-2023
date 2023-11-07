@@ -27,7 +27,7 @@ def findNumber():
             numbers.append(int(currentLine))
 
         isBuildable = True
-        for iteratorThroughBigSteps in range(26,len(numbers)):
+        for iteratorThroughBigSteps in range(25,len(numbers)):
             isBuildable = False
             for iteratorThroughSmallSteps in range(iteratorThroughBigSteps-26, iteratorThroughBigSteps):
                 for iteratorThroughSmallStepsTwo in range(iteratorThroughBigSteps-26, iteratorThroughBigSteps):
