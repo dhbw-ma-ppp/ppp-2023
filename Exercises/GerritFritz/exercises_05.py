@@ -43,14 +43,14 @@ def get_bag_dict(path):
 
 def get_bag_count(root, bag_dict):
     @lru_cache()
-    def count_bags(root, parent):
+    def count_bags(parent):
         bag_count = (parent!=root)
         for bag in bag_dict[parent]:
             if len(bag)<=2: continue
             name = f"{bag[1]} {bag[2]}"
-            bag_count += int(bag[0]) * count_bags(root, name)
+            bag_count += int(bag[0]) * count_bags(name)
         return bag_count 
-    return count_bags(root, root)
+    return count_bags(root)
     
 
 bag_dict =  get_bag_dict("data//input_bags.txt")
