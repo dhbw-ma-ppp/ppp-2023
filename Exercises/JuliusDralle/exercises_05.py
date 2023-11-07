@@ -19,23 +19,25 @@
 def findNumber():
     numbers = []
 
-    fp = open("data\input_sequence.txt", 'r')
+    with open("data\input_sequence.txt", 'r') as fp:
 
-    lines = fp.read().strip()
+        lines = fp.read().strip()
 
-    for currentLine in lines.split("\n"):
-        numbers.append(int(currentLine))
+        for currentLine in lines.split("\n"):
+            numbers.append(int(currentLine))
 
-    for iteratorThroughBigSteps in range(26,len(numbers),26):
-        for iteratorThroughSmallSteps in range(iteratorThroughBigSteps-26, iteratorThroughBigSteps):
-            for iteratorThroughSmallStepsTwo in range(iteratorThroughBigSteps-26, iteratorThroughBigSteps):
-                if numbers[iteratorThroughSmallSteps] + numbers[iteratorThroughSmallStepsTwo] == numbers[iteratorThroughBigSteps] and iteratorThroughSmallSteps != iteratorThroughSmallStepsTwo:
-                    return f"{numbers[iteratorThroughSmallSteps]} + {numbers[iteratorThroughSmallStepsTwo]} = {numbers[iteratorThroughBigSteps]}"
+        isBuildable = True
+        for iteratorThroughBigSteps in range(26,len(numbers)):
+            isBuildable = False
+            for iteratorThroughSmallSteps in range(iteratorThroughBigSteps-26, iteratorThroughBigSteps):
+                for iteratorThroughSmallStepsTwo in range(iteratorThroughBigSteps-26, iteratorThroughBigSteps):
+                    if numbers[iteratorThroughSmallSteps] + numbers[iteratorThroughSmallStepsTwo] == numbers[iteratorThroughBigSteps] and iteratorThroughSmallSteps != iteratorThroughSmallStepsTwo:
+                        isBuildable = True
+            if isBuildable == False:
+                return f"The number {iteratorThroughBigSteps} cannot be built by the 25 numbers before"
+            
 
 
-
-
-    fp.close()
 
 print(findNumber())
 
@@ -70,68 +72,64 @@ print(findNumber())
 # For the actual inputs, how many bags are inside your single shiny gold bag?
 # As usual, please list the answer as part of the PR.
 
-fp = open("data\input_bags.txt")
+with open("data\input_bags.txt") as fp:
 
-lines_temp = fp.read().strip()
+    lines_temp = fp.read().strip()
 
-lines = []
-
-
-for current_line in lines_temp.split("\n"):
-    lines.append(current_line)
+    lines = []
 
 
-statement_dict_array = [[],[]]  
-for iterator_lines in lines:
-    #print(iterator_lines.split(" contain "))
-    current_bag, statement = iterator_lines.split(" contain ")
-    current_bag = current_bag[:-5]
-    
-    
-    statement_array = []   
-    # The first index of this array is the amount of bags where as the the second index are the names of the bags
-    # statement_array = [[1,2],["blue bag","red bag"]] = 1 blue bag and 2 red bags
-    for i in statement.split(", "):
-        statement_array.append(i[:1])
-        if i[-4:] == "bags":
-            new_statement = i[2:-5]
-            statement_array.append(new_statement)
-        elif i[-5:] == "bags.":
-            new_statement = i[2:-6]
-            statement_array.append(new_statement)
-        elif i[-3:] == "bag":
-            new_statement = i[2:-4]
-            statement_array.append(new_statement)
-        elif i[-4:] == "bag.":
-            new_statement = i[2:-5]
-            statement_array.append(new_statement)
-        else:
-            statement_array.append(str(i[3:]))
-    
-    statement_dict_array[0].append(current_bag)
-    statement_dict_array[1].append(statement_array)
+    for current_line in lines_temp.split("\n"):
+        lines.append(current_line)
 
 
-#print(statement_dict_array)
+    statement_dict_array = [[],[]]  
+    for iterator_lines in lines:
+        #print(iterator_lines.split(" contain "))
+        current_bag, statement = iterator_lines.split(" contain ")
+        current_bag = current_bag[:-5]
+        
+        
+        statement_array = []   
+        # The first index of this array is the amount of bags where as the the second index are the names of the bags
+        # statement_array = [[1,2],["blue bag","red bag"]] = 1 blue bag and 2 red bags
+        for i in statement.split(", "):
+            statement_array.append(i[:1])
+            if i[-4:] == "bags":
+                new_statement = i[2:-5]
+                statement_array.append(new_statement)
+            elif i[-5:] == "bags.":
+                new_statement = i[2:-6]
+                statement_array.append(new_statement)
+            elif i[-3:] == "bag":
+                new_statement = i[2:-4]
+                statement_array.append(new_statement)
+            elif i[-4:] == "bag.":
+                new_statement = i[2:-5]
+                statement_array.append(new_statement)
+            else:
+                statement_array.append(str(i[3:]))
+        
+        statement_dict_array[0].append(current_bag)
+        statement_dict_array[1].append(statement_array)
 
-def countBags(bagType):
-    counter = 1
-    # look for recursion end
-    for i in range(0,len(statement_dict_array[0])):
-        if statement_dict_array[0][i] ==  bagType and statement_dict_array[1][i][0] == "n":
-            return 1
-    
-    for i in range(0,len(statement_dict_array[0])):
-        if statement_dict_array[0][i] ==  bagType:
-            for multiplicatorOfBags in range(1,len(statement_dict_array[1][i]),2):
-                counter = counter + int(statement_dict_array[1][i][multiplicatorOfBags-1]) * countBags(statement_dict_array[1][i][multiplicatorOfBags])
 
-    return counter  
+    #print(statement_dict_array)
+
+    def countBags(bagType):
+        counter = 1
+        # look for recursion end
+        for i in range(0,len(statement_dict_array[0])):
+            if statement_dict_array[0][i] ==  bagType and statement_dict_array[1][i][0] == "n":
+                return 1
+        
+        for i in range(0,len(statement_dict_array[0])):
+            if statement_dict_array[0][i] ==  bagType:
+                for multiplicatorOfBags in range(1,len(statement_dict_array[1][i]),2):
+                    counter = counter + int(statement_dict_array[1][i][multiplicatorOfBags-1]) * countBags(statement_dict_array[1][i][multiplicatorOfBags])
+
+        return counter  
 
 print(countBags("shiny gold"))
-
-
-fp.close()
-
 
 # Result 6261
