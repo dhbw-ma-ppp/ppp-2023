@@ -29,8 +29,8 @@ def findNumber():
         isBuildable = True
         for iteratorThroughBigSteps in range(25,len(numbers)):
             isBuildable = False
-            for iteratorThroughSmallSteps in range(iteratorThroughBigSteps-26, iteratorThroughBigSteps):
-                for iteratorThroughSmallStepsTwo in range(iteratorThroughBigSteps-26, iteratorThroughBigSteps):
+            for iteratorThroughSmallSteps in range(iteratorThroughBigSteps-25, iteratorThroughBigSteps):
+                for iteratorThroughSmallStepsTwo in range(iteratorThroughBigSteps-25, iteratorThroughBigSteps):
                     if numbers[iteratorThroughSmallSteps] + numbers[iteratorThroughSmallStepsTwo] == numbers[iteratorThroughBigSteps] and iteratorThroughSmallSteps != iteratorThroughSmallStepsTwo:
                         isBuildable = True
             if isBuildable == False:
