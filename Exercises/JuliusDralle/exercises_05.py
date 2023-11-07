@@ -34,7 +34,7 @@ def findNumber():
                     if numbers[iteratorThroughSmallSteps] + numbers[iteratorThroughSmallStepsTwo] == numbers[iteratorThroughBigSteps] and iteratorThroughSmallSteps != iteratorThroughSmallStepsTwo:
                         isBuildable = True
             if isBuildable == False:
-                return f"The number {iteratorThroughBigSteps} cannot be built by the 25 numbers before"
+                return f"The number at {iteratorThroughBigSteps} ({numbers[iteratorThroughBigSteps]}) cannot be built by the 25 numbers before"
             
 
 
