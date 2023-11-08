@@ -52,13 +52,16 @@
 # Finally, run you code for the following instructions; when asked for input provide the number '5'. The program should print a single number when executed.
 # Please take note of that number in your PR, so I don't need to run all the files myself :)
 
-def _command_add(current_index, memory_stream, params):
-    input_mode_1 = params % 10
-    params //= 10
-    input_mode_2 = params % 10
+def _get_values(current_index, memory_stream, params, amount):
+    values = []
+    for i in range(amount):
+        values.append(memory_stream[memory_stream[current_index + i + 1] if params % 10 == 0 else current_index + i + 1])
+        params //= 10
 
-    val_1 = memory_stream[memory_stream[current_index + 1] if input_mode_1 == 0 else current_index + 1]
-    val_2 = memory_stream[memory_stream[current_index + 2] if input_mode_2 == 0 else current_index + 2]
+    return values
+
+def _command_add(current_index, memory_stream, params):
+    val_1, val_2 = _get_values(current_index, memory_stream, params, 2)
     id_result = memory_stream[current_index + 3]
 
     memory_stream[id_result] = val_1 + val_2
@@ -66,12 +69,7 @@ def _command_add(current_index, memory_stream, params):
 
 
 def _command_multiply(current_index, memory_stream, params):
-    input_mode_1 = params % 10
-    params //= 10
-    input_mode_2 = params % 10
-
-    val_1 = memory_stream[memory_stream[current_index + 1] if input_mode_1 == 0 else current_index + 1]
-    val_2 = memory_stream[memory_stream[current_index + 2] if input_mode_2 == 0 else current_index + 2]
+    val_1, val_2 = _get_values(current_index, memory_stream, params, 2)
     id_result = memory_stream[current_index + 3]
     
     memory_stream[id_result] = val_1 * val_2
@@ -95,45 +93,28 @@ def _command_input(current_index, memory_stream, params):
 
 
 def _command_output(current_index, memory_stream, params):
-    input_mode = params % 10
-
-    value = memory_stream[memory_stream[current_index + 1] if input_mode == 0 else current_index + 1]
+    value = _get_values(current_index, memory_stream, params, 1)[0]
 
     print(value)
     return current_index + 2
 
 
 def _command_jump_if_true(current_index, memory_stream, params):
-    input_mode_1 = params % 10
-    params //= 10
-    input_mode_2 = params % 10
-
-    value = memory_stream[memory_stream[current_index + 1] if input_mode_1 == 0 else current_index + 1]
-    jump_address = memory_stream[memory_stream[current_index + 2] if input_mode_2 == 0 else current_index + 2]
+    value, jump_address = _get_values(current_index, memory_stream, params, 2)
 
     if bool(value): return jump_address
     else: return current_index + 3
 
 
 def _command_jump_if_false(current_index, memory_stream, params):
-    input_mode_1 = params % 10
-    params //= 10
-    input_mode_2 = params % 10
-
-    value = memory_stream[memory_stream[current_index + 1] if input_mode_1 == 0 else current_index + 1]
-    jump_address = memory_stream[memory_stream[current_index + 2] if input_mode_2 == 0 else current_index + 2]
+    value, jump_address = _get_values(current_index, memory_stream, params, 2)
 
     if bool(value): return current_index + 3
     else: return jump_address
 
 
 def _command_less_than(current_index, memory_stream, params):
-    input_mode_1 = params % 10
-    params //= 10
-    input_mode_2 = params % 10
-
-    val_1 = memory_stream[memory_stream[current_index + 1] if input_mode_1 == 0 else current_index + 1]
-    val_2 = memory_stream[memory_stream[current_index + 2] if input_mode_2 == 0 else current_index + 2]
+    val_1, val_2 = _get_values(current_index, memory_stream, params, 2)
     id_result = memory_stream[current_index + 3]
 
     memory_stream[id_result] = int(val_1 < val_2)
@@ -141,12 +122,7 @@ def _command_less_than(current_index, memory_stream, params):
 
 
 def _command_equals(current_index, memory_stream, params):
-    input_mode_1 = params % 10
-    params //= 10
-    input_mode_2 = params % 10
-
-    val_1 = memory_stream[memory_stream[current_index + 1] if input_mode_1 == 0 else current_index + 1]
-    val_2 = memory_stream[memory_stream[current_index + 2] if input_mode_2 == 0 else current_index + 2]
+    val_1, val_2 = _get_values(current_index, memory_stream, params, 2)
     id_result = memory_stream[current_index + 3]
 
     memory_stream[id_result] = int(val_1 == val_2)
