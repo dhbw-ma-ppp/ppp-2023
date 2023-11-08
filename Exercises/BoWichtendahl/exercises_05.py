@@ -93,8 +93,8 @@ my_bag_dict = fill_bag_dict(bags_path)
 test_bag_dict = {'shiny gold': [('1', 'dark olive'), ('2', 'vibrant plum')],
                  'dark olive': [('3', 'faded blue'), ('4', 'dotted black')],
                  'vibrant plum': [('5', 'faded blue'), ('6', 'dotted black')],
-                 'faded blue': None,
-                 'dotted black': None}
+                 'faded blue': [],
+                 'dotted black': []}
 
 print(f'The test shiny gold bag contains {count_bags(test_bag_dict, 'shiny gold')} bags.')
 print(f'The real shiny gold bag contains {count_bags(my_bag_dict, 'shiny gold')} bags.')
