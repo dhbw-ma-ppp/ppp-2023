@@ -23,9 +23,7 @@ from pathlib import Path
 
 def find_invalid_number(file_path, scan_length):
     with file_path.open() as input_file:
-        current_nums = []
-        for num in range(scan_length):
-            current_nums.append(int(input_file.readline()))
+        current_nums = [int(input_file.readline()) for _ in range(scan_length)]
         replace_pointer = 0
         while (in_str := input_file.readline()) != '':
             num_to_check = int(in_str)
@@ -36,7 +34,7 @@ def find_invalid_number(file_path, scan_length):
             replace_pointer = (replace_pointer + 1) % scan_length
 
 
-numbers_path = Path('../../data/input_sequence.txt')
+numbers_path = Path(__file__).parent.parent.parent / 'data' / 'input_sequence.txt'
 print(f'The first invalid number in the given file is: {find_invalid_number(numbers_path, 25)}')
 
 # PART 2:
@@ -53,7 +51,7 @@ print(f'The first invalid number in the given file is: {find_invalid_number(numb
 # to those rules your bag contains
 # - 1 dark olive bag, in turn containing
 #   - 3 faded blue bags (no further content)
-#   - 4 dotted black bags (no further content
+#   - 4 dotted black bags (no further content)
 # - 2 vibrant plum bags, in turn containing
 #   - 5 faded blue bags (no further content)
 #   - 6 dotted black bags (no further content)
@@ -69,7 +67,7 @@ print(f'The first invalid number in the given file is: {find_invalid_number(numb
 
 
 def count_bags(bag_dict, bag):
-    if bag_dict[bag][0][0] == 'no':
+    if not bag_dict[bag]:
         return None
     total_bags = 0
     for content in bag_dict[bag]:
@@ -83,21 +81,20 @@ def fill_bag_dict(file_path):
     bag_dict = {}
     with open(file_path, 'r') as input_file:
         while (input_line := input_file.readline()) != '':
-            input_line = re.split(r' bags\.| bag\.| bags, | bag, | bags contain ', input_line)[:-1]
-            key = input_line[0]
-            data = [re.split(r' ', content, 1) for content in input_line[1:]]
+            key = re.match(r"([^ ]* [^ ]*)", input_line)[0]
+            data = re.findall(r"(\d+) ([^ ]* [^ ]*)", input_line)
             bag_dict[key] = data
     return bag_dict
 
 
-bags_path = Path('../../data/input_bags.txt')
+bags_path = Path(__file__).parent.parent.parent / 'data' / 'input_bags.txt'
 my_bag_dict = fill_bag_dict(bags_path)
 
-test_bag_dict = {'shiny gold': [['1', 'dark olive'], ['2', 'vibrant plum']],
-                 'dark olive': [['3', 'faded blue'], ['4', 'dotted black']],
-                 'vibrant plum': [['5', 'faded blue'], ['6', 'dotted black']],
-                 'faded blue': [['no', 'other']],
-                 'dotted black': [['no', 'other']]}
+test_bag_dict = {'shiny gold': [('1', 'dark olive'), ('2', 'vibrant plum')],
+                 'dark olive': [('3', 'faded blue'), ('4', 'dotted black')],
+                 'vibrant plum': [('5', 'faded blue'), ('6', 'dotted black')],
+                 'faded blue': None,
+                 'dotted black': None}
 
 print(f'The test shiny gold bag contains {count_bags(test_bag_dict, 'shiny gold')} bags.')
 print(f'The real shiny gold bag contains {count_bags(my_bag_dict, 'shiny gold')} bags.')
