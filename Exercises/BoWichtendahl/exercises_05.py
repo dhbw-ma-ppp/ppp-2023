@@ -81,8 +81,8 @@ def fill_bag_dict(file_path):
     bag_dict = {}
     with open(file_path, 'r') as input_file:
         while (input_line := input_file.readline()) != '':
-            key = re.match(r"([^ ]* [^ ]*)", input_line)[0]
-            data = re.findall(r"(\d+) ([^ ]* [^ ]*)", input_line)
+            key = re.match(r"(\S+\s\S+)", input_line)[0]
+            data = re.findall(r"(\d+)\s(\S+\s\S+)", input_line)
             bag_dict[key] = data
     return bag_dict
 
