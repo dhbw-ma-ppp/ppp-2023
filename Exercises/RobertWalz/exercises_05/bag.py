@@ -31,12 +31,12 @@ class Bag:
     def count_content(self):
         count = 0 
         if not self.content:
-            return 1
+            return 0
 
         for bag in self.content:
-            count += bag[1] * bag[0].count_content()
+            count += bag[1] * (bag[0].count_content() + 1) # +1 to count self
             
-        return count + 1
+        return count 
 
     def add_content(self, bag_instance, amount):
         self.content.append((bag_instance, amount))
