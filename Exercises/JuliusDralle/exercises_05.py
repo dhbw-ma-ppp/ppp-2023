@@ -83,7 +83,7 @@ with open("data\input_bags.txt") as fp:
         lines.append(current_line)
 
 
-    statement_dict_array = [[],[]]  
+    statement_bags_array = [[],[]]  
     for iterator_lines in lines:
         #print(iterator_lines.split(" contain "))
         current_bag, statement = iterator_lines.split(" contain ")
@@ -93,43 +93,44 @@ with open("data\input_bags.txt") as fp:
         statement_array = []   
         # The first index of this array is the amount of bags where as the the second index are the names of the bags
         # statement_array = [[1,2],["blue bag","red bag"]] = 1 blue bag and 2 red bags
-        for i in statement.split(", "):
-            statement_array.append(i[:1])
-            if i[-4:] == "bags":
-                new_statement = i[2:-5]
+        for iterator_splitter in statement.split(", "):
+            statement_array.append(iterator_splitter[:1])
+            if iterator_splitter[-4:] == "bags":
+                new_statement = iterator_splitter[2:-5]
                 statement_array.append(new_statement)
-            elif i[-5:] == "bags.":
-                new_statement = i[2:-6]
+            elif iterator_splitter[-5:] == "bags.":
+                new_statement = iterator_splitter[2:-6]
                 statement_array.append(new_statement)
-            elif i[-3:] == "bag":
-                new_statement = i[2:-4]
+            elif iterator_splitter[-3:] == "bag":
+                new_statement = iterator_splitter[2:-4]
                 statement_array.append(new_statement)
-            elif i[-4:] == "bag.":
-                new_statement = i[2:-5]
+            elif iterator_splitter[-4:] == "bag.":
+                new_statement = iterator_splitter[2:-5]
                 statement_array.append(new_statement)
             else:
-                statement_array.append(str(i[3:]))
+                statement_array.append(str(iterator_splitter[3:]))
         
-        statement_dict_array[0].append(current_bag)
-        statement_dict_array[1].append(statement_array)
+        statement_bags_array[0].append(current_bag)
+        statement_bags_array[1].append(statement_array)
 
 
     #print(statement_dict_array)
 
-    def countBags(bagType):
+    def countBags(bag_type):
         counter = 1
         # look for recursion end
-        for i in range(0,len(statement_dict_array[0])):
-            if statement_dict_array[0][i] ==  bagType and statement_dict_array[1][i][0] == "n":
+        for iterator_bags in range(0,len(statement_bags_array[0])):
+            if statement_bags_array[0][iterator_bags] ==  bag_type and statement_bags_array[1][iterator_bags][0] == "n":
                 return 1
-        
-        for i in range(0,len(statement_dict_array[0])):
-            if statement_dict_array[0][i] ==  bagType:
-                for multiplicatorOfBags in range(1,len(statement_dict_array[1][i]),2):
-                    counter = counter + int(statement_dict_array[1][i][multiplicatorOfBags-1]) * countBags(statement_dict_array[1][i][multiplicatorOfBags])
+                    
+        for iterator_bagsinbags in range(0,len(statement_bags_array[0])):
+            if statement_bags_array[0][iterator_bagsinbags] ==  bag_type:
+                for multiplicator_of_bags in range(1,len(statement_bags_array[1][iterator_bagsinbags]),2):
+                    counter = counter + int(statement_bags_array[1][iterator_bagsinbags][multiplicator_of_bags-1]) * countBags(statement_bags_array[1][iterator_bagsinbags][multiplicator_of_bags])
 
         return counter  
 
-print(countBags("shiny gold"))
+#The -1 is subtracting the "shiny gold bag" out of the counted
+print(countBags("shiny gold")-1)
 
 # Result 6261
