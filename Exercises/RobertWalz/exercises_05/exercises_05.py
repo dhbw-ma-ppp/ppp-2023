@@ -42,15 +42,15 @@ def get_data():
 numbers = get_data()
 
 
-# lower_bound = 0
-# upper_bound = 25
-# for index in range(25, len(numbers)):
-#     sums = calc_sums(numbers[lower_bound:upper_bound])
-#     if numbers[index] not in sums:
-#         print(f"Found {numbers[index]} at {index}")
-#         break
-#     lower_bound += 1
-#     upper_bound += 1      
+lower_bound = 0
+upper_bound = 25
+for index in range(25, len(numbers)):
+    sums = calc_sums(numbers[lower_bound:upper_bound])
+    if numbers[index] not in sums:
+        print(f"Found {numbers[index]} at {index}")
+        break
+    lower_bound += 1
+    upper_bound += 1      
           
 
 
