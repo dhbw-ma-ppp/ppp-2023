@@ -116,7 +116,7 @@ with open("data\input_bags.txt") as fp:
 
     #print(statement_dict_array)
 
-    def countBags(bag_type):
+    def recursive_count_of_items(bag_type):
         counter = 1
         # look for recursion end
         for iterator_bags in range(0,len(statement_bags_array[0])):
@@ -126,11 +126,16 @@ with open("data\input_bags.txt") as fp:
         for iterator_bagsinbags in range(0,len(statement_bags_array[0])):
             if statement_bags_array[0][iterator_bagsinbags] ==  bag_type:
                 for multiplicator_of_bags in range(1,len(statement_bags_array[1][iterator_bagsinbags]),2):
-                    counter = counter + int(statement_bags_array[1][iterator_bagsinbags][multiplicator_of_bags-1]) * countBags(statement_bags_array[1][iterator_bagsinbags][multiplicator_of_bags])
+                    counter = counter + int(statement_bags_array[1][iterator_bagsinbags][multiplicator_of_bags-1]) * recursive_count_of_items(statement_bags_array[1][iterator_bagsinbags][multiplicator_of_bags])
 
-        return counter  
+        return counter 
+
+    def countBags(bag_type):
+        numOfBags = recursive_count_of_items(bag_type)
+        return(numOfBags - 1)
+
 
 #The -1 is subtracting the "shiny gold bag" out of the counted
-print(countBags("shiny gold")-1)
+print(countBags("shiny gold"))
 
 # Result 6261
