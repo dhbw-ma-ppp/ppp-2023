@@ -138,4 +138,4 @@ with open("data\input_bags.txt") as fp:
 #The -1 is subtracting the "shiny gold bag" out of the counted
 print(countBags("shiny gold"))
 
-# Result 6261
+# Result 6260
