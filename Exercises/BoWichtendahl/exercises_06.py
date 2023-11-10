@@ -102,12 +102,19 @@ import re
 from pathlib import Path
 
 
-def deduce_file_structure(input_history_path: Path) -> dict:
-    file_structure = {}
-    current_dir = ''
+def cwd_and_upstream_paths(in_path: str) -> str:
+    while in_path != '/':
+        yield in_path
+        in_path = re.match(r'(.*/).*/$', in_path).group(1)
+    yield '/'
+
+
+def deduce_directory_sizes(input_history_path: Path) -> dict:
+    directory_sizes = {'/': 0}
+    current_dir = '/'
     with input_history_path.open() as input_history:
         last_command = ''
-        while (current_line := input_history.readline().strip().split(' ')) != '':
+        while (current_line := input_history.readline().strip().split(' '))[0] != '':
             if current_line[0] == '$':
                 last_command = current_line[1]
                 ls_first_iter = True
@@ -116,21 +123,58 @@ def deduce_file_structure(input_history_path: Path) -> dict:
                     case '/':
                         current_dir = '/'
                     case '..':
-                        current_dir = re.match(r'(.+)/[^/]+$', current_dir).group(1)
+                        try:
+                            current_dir = re.match(r'(.*/).*/$', current_dir).group(1)
+                        except AttributeError:
+                            current_dir = '/'
                     case _:
                         current_dir += current_line[2] + '/'
+                        if current_dir not in directory_sizes.keys():
+                            directory_sizes[current_dir] = 0
             elif last_command == 'ls':
                 if ls_first_iter:
                     ls_first_iter = False
                 else:
                     match current_line[0]:
                         case 'dir':
-                            file_structure[current_dir]['dirs'].append(current_line[1])
+                            pass
                         case _:
-                            file_structure[current_dir]['files'].append((current_line[0], current_line[1]))
+                            for dir_path in cwd_and_upstream_paths(current_dir):
+                                directory_sizes[dir_path] += int(current_line[0])
             else:
-                print('Well it fucked up')
-    return file_structure
+                raise RuntimeError('This should never be reached. The terminal history probably contained some unknown '
+                                   'commands')
+    return directory_sizes
 
 
-print(deduce_file_structure(Path(__file__).parents[2] / 'data' / 'terminal_record.txt'))
+def dir_size_sum(dir_sizes_dict: dict, max_dir_size: int) -> int:
+    return sum([dir_size for dir_size in dir_sizes_dict.values() if dir_size <= max_dir_size])
+
+
+def determine_directory_to_delete(dir_sizes_dict: dict, file_system_size: int, needed_space: int) -> str:
+    free_space = file_system_size - dir_sizes_dict['/']
+    size_to_delete = needed_space - free_space
+    min_offset = file_system_size
+    current_determined_path = ''
+    for path, dir_size in dir_sizes_dict.items():
+        offset = dir_size - size_to_delete
+        if 0 <= offset < min_offset:
+            min_offset = offset
+            current_determined_path = path
+    return current_determined_path
+
+
+terminal_history_path = Path(__file__).parents[2] / 'data' / 'terminal_record.txt'
+directory_sizes_dict = deduce_directory_sizes(terminal_history_path)
+
+max_directory_size = 100000
+print(f'The sum of the sizes of all directories with a maximal size of {max_directory_size} is:'
+      f' {dir_size_sum(directory_sizes_dict, max_directory_size)}')
+
+fs_size = 70000000
+required_space = 30000000
+dir_path_to_delete = determine_directory_to_delete(directory_sizes_dict, fs_size, required_space)
+print(f'The directory to delete has the following path: {dir_path_to_delete}')
+print(f'{directory_sizes_dict[dir_path_to_delete]} Storage Units will be freed, leaving '
+      f'{fs_size - required_space - directory_sizes_dict['/'] + directory_sizes_dict[dir_path_to_delete]}'
+      f' free after the Update')
