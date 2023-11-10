@@ -37,3 +37,4 @@ git stash pop -- restore changes from the stash
 - checkout working branch for current exercises (NEW NAME!): git checkout -b <exercise_N+1_NAME>
 < PROCEED AS ABOVE > 
 
+helpful YouTube Video for understanding git: https://www.youtube.com/watch?v=uGLQF2kUwOA
