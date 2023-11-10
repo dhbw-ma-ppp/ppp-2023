@@ -34,8 +34,8 @@ def find_invalid_number():
     preceding_length = 25 # Length of preceding numbers to check
     
     for element in range(preceding_length, len(numbers)): # Iterating, starting from 26th element
-        
-        if not any(numbers[element] - numbers[element2] in numbers[element2+1:element] for element2 in range(element - preceding_length, element)): # Checks if current number is not the sum of any two of the preceding 25 numbers
+        # Checks if current number is not the sum of any two of the preceding 25 numbers, "second_element" represents each of preceding 25 numbers
+        if not any(numbers[element] - numbers[second_element] in numbers[second_element+1:element] for second_element in range(element - preceding_length, element)): 
             return numbers[element]
     return None
 
@@ -76,13 +76,30 @@ def parse_bag_rules(filename):
     filepath = Path (__file__).parents[2] / 'data' / filename
     with open(filepath, 'r') as file:
         for line in file.readlines():
-            bag_color = re.match(r"(\w+ \w+) bags contain", line).groups()[0]
-            contains = re.findall(r"(\d+) (\w+ \w+) bag", line)
-            bag_rules[bag_color] = {color: int(quantity) for quantity, color in contains}
-    return bag_rules
+            bag_color = re.match(r"(\w+ \w+) bags contain", line).groups()[0] # Extracting bag using regular expression
+            contains = re.findall(r"(\d+) (\w+ \w+) bag", line) # Finding all matches that dont overlap
+            bag_rules[bag_color] = {color: int(quantity) for quantity, color in contains} # Adding to bag_rules dict with contained bags and their quantities
+    return bag_rules # returning the dict
+
+"""
+bag_color = re.match(r"(\w+ \w+) bags contain", line).groups()[0]:
+
+match: checking if a string matches a specified pattern, if pattern is found it return a object, otherwise "None"
+r: means raw string so it doesnt see backslashes as escape chars
+\w+: if it matches one or more word chars (+ means more), word chars are : a-z, A-Z and 0-9, and also the space inbetween is a requirement
+.groups : returning a tuple that contains all groups of the match
+line: overall just getting the 2 first words, so the color of the bag. For example "bright orange bags... would set "bag_color" to "bright orange"
+
+contains = re.findall(r"(\d+) (\w+ \w+) bag", line):
+
+This is basically also the same but instead using match, it uses "findall", so that looks for all matches that dont overlap, if nothing is found, it returns empty.
+\d+: any numeral that matche (0-9)
+"""
 
 def count_bags(bag_rules, color):
-    return sum(quantity * (1 + count_bags(bag_rules, contained_color)) for contained_color, quantity in bag_rules[color].items())
+    # Sums the quantity of each contained bag and also counts bag within those bags
+    return sum(quantity * (1 + count_bags(bag_rules, contained_color))
+                for contained_color, quantity in bag_rules[color].items())
 
-bag_rules = parse_bag_rules('input_bags.txt')
-print(count_bags(bag_rules, 'shiny gold'))
+bag_rules = parse_bag_rules('input_bags.txt') #Loading bag rules from file
+print(count_bags(bag_rules, 'shiny gold')) # Printing total number of bags in a shiny gold bag
