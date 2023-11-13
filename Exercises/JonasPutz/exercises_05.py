@@ -67,7 +67,7 @@ with file_path.open("r") as ifile:
 # For the actual inputs, how many bags are inside your single shiny gold bag?
 # As usual, please list the answer as part of the PR.
 
-_global_bag_list = {}   #stores all bags mentioned by the rules
+_global_bag_dict = {}   #stores all bags mentioned by the rules
 class Bag:
     def __init__(self, bags):
         self._bags = bags       #an array of the bags inside this bag in the format [(count, name),...]
@@ -81,7 +81,7 @@ class Bag:
         if self._bag_count != -1: return self._bag_count #value already known. Can return it
         else: 
             #Value unknown. Calculate it as the sum of the bagcount * number of bags inside the subbag + 1
-            self._bag_count = sum(count * (_global_bag_list[name].count_bags() + 1) for count, name in self._bags)
+            self._bag_count = sum(count * (_global_bag_dict[name].count_bags() + 1) for count, name in self._bags)
             return self._bag_count
 
 def count_bags(lines, bag_key):
@@ -90,7 +90,7 @@ def count_bags(lines, bag_key):
 
         if bag_content == "no other bags":
             #add empty bag
-            _global_bag_list[bag_name] = Bag([])
+            _global_bag_dict[bag_name] = Bag([])
         else:
             contained_bags = []
             for bag in bag_content.split(', '):
@@ -100,10 +100,10 @@ def count_bags(lines, bag_key):
                 else: contained_bags.append((count, name.rstrip("bags")[:-1]))
 
             #add bag with subbag
-            _global_bag_list[bag_name] = Bag(contained_bags)
+            _global_bag_dict[bag_name] = Bag(contained_bags)
 
     #return the number of bags inside the requested bag
-    return _global_bag_list[bag_key.rstrip('bag')[:-1]].count_bags()
+    return _global_bag_dict[bag_key.rstrip('bag')[:-1]].count_bags()
 
 file_path = Path('.') / 'ppp-2023' / 'data' / 'input_bags.txt'
 with file_path.open("r") as ifile:
