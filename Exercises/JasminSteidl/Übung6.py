@@ -97,64 +97,43 @@
 # 
 # You can find the /actual/ input to both parts in data/terminal_record.txt
 ###############################################################################
-import re
-from pathlib import Path
+input = open('terminal_record.txt').read().splitlines()
 
-def parse_terminal_session(file_path):
-    directories = {}
-    current_directory = "/"
-    stack = []
 
-    with open(file_path, 'r') as file:
-        for line in file:
-            line = line.strip()
-            match = re.match(r'(dir\s\S+)|(\d+\s\S+)', line)
-            if match:
-                item = match.group(0)
+class Dir:
+    def __init__(self, name, parent):
+        self.name = name
+        self.parent = parent
+        self.subdirs = {}
+        self.files = []
 
-                if item.startswith('dir'):
-                    current_directory = current_directory + "/" + item.split()[1]
-                    stack.append((current_directory, 0))
-                else:
-                    size, _ = item.split()
-                    _, current_size = stack[-1]
-                    stack[-1] = (current_directory, current_size + int(size))
 
-    for directory, size in stack:
-        directories[directory] = size
+root = Dir('/', None)
+current_dir = root
 
-    return directories
+for line in input[1:]:
+    line_parts = line.split(' ')
+    if line.startswith('dir'):
+        current_dir.subdirs[line_parts[1]] = Dir(line_parts[1], current_dir)
+    if line.startswith('$ cd'):
+        current_dir = current_dir.parent if line_parts[2] == '..' else current_dir.subdirs[line_parts[2]]
+    if line_parts[0].isnumeric():
+        current_dir.files.append(int(line_parts[0]))
 
-def calculate_total_size(directories, max_size=100000):
-    total_size = sum(size for path, size in directories.items() if size <= max_size)
-    return total_size
+dir_sizes = []
 
-def delete_directory(directories, total_space, required_space):
-    unused_space = total_space - required_space
-    sorted_directories = sorted(directories.items(), key=lambda x: x[1], reverse=True)
 
-    deleted_directory = None
-    deleted_size = 0
-    current_space = 0
+def calc_dir_sizes(dir):
+    file_size = sum(dir.files)
+    for subdir in dir.subdirs.values():
+        file_size += calc_dir_sizes(subdir)
+    dir_sizes.append(file_size)
+    return file_size
 
-    for directory, size in sorted_directories:
-        if current_space + size <= unused_space:
-            current_space += size
-            deleted_directory = directory
-            deleted_size += size
-        else:
-            break
 
-    return deleted_directory, deleted_size
+calc_dir_sizes(root)
+print("The Sum of all the direcotries under 100000:", sum([size for size in dir_sizes if size < 100000]))
 
-# PART 1
-file_path = Path('/Users/jasminsteidl/Dokumente_offline/DHBW/vsc/Python/terminal_record.txt')
-directories = parse_terminal_session(file_path)
-total_size = calculate_total_size(directories)
-print(f"Total size of directories with size at most 100000: {total_size}")
 
-# PART 2
-total_space = 70000000
-required_space = 30000000
-deleted_directory, deleted_size = delete_directory(directories, total_space, required_space)
-print(f"Deleted directory: {deleted_directory}, Size: {deleted_size}")
+needed_space = 30000000 - (70000000 - dir_sizes[-1])
+print("Deleted file size:", min([size for size in dir_sizes if size >= needed_space]))
