@@ -59,36 +59,20 @@ test_2 = [3,9,8,9,10,9,4,9,99,-1,8]
 test_3 = [3,3,1107,-1,8,3,4,3,99]
 test_4 = [3,3,1105,-1,9,1101,0,0,12,4,12,99,1]
 
-def first_pos(mode,i, commands):
+def parameter_mode(mode,i, commands):
     if mode == "0":
-        first_pos = commands[i+1]
-        return first_pos
+        parameter = commands[i]
+        return parameter
     if mode == "1":
-        first_pos = i+1
-        return first_pos
+        parameter = i+1
+        return parameter
 
-def second_pos(mode,i, commands):
-    if mode == "0":
-        second_pos = commands[i+2]
-        return second_pos
-    if mode == "1":
-        second_pos = i+2
-        return second_pos
-
-def thierd_pos(mode, i, commands):
-    if mode == "0":
-        thierd_pos = commands[i+3]
-        return thierd_pos
-    if mode == "1":
-        thierd_pos = i+3
-        return thierd_pos
-
-def addition(first_pos, second_pos):
-    sum = first_pos + second_pos
+def addition(first_value, second_value):
+    sum = first_value + second_value
     return sum
 
-def multiplication(first_pos, second_pos):
-    product=first_pos * second_pos
+def multiplication(first_value, second_pos):
+    product=first_value * second_pos
     return product
 
 def do_input():
@@ -99,17 +83,11 @@ def do_input():
 def do_output(save_pos,commands):
     print(commands[save_pos])
 
-def jump_if_true(first_pos, second_pos):
-    if first_pos!=0:
-        i=second_pos
-        return i
-    else:
-        return False
 
-def jump_if_false(first_pos, second_pos):
-    if first_pos == 0:
-        i=second_pos
-        return i
+def jump_if(value, jump_pos):
+    if value == 0:
+        i=jump_pos
+        return False
     else:
         return True
     
@@ -137,9 +115,9 @@ def wierd_computer(commands):
         #print (command)
         if command == 99:
             break
-        first = first_pos(instruction[2],i,commands)
-        second = second_pos(instruction[3],i,commands)
-        thierd = thierd_pos(instruction[4],i,commands)
+        first = parameter_mode(instruction[2],i+1,commands)
+        second = parameter_mode(instruction[3],i+2,commands)
+        thierd = parameter_mode(instruction[4],i+3,commands)
         #print(instruction[4])
         #print(first,second,thierd)
         match command: 
@@ -164,13 +142,13 @@ def wierd_computer(commands):
                 do_output(save_pos,commands)
                 i+=2
             case 5:
-                if jump_if_true(commands[first],commands[second]) != False:
-                    i=jump_if_true(commands[first],commands[second])
+                if jump_if(commands[first],commands[second]) == True:
+                    i=commands[second]
                 else:
                     i+=3
             case 6:
-                if jump_if_false(commands[first],commands[second]) != True:
-                    i=jump_if_false(commands[first],commands[second])
+                if jump_if(commands[first],commands[second]) == False:
+                    i=commands[second]
                 else:
                     i+=3
             case 7:
