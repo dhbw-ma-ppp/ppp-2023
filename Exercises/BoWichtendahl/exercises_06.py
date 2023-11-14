@@ -98,20 +98,20 @@
 # You can find the /actual/ input to both parts in data/terminal_record.txt
 ###############################################################################
 
-import re
 from pathlib import Path
+from collections import defaultdict
 
 
-def cwd_and_upstream_paths(in_path: str) -> str:
-    while in_path != '/':
+def cwd_and_upstream_paths(in_path: Path) -> Path:
+    while in_path != Path('/'):
         yield in_path
-        in_path = re.match(r'(.*/).*/$', in_path).group(1)
-    yield '/'
+        in_path = in_path.parent
+    yield Path('/')
 
 
-def deduce_directory_sizes(input_history_path: Path) -> dict:
-    directory_sizes = {'/': 0}
-    current_dir = '/'
+def deduce_directory_sizes(input_history_path: Path) -> defaultdict:
+    directory_sizes = defaultdict(int)
+    current_dir = Path('/')
     with input_history_path.open() as input_history:
         last_command = ''
         while (current_line := input_history.readline().strip().split(' '))[0] != '':
@@ -121,16 +121,11 @@ def deduce_directory_sizes(input_history_path: Path) -> dict:
             if last_command == 'cd':
                 match current_line[2]:
                     case '/':
-                        current_dir = '/'
+                        current_dir = Path('/')
                     case '..':
-                        try:
-                            current_dir = re.match(r'(.*/).*/$', current_dir).group(1)
-                        except AttributeError:
-                            current_dir = '/'
+                        current_dir = current_dir.parent
                     case _:
-                        current_dir += current_line[2] + '/'
-                        if current_dir not in directory_sizes.keys():
-                            directory_sizes[current_dir] = 0
+                        current_dir = current_dir / current_line[2]
             elif last_command == 'ls':
                 if ls_first_iter:
                     ls_first_iter = False
@@ -147,15 +142,15 @@ def deduce_directory_sizes(input_history_path: Path) -> dict:
     return directory_sizes
 
 
-def dir_size_sum(dir_sizes_dict: dict, max_dir_size: int) -> int:
+def dir_size_sum(dir_sizes_dict: defaultdict, max_dir_size: int) -> int:
     return sum([dir_size for dir_size in dir_sizes_dict.values() if dir_size <= max_dir_size])
 
 
-def determine_directory_to_delete(dir_sizes_dict: dict, file_system_size: int, needed_space: int) -> str:
-    free_space = file_system_size - dir_sizes_dict['/']
+def determine_directory_to_delete(dir_sizes_dict: defaultdict, file_system_size: int, needed_space: int) -> Path:
+    free_space = file_system_size - dir_sizes_dict[Path('/')]
     size_to_delete = needed_space - free_space
     min_offset = file_system_size
-    current_determined_path = ''
+    current_determined_path = Path('/')
     for path, dir_size in dir_sizes_dict.items():
         offset = dir_size - size_to_delete
         if 0 <= offset < min_offset:
@@ -167,14 +162,14 @@ def determine_directory_to_delete(dir_sizes_dict: dict, file_system_size: int, n
 terminal_history_path = Path(__file__).parents[2] / 'data' / 'terminal_record.txt'
 directory_sizes_dict = deduce_directory_sizes(terminal_history_path)
 
-max_directory_size = 100000
-print(f'The sum of the sizes of all directories with a maximal size of {max_directory_size} is:'
-      f' {dir_size_sum(directory_sizes_dict, max_directory_size)}')
+MAX_DIRECTORY_SIZE = 100000
+print(f'The sum of the sizes of all directories with a maximal size of {MAX_DIRECTORY_SIZE} is:'
+      f' {dir_size_sum(directory_sizes_dict, MAX_DIRECTORY_SIZE)}')
 
-fs_size = 70000000
-required_space = 30000000
-dir_path_to_delete = determine_directory_to_delete(directory_sizes_dict, fs_size, required_space)
+FILE_SYSTEM_SIZE = 70000000
+REQUIRED_SPACE = 30000000
+dir_path_to_delete = determine_directory_to_delete(directory_sizes_dict, FILE_SYSTEM_SIZE, REQUIRED_SPACE)
 print(f'The directory to delete has the following path: {dir_path_to_delete}')
 print(f'{directory_sizes_dict[dir_path_to_delete]} Storage Units will be freed, leaving '
-      f'{fs_size - required_space - directory_sizes_dict['/'] + directory_sizes_dict[dir_path_to_delete]}'
+      f'{FILE_SYSTEM_SIZE - REQUIRED_SPACE - directory_sizes_dict[Path('/')] + directory_sizes_dict[dir_path_to_delete]}'
       f' free after the Update')
