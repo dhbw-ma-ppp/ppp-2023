@@ -97,8 +97,12 @@
 # 
 # You can find the /actual/ input to both parts in data/terminal_record.txt
 ###############################################################################
-input = open('terminal_record.txt').read().splitlines()
+with open('terminal_record.txt') as f:
+    task_input = f.read().splitlines()
 
+MAX_SIZE_FOR_ADDING = 100000
+MAX_SIZE_DIR = 70000000
+NEEDED_SPACE = 30000000
 
 class Dir:
     def __init__(self, name, parent):
@@ -132,8 +136,7 @@ def calc_dir_sizes(dir):
 
 
 calc_dir_sizes(root)
-print("The Sum of all the direcotries under 100000:", sum([size for size in dir_sizes if size < 100000]))
+print("The Sum of all the direcotries under 100000:", sum([size for size in dir_sizes if size < MAX_SIZE_FOR_ADDING]))
 
-
-needed_space = 30000000 - (70000000 - dir_sizes[-1])
-print("Deleted file size:", min([size for size in dir_sizes if size >= needed_space]))
+freed_space = NEEDED_SPACE - (MAX_SIZE_DIR - dir_sizes[-1])
+print("Deleted file size:", min([size for size in dir_sizes if size >= freed_space]))
