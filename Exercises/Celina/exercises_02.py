@@ -67,9 +67,9 @@ from math import nan
 
 
 
-list= ["1","-4","6","a","kgr"]
-list_1=["1","3","hallo","7","3^2","7.8.8","0","678.9785","abcde"]
-list_2=["nan","abs","23a","1234","678.9","e","+","infinity"]
+list= ["1","4","6","a","kgr"]
+list_1=["1","3","hallo","7","0","7.8","0","678.9785","abcde"]
+list_2=["nan","abs","23a","1234","678.9","e","+"]
 
 def split_list(list):
     number_list=[]
