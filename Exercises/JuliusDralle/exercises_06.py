@@ -72,8 +72,186 @@
 # directory considered is at most 100000, and mention the result in your PR.
 # For the example above the two directories meeting the size requirement are `a` and `e`, while `/` and `d` are too large.
 # The sum of the size of a and e would be 95437.
-#
-#
+
+import pathlib
+
+path_here = pathlib.Path(__file__).parent
+path_dir_exercises = path_here.parent
+path_dir_root = path_dir_exercises.parent
+
+path_dir_data = path_dir_root / "data"
+
+value_for_task_1 = 0
+
+
+######################################################################################
+
+class Directory:
+    def __init__(self, parent, name):
+        self.parent = parent
+        self.children = []
+        self.name = name
+
+    def __iter__(self):
+        return(iterator for iterator in self.children)
+
+    def add_dir(self, name):
+        new_dir = Directory(self, name)
+        self.children.append(new_dir)
+        return new_dir
+
+    def add_file(self,name,size):
+        new_file = File(self,name,size)
+        self.children.append(new_file)
+        return new_file
+    
+    def get_name(self):
+        return self.name
+    
+    def get_parent(self):
+        return self.parent
+    
+    def get_size(self):
+        size = 0 
+        for element_of_children in self.children:
+            size += element_of_children.get_size()
+        return size
+    
+    def do_task_one(self):
+        global value_for_task_1
+        for element_of_children in self.children:
+            if isinstance(element_of_children, Directory):
+                size_of_element_of_childen = element_of_children.get_size()
+                if size_of_element_of_childen <= 100000:
+                    value_for_task_1 += size_of_element_of_childen
+                    element_of_children.do_task_one()
+                    print(f"The dir {element_of_children.get_name()} has a size of {size_of_element_of_childen} and therefore participates in task 1")
+                    
+
+class File:
+    def __init__(self, parent, name, size):
+        self.parent = parent
+        self.size = int(size)
+        self.name = name
+        
+    def get_name(self):
+        return self.name
+    
+    def get_size(self):
+        return self.size
+
+######################################################################################
+
+# #Testing of own classes
+# root = Directory(None)
+# childofRoot = root.add_dir()
+# childofRoot.add_file(20)
+# childofRoot.add_file(30)
+# root.add_file(5)
+
+
+
+with open(path_dir_data / "terminal_record.txt", "r") as input_file:
+    input_lines = [input_single_line for input_single_line in input_file.read().split("\n")[:-1]]
+
+#The whole file is saved in "input_lines" line for line
+
+#print(input_lines)
+
+current_directory = None
+root_directory = None
+
+######################################################################################
+
+def command_mkdir(target):
+    global current_directory
+    current_directory = current_directory.add_dir(target)
+
+def command_changedir(target):
+    global current_directory
+    global root_directory
+    if current_directory == None:
+        current_directory = Directory(None, target)
+        root_directory = current_directory
+        return 0
+    elif target == "..":
+        current_directory = current_directory.get_parent()
+        return 0
+    elif target == "/":
+        current_directory = root_directory
+        return 0
+    else:
+        for searching_dir in current_directory:
+            if searching_dir.get_name() == target:
+                current_directory = searching_dir
+                return 0
+    raise ValueError("Directory not Found or not created, try creating one first!")
+
+
+def command_list():
+    pass
+
+def command_add_file(size, name):
+    current_directory.add_file(name, size)
+    pass
+
+######################################################################################
+
+def command_handler(command):
+    global current_directory
+    if command[0] == '$':
+        command = command[2:]
+        if command == "ls":
+            print("Listen")
+        else:
+            command_p1, command_p2 = command.split(" ")
+            command_changedir(command_p2)
+    elif command[:3] == "dir":
+        current_directory.add_dir(command[4:])
+    else:
+        size, name = single_line_i.split(" ")
+        print(f"File named {name} with size of {size}")
+        command_add_file(size, name)
+
+
+
+for single_line_i in input_lines:
+    command_handler(single_line_i)
+        
+
+
+print(root_directory.get_size())
+
+root_directory.do_task_one()
+print(value_for_task_1)
+
+print("Zuende")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # PART 2:
 # In part 2 you need to identify a single directory to delete (including all sub-directories of course).
 # The total space available to the filesystem is 70000000, and you need to make enough room to fit a file of 
