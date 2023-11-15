@@ -1,4 +1,6 @@
 from enum import Enum
+from pathlib import Path
+import bisect
 
 from classes import Directory, File, FileSystem
 
@@ -42,27 +44,51 @@ def evaluateTerminalRecord(data: list[str], fs: FileSystem):
                     )
                 else:
                     # [size, file_name]
-                    fs.add_item_to_currrent_cwd(File(int(entry_list[0]), entry_list[1], fs.current_dir))
+                    fs.add_item_to_currrent_cwd(
+                        File(int(entry_list[0]), entry_list[1], fs.current_dir)
+                    )
 
             case Operations.CHANGEDIR:
                 # [$, cd, dir_name]
                 fs.change_directory(entry_list[2])
 
 
-result = {}
 def get_dir_sizes(dir: Directory, sizes_of_dirs):
-    sizes_of_dirs[str(dir.path)] = dir.size
+    sizes_of_dirs[dir.path] = dir.size
     for content in dir.content:
         if isinstance(content, File):
             dir.size += content.size
+            sizes_of_dirs[dir.path] = dir.size
         else:
-            
-            sizes_of_dirs[str(content.path)] = content.size 
+            sizes_of_dirs[content.path] = content.size
             dir.size += get_dir_sizes(content, sizes_of_dirs=sizes_of_dirs)
+            sizes_of_dirs[dir.path] = dir.size
+
     return dir.size
 
-data = get_data()
-file_system = FileSystem()
-evaluateTerminalRecord(data=data, fs=file_system)
 
-print(result)
+def get_size_of_dirs_above_size(size: int, directories: dict[Path, int]):
+    values = [value for value in directories.values() if value <= size]
+    count = sum(values)
+    return count
+
+
+data = get_data()
+file_system = FileSystem(70000000)
+evaluateTerminalRecord(data=data, fs=file_system)
+dirs: dict[Path, int] = {}
+
+
+get_dir_sizes(file_system.current_dir.parent, dirs)
+print(get_size_of_dirs_above_size(100000, dirs))
+
+
+# TASK 2
+
+file_size_to_fit = 30000000
+
+sorted_dirs = list(sorted(dirs.items(), key=lambda item: item[1]))
+unused_space = file_system.capacity - sorted_dirs[-1][1]
+space_to_free = file_size_to_fit - unused_space
+index = bisect.bisect_left(sorted_dirs, space_to_free, key=lambda i: i[1])
+print(sorted_dirs[index])

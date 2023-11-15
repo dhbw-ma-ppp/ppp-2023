@@ -42,8 +42,9 @@ class Directory():
 
 
 class FileSystem:
-    def __init__(self) -> None:
-        self.current_dir: Directory = Directory("/", None)
+    def __init__(self, capacity) -> None:
+        self.current_dir: Directory = Directory("\/", None) 
+        self.capacity = capacity
 
     def add_item_to_currrent_cwd(self, item):
         # doesn't append, if already present
