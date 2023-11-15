@@ -16,7 +16,7 @@
 # sum of two numbers out of the 25 numbers before it.
 # Please make not of your result in the PR.
 
-import itertools
+from itertools import permutations
 import re
 from pathlib import Path
 
@@ -27,14 +27,13 @@ def find_invalid_number(file_path, scan_length):
         replace_pointer = 0
         while (in_str := input_file.readline()) != '':
             num_to_check = int(in_str)
-            permutations = list(itertools.permutations(current_nums, 2))
-            if num_to_check not in [sum(perm) for perm in permutations]:
+            if any([sum(perm) == num_to_check for perm in list(permutations(current_nums, 2))]):
                 return num_to_check
             current_nums[replace_pointer] = num_to_check
             replace_pointer = (replace_pointer + 1) % scan_length
 
 
-numbers_path = Path(__file__).parent.parent.parent / 'data' / 'input_sequence.txt'
+numbers_path = Path(__file__).parents[2] / 'data' / 'input_sequence.txt'
 print(f'The first invalid number in the given file is: {find_invalid_number(numbers_path, 25)}')
 
 # PART 2:
