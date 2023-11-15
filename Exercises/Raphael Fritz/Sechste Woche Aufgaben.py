@@ -1,13 +1,9 @@
 from pathlib import Path
-#Usage of filepaths as keys because of directories with identical names but different sizes and filepaths.
 
 def get_terminal_session(filepath):     
     #gives out the terminal_record.txt file as a list
     with open(filepath, 'r') as file:
-        sessionlist = []
-        for line in file:
-            sessionlist.append(line.replace("\n",""))
-        return sessionlist
+        return [line.replace('\n', '') for line in file]
 
 def get_filepath_deeper(sessionlist,index,filepath):    
     #returns filepath to be used as a key of the subdirectory in dirdict
@@ -75,7 +71,7 @@ def task_2(dirsizedict):
             deletionlist.append(value)
     return min(deletionlist)
 
-path = Path("data//terminal_record.txt")
+path = Path('.') /'data' / 'terminal_record.txt'
 #print(get_terminal_session("data//terminal_record.txt"))#for testing
 sessionlist = get_terminal_session(path)
 dirdict = get_dirdict(sessionlist)
