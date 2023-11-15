@@ -91,9 +91,13 @@ class Directory:
         self.parent = parent
         self.children = []
         self.name = name
+        self.size = -1
 
     def __iter__(self):
         return(iterator for iterator in self.children)
+    
+    def __lt__(self,other):
+        return self.size < other.size
 
     def add_dir(self, name):
         new_dir = Directory(self, name)
@@ -115,19 +119,27 @@ class Directory:
         size = 0 
         for element_of_children in self.children:
             size += element_of_children.get_size()
+        # get_size can be seen as "calculate_size"
+        self.size = size
         return size
+    
+    def get_calculated_size(self):
+        return self.size
+    
+    def get_children(self):
+        return self.children
     
     def do_task_one(self):
         global value_for_task_1
         for element_of_children in self.children:
             if isinstance(element_of_children, Directory):
-                size_of_element_of_childen = element_of_children.get_size()
-                if size_of_element_of_childen <= 100000:
-                    value_for_task_1 += size_of_element_of_childen
-                    element_of_children.do_task_one()
-                    print(f"The dir {element_of_children.get_name()} has a size of {size_of_element_of_childen} and therefore participates in task 1")
-                    
+                element_of_children.do_task_one()
+                size_of_element_of_children = element_of_children.get_size()
+                if size_of_element_of_children <= 100000:
+                    value_for_task_1 += size_of_element_of_children
+                    #print(f"The dir {element_of_children.get_name()} has a size of {size_of_element_of_children} and therefore counts in task 1")
 
+   
 class File:
     def __init__(self, parent, name, size):
         self.parent = parent
@@ -162,10 +174,6 @@ current_directory = None
 root_directory = None
 
 ######################################################################################
-
-def command_mkdir(target):
-    global current_directory
-    current_directory = current_directory.add_dir(target)
 
 def command_changedir(target):
     global current_directory
@@ -202,7 +210,7 @@ def command_handler(command):
     if command[0] == '$':
         command = command[2:]
         if command == "ls":
-            print("Listen")
+            pass
         else:
             command_p1, command_p2 = command.split(" ")
             command_changedir(command_p2)
@@ -210,7 +218,7 @@ def command_handler(command):
         current_directory.add_dir(command[4:])
     else:
         size, name = single_line_i.split(" ")
-        print(f"File named {name} with size of {size}")
+        #print(f"File named {name} with size of {size}")
         command_add_file(size, name)
 
 
@@ -220,36 +228,10 @@ for single_line_i in input_lines:
         
 
 
-print(root_directory.get_size())
+#print(root_directory.get_size())
 
 root_directory.do_task_one()
 print(value_for_task_1)
-
-print("Zuende")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # PART 2:
@@ -275,3 +257,32 @@ print("Zuende")
 # 
 # You can find the /actual/ input to both parts in data/terminal_record.txt
 ###############################################################################
+list_of_directories = []
+
+#calculates the sizes:
+root_directory.get_size()
+
+def put_all_dir_sizes_in_list(directory):
+    global list_of_directories
+    for element_of_children in directory.get_children():
+            if isinstance(element_of_children, Directory):
+                list_of_directories.append(element_of_children)
+                put_all_dir_sizes_in_list(element_of_children)
+
+def search_for_bigenough_dir(needed_size):
+    for directory in list_of_directories:
+        if directory.get_calculated_size() >= needed_size:
+            return directory.get_calculated_size()
+
+put_all_dir_sizes_in_list(root_directory)
+list_of_directories.sort()
+
+
+needed_size = 0
+needed_size += root_directory.get_calculated_size()
+needed_size = 70000000 - needed_size
+needed_size = 30000000 - needed_size
+
+print(search_for_bigenough_dir(needed_size))
+
+                
