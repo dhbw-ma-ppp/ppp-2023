@@ -81,8 +81,6 @@ path_dir_root = path_dir_exercises.parent
 
 path_dir_data = path_dir_root / "data"
 
-value_for_task_1 = 0
-
 
 ######################################################################################
 
@@ -117,16 +115,15 @@ class Directory:
         self.size = size
         return size
     
-    def do_task_one(self):
-        global value_for_task_1
+    def do_task_one(self,value_for_task_1 = 0):
         for element_of_children in self.children:
             if isinstance(element_of_children, Directory):
-                element_of_children.do_task_one()
+                value_for_task_1 += element_of_children.do_task_one()
                 size_of_element_of_children = element_of_children.get_size()
                 if size_of_element_of_children <= 100000:
                     value_for_task_1 += size_of_element_of_children
                     #print(f"The dir {element_of_children.get_name()} has a size of {size_of_element_of_children} and therefore counts in task 1")
-
+        return value_for_task_1
    
 class File:
     def __init__(self, parent, name, size: int):
@@ -206,8 +203,8 @@ for single_line_i in input_lines:
 
 #print(root_directory.get_size())
 
-root_directory.do_task_one()
-print(value_for_task_1)
+print(root_directory.do_task_one())
+
 
 
 # PART 2:
