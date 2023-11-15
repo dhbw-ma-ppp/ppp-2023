@@ -109,25 +109,13 @@ class Directory:
         self.children.append(new_file)
         return new_file
     
-    def get_name(self):
-        return self.name
-    
-    def get_parent(self):
-        return self.parent
-    
     def get_size(self):
         size = 0 
         for element_of_children in self.children:
-            size += element_of_children.get_size()
+            size += element_of_children.size
         # get_size can be seen as "calculate_size"
         self.size = size
         return size
-    
-    def get_calculated_size(self):
-        return self.size
-    
-    def get_children(self):
-        return self.children
     
     def do_task_one(self):
         global value_for_task_1
@@ -141,16 +129,10 @@ class Directory:
 
    
 class File:
-    def __init__(self, parent, name, size):
+    def __init__(self, parent, name, size: int):
         self.parent = parent
         self.size = int(size)
         self.name = name
-        
-    def get_name(self):
-        return self.name
-    
-    def get_size(self):
-        return self.size
 
 ######################################################################################
 
@@ -170,29 +152,23 @@ with open(path_dir_data / "terminal_record.txt", "r") as input_file:
 
 #print(input_lines)
 
-current_directory = None
-root_directory = None
+root_directory = Directory(None, "/")
+current_directory = root_directory
 
 ######################################################################################
 
-def command_changedir(target):
-    global current_directory
-    global root_directory
-    if current_directory == None:
-        current_directory = Directory(None, target)
-        root_directory = current_directory
-        return 0
-    elif target == "..":
-        current_directory = current_directory.get_parent()
-        return 0
+def command_changedir(current_directory, root_directory,target):
+    if target == "..":
+        current_directory = current_directory.parent
+        return current_directory, root_directory
     elif target == "/":
         current_directory = root_directory
-        return 0
+        return current_directory, root_directory
     else:
         for searching_dir in current_directory:
-            if searching_dir.get_name() == target:
+            if searching_dir.name == target:
                 current_directory = searching_dir
-                return 0
+                return current_directory, root_directory
     raise ValueError("Directory not Found or not created, try creating one first!")
 
 
@@ -205,26 +181,26 @@ def command_add_file(size, name):
 
 ######################################################################################
 
-def command_handler(command):
-    global current_directory
+def command_handler(current_directory, root_directory, command):
     if command[0] == '$':
         command = command[2:]
         if command == "ls":
             pass
         else:
             command_p1, command_p2 = command.split(" ")
-            command_changedir(command_p2)
+            current_directory, root_directory = command_changedir(current_directory, root_directory,command_p2)
     elif command[:3] == "dir":
         current_directory.add_dir(command[4:])
     else:
         size, name = single_line_i.split(" ")
         #print(f"File named {name} with size of {size}")
         command_add_file(size, name)
+    return current_directory, root_directory
 
 
 
 for single_line_i in input_lines:
-    command_handler(single_line_i)
+    current_directory, root_directory = command_handler(current_directory, root_directory, single_line_i)
         
 
 
@@ -264,25 +240,25 @@ root_directory.get_size()
 
 def put_all_dir_sizes_in_list(directory):
     global list_of_directories
-    for element_of_children in directory.get_children():
+    for element_of_children in directory.children:
             if isinstance(element_of_children, Directory):
                 list_of_directories.append(element_of_children)
                 put_all_dir_sizes_in_list(element_of_children)
 
 def search_for_bigenough_dir(needed_size):
     for directory in list_of_directories:
-        if directory.get_calculated_size() >= needed_size:
-            return directory.get_calculated_size()
+        if directory.size >= needed_size:
+            return directory
 
 put_all_dir_sizes_in_list(root_directory)
 list_of_directories.sort()
 
 
 needed_size = 0
-needed_size += root_directory.get_calculated_size()
+needed_size += root_directory.size
 needed_size = 70000000 - needed_size
 needed_size = 30000000 - needed_size
 
-print(search_for_bigenough_dir(needed_size))
+print(search_for_bigenough_dir(needed_size).size)
 
                 
