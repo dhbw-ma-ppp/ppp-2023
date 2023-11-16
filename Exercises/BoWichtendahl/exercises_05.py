@@ -27,7 +27,7 @@ def find_invalid_number(file_path, scan_length):
         replace_pointer = 0
         while (in_str := input_file.readline()) != '':
             num_to_check = int(in_str)
-            if any([sum(perm) == num_to_check for perm in list(permutations(current_nums, 2))]):
+            if not any(sum(perm) == num_to_check for perm in list(permutations(current_nums, 2))):
                 return num_to_check
             current_nums[replace_pointer] = num_to_check
             replace_pointer = (replace_pointer + 1) % scan_length
