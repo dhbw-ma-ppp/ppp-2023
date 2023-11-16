@@ -16,7 +16,7 @@
 # sum of two numbers out of the 25 numbers before it.
 # Please make not of your result in the PR.
 
-from itertools import permutations
+from itertools import combinations
 import re
 from pathlib import Path
 
@@ -27,7 +27,7 @@ def find_invalid_number(file_path, scan_length):
         replace_pointer = 0
         while (in_str := input_file.readline()) != '':
             num_to_check = int(in_str)
-            if not any(sum(perm) == num_to_check for perm in list(permutations(current_nums, 2))):
+            if not any(sum(comb) == num_to_check for comb in list(combinations(current_nums, 2))):
                 return num_to_check
             current_nums[replace_pointer] = num_to_check
             replace_pointer = (replace_pointer + 1) % scan_length
