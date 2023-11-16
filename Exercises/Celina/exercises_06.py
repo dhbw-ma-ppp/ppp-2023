@@ -126,14 +126,15 @@ def size_of_directorys(input):
         else:
             output = line.split()
             size = int(output[0])
+            path= ""
             for elements in file_path:
-                path = "/".join(elements)  
+                path += "/"+elements   
                 if path in directory_dic:
                     new_size = directory_dic[path] + size
                     directory_dic[path] = new_size
                 else:
                     directory_dic[path] = size
-    print(directory_dic)
+    #print(directory_dic)
 
 def directorys_under_100000():
     sum=0
@@ -144,19 +145,16 @@ def directorys_under_100000():
     return sum
 
 def delete_directory():
-    sum = 0
-    for element in directory_dic:
-        sum += directory_dic[element]
-    size_to_delete= sum - (70000000-30000000)
+    size_to_delete= directory_dic["//"]- (70000000-30000000)
     if size_to_delete < 0:
         print("nothing to delete")
     else:
         direc_to_delete=[]
         for element in directory_dic:
-            if directory_dic[element]>30000000:
+            if directory_dic[element]>size_to_delete:
                 direc = (element,directory_dic[element])
                 direc_to_delete.append(direc)
-        print(direc_to_delete)
+        #print(direc_to_delete)
         direc_to_delete.sort(key=lambda x: x[1])
         return direc_to_delete[0]
                 
