@@ -8,16 +8,13 @@ def get_terminal_session(filepath):
 def get_filepath_deeper(sessionlist,index,filepath):    
     #returns filepath to be used as a key of the subdirectory in dirdict
     if sessionlist[index]!="$ cd /":
-        filepath = filepath + (sessionlist[index].replace("$ cd ","") + ("/"))
-        return filepath
+        return filepath + (sessionlist[index].replace("$ cd ","") + ("/"))
     else:
-        filepath = filepath + (sessionlist[index].replace("$ cd ",""))
-        return filepath
+        return "/"
 
 def get_filepath_parent(filepath):  
     #returns filepath of the parent directory (in "$ cd .. " command)
-    filepath = "/".join(filepath.split('/')[0:-2]) + "/"
-    return filepath
+    return "/".join(filepath.split('/')[0:-2]) + "/"
 
 def get_value(index,sessionlist):   
     #returns a (value) list that contains all sub files and subdirectories (after "$ ls" command) 
@@ -41,8 +38,6 @@ def get_dirdict(sessionlist):
         if sessionlist[index] == '$ cd ..':
             filepath = get_filepath_parent(filepath)
             continue
-        if sessionlist[index] == '$ cd /':
-            filepath = ""
         if sessionlist[index].startswith('$ cd'):
             filepath = get_filepath_deeper(sessionlist,index,filepath)
             if sessionlist[index+1] == '$ ls':
