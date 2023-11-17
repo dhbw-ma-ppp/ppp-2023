@@ -84,7 +84,8 @@
 
 from pathlib import Path
 
-console_path = Path(__file__).parent / 'console_input.txt'
+console_path = Path(__file__).parent.parent.parent / 'data' / 'terminal_record.txt'
+#console_path =Path(__file__).parent / 'console_input.txt'
 
 def fill_data_dict(console_path):
     data_dict ={}
@@ -110,21 +111,45 @@ def fill_data_dict(console_path):
                 is_active = True
         data_dict[current_dir] = content
         return data_dict
-
-def size_of_dict(current_dict):
-    data_dict = fill_data_dict(console_path)
+#print(fill_data_dict(console_path))
+def size_of_dict(current_dict, data_dict ):
     current_size = 0    
     if type(data_dict[current_dict]) == str:
         current_size += int(data_dict[current_dict])
     else:
         for key in data_dict[current_dict]:
-            current_size += size_of_dict(key)
+            current_size += size_of_dict(key,data_dict)
+            print("current_size: ", current_size)
     return current_size
- 
-print(size_of_dict('a'))
-
-
+print(size_of_dict('gts',fill_data_dict(console_path)))
+def get_fitting_dict(data_dict, limit,mode,total_space):
+    best_size1 = 0
+    best_size2 = total_space
+    best_dir = ''
+    for key in data_dict:
+        if size_of_dict(key,data_dict) < limit and size_of_dict(key,data_dict) > best_size1 and mode == 1:
+            best_size = size_of_dict(key,data_dict)
+            best_size1 = size_of_dict(key,data_dict)
+            best_dir = key
+        elif size_of_dict(key,data_dict) > limit and size_of_dict(key,data_dict) < best_size2 and mode == 2:
+            best_size = size_of_dict(key,data_dict)
+            best_size2 = size_of_dict(key,data_dict)
+            best_dir = key
+    return best_dir, best_size
         
+
+data_dict= fill_data_dict(console_path)
+
+#print(get_fitting_dict(data_dict ,100000,1,0))
+# prints: ('lrrl.lth, 99946)
+        
+def find_delete_dir(total_space, required_space, data_dict):
+    print("Limit: ",required_space ,'-', total_space ,'+', size_of_dict('/',data_dict))
+    limit = required_space - total_space + size_of_dict('/',data_dict)
+    return get_fitting_dict(data_dict,limit,2,total_space)
+
+#print(find_delete_dir(70000000,30000000,data_dict))
+
 
 #
 # PART 2:
