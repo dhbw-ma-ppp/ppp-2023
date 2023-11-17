@@ -7,8 +7,12 @@ def get_terminal_session(filepath):
 
 def get_filepath_deeper(sessionlist,index,filepath):    
     #returns filepath to be used as a key of the subdirectory in dirdict
-    filepath = filepath + (sessionlist[index-1].replace("$ cd ","") + ("/"))
-    return filepath
+    if sessionlist[index]!="$ cd /":
+        filepath = filepath + (sessionlist[index].replace("$ cd ","") + ("/"))
+        return filepath
+    else:
+        filepath = filepath + (sessionlist[index].replace("$ cd ",""))
+        return filepath
 
 def get_filepath_parent(filepath):  
     #returns filepath of the parent directory (in "$ cd .. " command)
@@ -36,9 +40,13 @@ def get_dirdict(sessionlist):
     for index in range (len(sessionlist)):
         if sessionlist[index] == '$ cd ..':
             filepath = get_filepath_parent(filepath)
-        elif sessionlist[index] == '$ ls':
+            continue
+        if sessionlist[index] == '$ cd /':
+            filepath = ""
+        if sessionlist[index].startswith('$ cd'):
             filepath = get_filepath_deeper(sessionlist,index,filepath)
-            value = get_value(index,sessionlist)
+            if sessionlist[index+1] == '$ ls':
+                value = get_value(index+1,sessionlist)
             dirdict[filepath] = value
     return dirdict
 
@@ -64,20 +72,20 @@ def task_1(dirsizedict):
 def task_2(dirsizedict):
     #returns smallest file size that if deleted would allow for 30000000 of free space
     deletionlist = []
-    unused = 70000000 - dirsizedict["//"]
+    unused = 70000000 - dirsizedict["/"]
     required = 30000000
     for value in dirsizedict.values():
         if unused + value >= required:
             deletionlist.append(value)
     return min(deletionlist)
 
-path = Path('.') /'data' / 'terminal_record.txt'
+path = Path(".") /'data' / 'terminal_record.txt'
 #print(get_terminal_session("data//terminal_record.txt"))#for testing
 sessionlist = get_terminal_session(path)
 dirdict = get_dirdict(sessionlist)
 #print(get_dirdict(sessionlist))#for testing
 dirsizedict = {}
-#print(get_dirsizedict(dirdict,dirsizedict,"//"))#for testing
-dirsizedict = get_dirsizedict(dirdict,dirsizedict,"//")
+#print(get_dirsizedict(dirdict,dirsizedict,"/"))#for testing
+dirsizedict = get_dirsizedict(dirdict,dirsizedict,"/")
 print(task_1(dirsizedict))
 print(task_2(dirsizedict))
