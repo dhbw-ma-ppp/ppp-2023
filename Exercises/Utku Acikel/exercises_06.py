@@ -99,7 +99,7 @@ def directory_sizes(lines):
             directory_sizes['/'.join((current_path + [dir_name]) if current_path else [dir_name])] = 0
         elif line[0].isdigit():
             file_size = int(line.split()[0])
-            directory_sizes['/'.join(current_path + ['non_existent_directory'])] += file_size
+            directory_sizes['/'.join(current_path if current_path else [''])] += file_size
 
     for dir_path, size in directory_sizes.items():
         parent_dir = '/'.join(dir_path.split('/')[:-1])
