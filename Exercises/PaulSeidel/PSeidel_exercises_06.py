@@ -73,52 +73,102 @@
 # For the example above the two directories meeting the size requirement are `a` and `e`, while `/` and `d` are too large.
 # The sum of the size of a and e would be 95437.
 
+#_____________________________________________________________________________________________________________________________________
+
+#test cases: (Test case 1 is copied from above and converted into form by Chat-GPT!)
+#-----------------------------------------------------------------------------------
+
+#terminal_list = ["$ cd /", "$ ls", "dir a", "14848514 b.txt", "8504156 c.dat", "dir d", "$ cd a", "$ ls", "dir e", "29116 f", "2557 g", "62596 h.lst", "$ cd e", "$ ls", "584 i", "$ cd ..", "$ cd ..", "$ cd d", "$ ls", "4060174 j", "8033020 d.log", "5626152 d.ext", "7214296 k"]
+#result: 95437 (correct)
+
+#terminal_list = ["$ cd /", "$ ls", "dir subdir1", "123 subfile1", "dir subdir2", "$ cd subdir1", "$ ls", "234 subsubfile1", "dir subsubdir1"]
+#result: 591 (correct. Even without files name-endings)
+
+#terminal_list = ["$ cd /", "$ ls", "dir subdir1", "123000 subfile1.bs", "dir subdir2", "$ cd subdir1", "$ ls", "234 subsubfile1.fg", "dir subsubdir1"]
+#result: 234 (correct. Because the dir "/" is bigger than 100000, only subdir1 counts, which's size is 234)
+
+#terminal_list = ["$ cd /", "$ ls", "dir subdir1", "123 subfile1.bs", "dir subdir2", "$ cd subdir1", "$ ls", "234 subsubfile1.fg", "dir subsubdir1", "$ cd ..", "$ cd subdir2", "$ ls", "dir subsubdir1", "300 subsubfile1.fg"]
+#result: 1191 (correct)
+
+terminal_list = ["$ cd /", "$ ls", "dir subdir1", "123 subfile1.bs", "dir subdir2", "$ cd subdir1", "$ ls", "234 subsubfile1.fg", "dir subsubdir1", "$ cd ..", "$ cd subdir2", "$ ls", "dir subsubdir1", "300 subsubfile1.fg", "$ cd subsubdir1", "$ ls", "100001 file3", "$ cd ..", "$ cd ..", "$ cd subdir1", "$ cd subsubdir1", "$ ls", "200 file1", "300 file2", "$ cd ..", "$ cd .."]
+#_____________________________________________________________________________________________________________________________________
+
 #with open("./data/terminal_record.txt", "r") as input_file:
     #terminal_list = [line for line in input_file.readlines()]
 
-#test cases:
-#terminal_list = ["$ cd /", "$ ls", "dir subdir1", "123 subfile1", "dir subdir2", "$ cd subdir1", "$ ls", "234 subsubfile1", "dir subsubdir1"]
-terminal_list = ["$ cd /", "$ ls", "dir subdir1", "123 subfile1.bs", "dir subdir2", "$ cd subdir1", "$ ls", "234 subsubfile1.fg", "dir subsubdir1"]
+"""import pathlib
+
+here = pathlib.Path(__file__).parent
+exercises_dir = here.parent
+root_dir = exercises_dir.parent
+
+data_dir = root_dir / "data"
+
+#get data into a list
+with open(data_dir / "terminal_record","r") as file:
+    data_list = [int(elements) for elements in file.read().split("\n")[:-1]]"""
 
 #globals:
-folder_structure = {"/": list()}
+folder_structure = {("/",): list()}
 dir_sizes = dict()
 
 def create_folder_structure():
     """this method reads all lines of the input file, analyzes it and adds the described path in the golabl dictionary "folder_structure" """
     
     helping_counter = 0 #for making doubled dir/file names unique
-    current_dir = None
-    current_path = list()   #the current path is stored in this list, acting as a stack
+    parents_path = tuple()    #path of the upper dir
+    current_path = tuple()   #the current path is stored in this list, acting as a stack
+
+    line_counter = 0 #for troubleshooting
 
     for line in terminal_list:  #going trough terminal_list and adding all dirs and files to the dict folder_structure
+        line_counter += 1
         line = line.split()
-        former_change_of_dir = ""
+        #former_change_of_dir = ""
         if line[1] == "cd":
             if line[2] == "..":
-                if former_change_of_dir == "..":    #if there is a "cd .." following another, don't remove the current path before pop'ing from the stack
-                    new_dir = current_path.pop()    #gets the upper directory out of the list/stack of the path
-                    current_dir = new_dir
-                else:
+                #if former_change_of_dir == "..":    #if there is a "cd .." following another, don't remove the current path before pop'ing from the stack------------------#
+                current_path = parents_path
+                parents_path_as_list = list(parents_path)   #tuple has to be converted into a list, to remove the last element.
+                parents_path_as_list.pop()
+                parents_path = tuple(parents_path_as_list)  #now convert it back, so the tuple now has lost one element
+                """else:
+                    #current_path.pop()
                     current_path.pop()
-                    new_dir = current_path.pop()
-                    current_dir = new_dir
+                    parents_path = current_path"""
             else:
-                current_dir = f"{line[2]}"
-                current_path.append(current_dir)
-            former_change_of_dir = line[2]
+                parents_path = current_path
+                new_tuple_part = (f"{line[2]}",)
+                current_path += new_tuple_part
+                
+            #former_change_of_dir = line[2]
                 
         elif line[1] == "ls":   #can be ignored -> lines starting with dir or a numer (for a file) can only exist behind a "$ ls".
             pass
 
         elif line[0] == "dir":
-            if f"{line[1]}" not in folder_structure: #or folder_structure[f"{line[1]}"] == []:    to make sure, no existing dir is beeing overwritten
-                folder_structure[f"{line[1]}"] = [f"{current_path}"]    #adding the dir to the dict with a list containing it's path for the subelements
-                temp = folder_structure[f"{current_dir}"]
-                temp.append((f"{line[0]}", f"{line[1]}")) #adding the dir as a tuple (dir, <name>, <[path as list]>) to its parent-dir
-                folder_structure[f"{current_dir}"] = temp
+            #full_path = list(current_path.append(f"{parents_path}"))   #the full path contains the path of the dir including it's name
+            #if current_path not in folder_structure:    #to make sure, no existing dir is beeing overwritten.
+            name_of_new_dir = (f"{line[1]}",)
+            folder_structure[current_path + name_of_new_dir] = []    #adding the dir to the dict with an empty list as value and the full path-list as string as key.
+
+            temp = folder_structure[current_path]
+            temp.append(("dir", f"{line[1]}"))
+            folder_structure[current_path] = temp  #adding the dir as a tuple ("dir", "<name>") to its parent-dir
+
+            """if ((f"{line[1]}") not in key_tuple for key_tuple in folder_structure.keys()):  #to make sure, no existing dir is beeing overwritten. A dir is recognized as the same, when the paths and names are same.
+                    folder_structure[(f"{current_path}", f"{line[1]}")] = []    #adding the dir to the dict with an empty list and a tuple as key ("<path>", "<name>") for the subelements
+
+                    key_to_search = (f"{current_path}", )
+
+                    searched_key = parents_path  #dir name to find in the key-tuples
+                    found_key = next(key for key in folder_structure.keys() if searched_key in key) #whole key-tuple containing the searched name of dir
+                    temp = folder_structure[found_key]
+
+                    temp.append((f"{line[0]}", f"{line[1]}")) #adding the dir as a tuple ("dir", "<name>") to its parent-dir
+                    folder_structure[f"{parents_path}"] = temp
                 
-            else:   #a dir with the same name is already existing.
+            else:   #a dir with the same name is already existing.  #müsste ich weglassen können, weil die vollen Pfade als Key keine Dopplungen erzeugen
                 other_dir = folder_structure[f"{line[1]}"]   #other_dir is the describing list
                 other_path = other_dir[0]   #the path of every dir in the folder structure is written in first position
                 if current_path == other_path:  #if this exact dir was already analyzed: Skip it
@@ -129,38 +179,45 @@ def create_folder_structure():
 
                     folder_structure[f"{new_name}"] = current_path    
                     
-                    temp = folder_structure[f"{current_dir}"]
+                    temp = folder_structure[f"{parents_path}"]
                     temp.append((f"{line[0]}", f"{new_name}")) #adding the new named dir as a tuple to its parent-dir
-                    folder_structure[f"{current_dir}"] = temp
+                    folder_structure[f"{parents_path}"] = temp"""
 
         else:   #element has to be a file
-            temp = folder_structure[f"{current_dir}"]
+            temp = folder_structure[current_path]
             temp.append((int(line[0]),f"{line[1]}"))   #adding a tuple with size and name of the file to the current dir
-            folder_structure[f"{current_dir}"] = temp
+            folder_structure[current_path] = temp
 
-def recursive_calculate_size(current_directory = "/"):
-    """recursive function that calculates the size of each directory in the main directory (/) and fills those in the dictionary dir_sizes. The standard directory is / """
+def recursive_calculate_size(current_directory = ("/",)):
+    """recursive function that calculates the size of each directory in the main directory [/] and fills those in the dictionary dir_sizes. The standard directory is the main dir"""
     
     if current_directory not in dir_sizes:
             dir_sizes.update({current_directory: 0})
 
-    for subelement in folder_structure[current_directory][1:]: #going through all subelements (in the form of tuples) of the current dir
+    for subelement in folder_structure[current_directory]: #going through all subelements (in the form of tuples) of the current dir
         
-        if type(subelement[0]) == int:  #add the size of the file to it's parent-dir
+        if type(subelement[0]) == int:  #add the size of the file to it's parents-dir
             temp = dir_sizes[current_directory]
             temp += subelement[0]
             dir_sizes[current_directory] = temp
 
-        elif subelement[0] == "dir":
-            subelement_size = recursive_calculate_size(subelement[1])
+        elif subelement[0] == "dir":    #execute the function with the subdirectory (recursion)
+            new_path_part = (f"{subelement[1]}",)
+            new_path = current_directory + new_path_part
+            subelement_size = recursive_calculate_size(new_path)
             temp = dir_sizes[current_directory] + subelement_size
             dir_sizes[current_directory] = temp
     
     return dir_sizes[current_directory]
 
+"""Der Code zählt die Größen nicht durch alle Dirs. Evtl. etwas in der rekursiven Funktion? Auf jeden Fall hat das / dir aktuell eine größe
+von 0, was ja nicht sein kann. Die Ordnerstruktur scheint aber vollständig und richtig zu sein. D.h. es liegt jetzt nur noch an der Size-Auswertung.
+Das dürfte nun wirklich nicht mehr krass viel sein. Denk dran, wenn der Code läuft, alle unnötigen auskommentierten Zeilen und Absätze zu löschen und
+alle gewollten One-Line-Kommentare schick einzurücken, damit der Code nicht so unglaublich hässlich aussieht."""
+
 def run_and_return_dict():
     """runs the upper functions to analyze the input file into the folder structure and calculate the size of the dir "/" and all of it's subdirs
-    and returns the directory of sizes. That's postulated by the exercise."""
+    and returns the directory of sizes. That's required by the exercise."""
     create_folder_structure()
     recursive_calculate_size()
     return dir_sizes
@@ -169,8 +226,8 @@ def sum_dirs_of_criteria(dictionary: dict):
     """Sums sizes of all directories in the given dictionary which sizes are at most 100000 and returns the total sum"""
     sum = 0
     for dir_name in dictionary:
-        if int(dictionary[dir_name]) <= 100000:
-            sum += int(dictionary[dir_name])
+        if dictionary[dir_name] <= 100000:
+            sum += dictionary[dir_name]
     return sum
 
 print(sum_dirs_of_criteria(run_and_return_dict()))
