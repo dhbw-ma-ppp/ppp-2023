@@ -92,7 +92,6 @@ class Directory:
             directory_dictionary[name] = Directory(name)
         else:
             self.change_own_size(size, directory_dictionary)
-        return directory_dictionary
 
     def change_own_size(self, size: int, directory_dictionary: dict):
         self.size += size
@@ -128,7 +127,7 @@ def build_directory(console_input: list[str]):
                 #substracts everything thats the number (file size) and following white space and adds the remainin string to a path.
                 #Example: 68377 jvdqjhr.jvp is /\jvdqjhr.jvp
                 file_name = path + "\\" + re.sub(r'^\S* ', '', line)
-                directory_dictionary = directory_dictionary[path].add_content(directory_dictionary, file_name, file_size)
+                directory_dictionary[path].add_content(directory_dictionary, file_name, file_size)
 
                 continue
 
@@ -146,28 +145,30 @@ def build_directory(console_input: list[str]):
                 #Example: $ cd bwmglvmt is bwmglvmt, which is added to the path: /\pcqjnl\lrrl\nwjggvr\bwmglvmt
                 path += "\\" + re.sub(r'^(.*?)\$ cd ', '', line)
                 if(path not in directory_dictionary):
-                    directory_dictionary = directory_dictionary[old_path].add_content(directory_dictionary, path)
+                    directory_dictionary[old_path].add_content(directory_dictionary, path)
 
         elif(line.startswith("$ ls")):
             in_ls_output = True
-        
-    return directory_dictionary
+
+    #the directory_size_dictionary is not neeeded for the program. Its still included since it technically is required by the task.
+    directory_size_dictionary = {}
+    for key in directory_dictionary:
+        directory_size_dictionary[key] = directory_dictionary[key].size
+
+    return directory_size_dictionary
 
 
 root_dir = pathlib.Path().absolute().parents[1]
 with open(root_dir / "data" / "terminal_record.txt", "r") as file:
     console_input = [elements for elements in file.read().split("\n")] 
 
-directory_dictionary = build_directory(console_input)
-#the directory_size_dictionary is not neeeded for the program. Its still included since it technically is required by the task.
-directory_size_dictionary = {}
+directory_size_dictionary = build_directory(console_input)
 total_size = 0
 
 #part 1:
-for key in directory_dictionary:
-    directory_size_dictionary[key] = directory_dictionary[key].size
-    if directory_dictionary[key].size <= 100000:
-        total_size += directory_dictionary[key].size
+for key in directory_size_dictionary:
+    if directory_size_dictionary[key] <= 100000:
+        total_size += directory_size_dictionary[key]
 print("the total size of all directorys <= 100000 is:", total_size)
 
 #
