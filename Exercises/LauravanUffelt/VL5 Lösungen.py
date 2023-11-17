@@ -30,16 +30,14 @@ def comb():
     numbers = read_document()
     start = 0
 
-    for nums in numbers:
-        end = start+25
+    for _ in numbers:
         checksum = numbers[start + 25]
         count = 0
         realnum = []
-        for num in range(start, end):
-            realnum.append(numbers[num])
+        realnum = numbers[start:start+25]
 
-        perm = combinations(realnum, 2)
-        for elements in perm:
+        combi = combinations(realnum, 2)
+        for elements in combi:
             sum = elements[0] + elements[1]
             if sum == checksum:
                 count += 1
@@ -82,9 +80,8 @@ comb()
 
 
 def read_document2():
-    with open('input_bags.txt', 'r', encoding='utf8') as file:
+    with open('input_bags.txt', 'r') as file:
         elements = file.readlines()
-        # print(elements)
         return elements
 
 
@@ -94,7 +91,6 @@ def count_bags(bagdict, bagcolor):
     count = 0
     for amount, bag in bagdict[bagcolor]:
         count += amount+amount * count_bags(bagdict, bag)
-
     return count
 
 
@@ -116,10 +112,9 @@ def main():
                 bag_dict[obags] = baglist
         else:
             bag_dict[obags] = {}
-    # print(bag_dict)
     return bag_dict
 
 
 dict = main()
 shiny_gold_total = count_bags(dict, "shiny gold")
-print(f"the shiny gold bagd contains {shiny_gold_total} bags")
+print(f"the shiny gold bag contains {shiny_gold_total} bags")
