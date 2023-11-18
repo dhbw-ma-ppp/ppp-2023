@@ -1,70 +1,264 @@
-# to solve todays exercise you will need a fully functional int-computer
-# a fully functional int-computer has some additional features compared to the 
-# last one you implemented.
-# you can either use my implementation of an int-computer (see AtrejuTauschinsky/int_computer.py)
-# or you can extend your own int-computer with the necessary features. If you want to extend your own
-# the features you need to implement will be described at the bottom.
-#
-#
-# We will run 'breakout' -- the arcade game -- on our simulated computer. 
-# (https://en.wikipedia.org/wiki/Breakout_(video_game))
-# The code for the computer will be provided under data/breakout_commands.txt
-# the code will produce outputs in triplets. every triplet that is output
-# specifies (x-position, y-position, tile_type).
-# tiles can be of the following types:
-# 0: empty tile
-# 1: wall. walls are indestructible
-# 2: block. blocks can be destroyed by the ball
-# 3: paddle. the paddle is indestructible
-# 4: ball. the ball moves diagonally and bounces off objects
-# 
-# EXAMPLE:
-# a sequence of output values like 1, 2, 3, 6, 5, 4 would
-#  - draw a paddle (type 3) at x=1, y=2
-#  - draw the ball (type 4) at x=6, y=5
-#
-#
-# PART 1:
-# run the game until it exits. Analyse the output produced during the run, and create
-# a visual representation (matplotlib or ascii-art are possibilities here...) of the screen display.
-# mark the different tile types as different colors or symbols. Upload the picture with your PR.
-#
-# PART 2:
-# The game didn't actually run in part 1, it just drew a single static screen.
-# Change the first instruction of the commands from 1 to 2. Now the game will actually run.
-# when the game actually runs you need to provide inputs to steer the paddle. whenever the computer
-# requests you to provide an input, you can chose to provide
-# -  0: the paddle remains in position
-# - -1: move the paddle to the left
-# - +1: move the paddle to the right
-#
-# the game also outputs a score. when an output triplet is in position (-1, 0) the third value of
-# the triplet is not a tile type, but your current score.
-# You need to beat the game by breaking all tiles without ever letting the ball cross the bottom 
-# edge of the screen. What is your high-score at the end of the game? provide the score as part of your PR.
-#
-# BONUS: (no extra points, just for fun)
-# make a movie of playing the game :)
-#
-#
-# COMPLETE INT COMPUTER
-# This is only relevant if you decide to extend your own implementation with the necessary features.
-# If you decide to use my implementation you can ignore this part.
-#
-#
-# - The computer needs to implement memory much /larger/ than the set of initial commands.
-#   Any memory address not part of the initial commands can be assumed to be initialized to 0.
-#   (only positive addresses are valid).
-# - You need to support a new parameter mode, 'relative mode', denoted as mode 2 in the 'mode' part
-#   of the instructions.
-#   Relative mode is similar to position mode (the first access mode you implemented). However, 
-#   parameters in relative mode count not from 0, but from a value called 'relative offset'. 
-#   When the computer is initialized, the relative offset is initialized to 0, and as long as it remains
-#   0 relative mode and position mode are identical.
-#   In general though parameters in relative mode address the memory location at 'relative offset + parameter value'.
-#   EXAMPLE: if the relative offset is 50, the mode is 2, and the value you read from memory is 7 you should 
-#     retrieve data from the memory address 57.
-#     Equally, if you read -7, you should retrieve data from the memory address 43.
-#   This applies to both read- and write operations.
-# - You need to implement a new opcode, opcode 9. opcode 9 adjusts the relative offset by the value of its only parameter.
-#   the offset increases by the value of the parameter (or decreases if that value is negative).
+import tkinter
+import turtle
+
+class Computer:
+    def __init__(self, commands, UI):
+        self.commands = commands
+        self.UI = UI
+        self.offset = 0
+        self.memory_pointer = 0
+        self.opcode = 0
+        self.positions = []
+        self.mode = "000"
+
+        self.opcodes = {
+        1: self.add,
+        2: self.mul,
+        3: self.inp,
+        4: self.out,
+        5: self.jump_True,
+        6: self.jump_False,
+        7: self.less,
+        8: self.equals,
+        9: self.offset_increment,
+        }
+        
+
+    def add(self):
+        self.commands[self.positions[2]] = self.commands[self.positions[0]] + self.commands[self.positions[1]]
+        self.memory_pointer += 4
+        
+
+    def mul(self):
+        self.commands[self.positions[2]] = self.commands[self.positions[0]] * self.commands[self.positions[1]]
+        self.memory_pointer += 4
+
+    def inp(self):
+        try: self.commands[self.positions[0]] = self.UI.paddle_offset
+        except: raise RuntimeError("invalid input")
+        self.memory_pointer += 2
+
+    def out(self):
+        self.UI.screen_data.append(self.commands[self.positions[0]])
+        self.memory_pointer += 2
+
+    def jump_True(self):
+        if self.commands[self.positions[0]] != 0:  self.memory_pointer = self.commands[self.positions[1]]
+        else: self.memory_pointer += 3
+
+    def jump_False(self):
+        if self.commands[self.positions[0]] == 0: self.memory_pointer = self.commands[self.positions[1]]
+        else: self.memory_pointer += 3
+
+    def less(self):
+        if self.commands[self.positions[0]] < self.commands[self.positions[1]]: self.commands[self.positions[2]] = 1
+        else: self.commands[self.positions[2]] = 0
+        self.memory_pointer += 4
+        
+    def equals(self):
+        if self.commands[self.positions[0]] == self.commands[self.positions[1]]: 
+            self.commands[self.positions[2]] = 1
+        else: 
+            self.commands[self.positions[2]] = 0
+        self.memory_pointer += 4
+
+    def offset_increment(self):
+        self.offset += self.commands[self.positions[0]]
+        self.memory_pointer += 2
+
+    def mode_to_index(self):
+        self.positions  = []
+        for i in range(0,len(self.mode)):
+            if len(self.commands)>self.memory_pointer+i+1:
+                local_mode = self.mode[i]
+                match local_mode:
+                    case "0": self.positions.append(self.commands[self.memory_pointer+i+1])
+                    case "1": self.positions.append(self.memory_pointer+i+1)
+                    case "2": self.positions.append(self.offset+self.commands[self.memory_pointer+i+1])
+                    case _: raise KeyError(f"Wrong mode {self.mode}")
+            else:
+                raise IndexError(f"out of range")
+                    
+        for i, position in enumerate(self.positions):
+            if position>len(self.commands)-1:
+                self.commands += [0]*(position-(len(self.commands)-1))
+        
+    def get_commands(self):
+        command_tuple = divmod(self.commands[self.memory_pointer],100)
+        self.opcode = command_tuple[1]
+        self.mode = f"{command_tuple[0]:03d}"[::-1]
+
+
+    def get_frame(self):
+        
+        while self.commands[self.memory_pointer] != 99:
+            if self.commands[self.memory_pointer] == 3 and len(self.UI.screen_data):
+                break
+            self.get_commands()
+            if self.opcode in self.opcodes.keys():
+                self.mode_to_index()
+                self.opcodes[self.opcode]()
+            else: raise KeyError(f"Wrong opcode {self.opcode}")
+            
+
+
+
+class Breakout():
+    def __init__(self, commands, mode):
+        commands[0] = mode
+        self.mode = mode
+        self.highscore = 0
+        self.screen_data = []
+        self.screen_dict = {}
+        self.frame_counter = 0
+        self.percentage = 0
+        self.timepause = 0
+        self.computer = Computer(commands, self)
+        self.color_map = ["white", "grey", "green", "blue", "red"]
+        self.stopped = True
+        #random.shuffle(self.color_map)
+
+        self.setup_canvas()
+        self.after_id = self.window.after(self.timepause, lambda:self.game_loop())
+        self.window.mainloop()
+
+    def game_loop(self):
+        if not self.stopped or not self.frame_counter:
+       
+            self.screen_data = []
+            self.computer.get_frame()
+            self.format_screen_data()
+            self.draw_screen()
+            self.move_paddle()
+        
+        if self.mode == 2:
+            self.after_id = self.window.after(self.timepause, lambda:self.game_loop())
+
+
+    def setup_canvas(self):
+        #highscore label
+        #start stop
+        #speed
+
+        self.window = tkinter.Tk()
+        self.window.title("Breakout game")
+        #self.window.attributes("-fullscreen", True)
+        
+        self.width, self.height = self.window.maxsize()
+        self.width*=1
+        self.height*=.9
+
+        upper_grid = tkinter.Frame(master= self.window)
+        self.canvas = tkinter.Canvas(master= self.window, width= self.width, height= self.height)
+        self.highscore_label = tkinter.Label(master= upper_grid, text= self.highscore)
+        self.frame_counter_label = tkinter.Label(master= upper_grid, text= self.frame_counter)
+        self.percentage_label = tkinter.Label(master= upper_grid, text= self.percentage)
+        self.exit_button = tkinter.Button(master= upper_grid, text= "Exit", command= self.window.destroy)
+        self.start_button = tkinter.Button(master= upper_grid, text= "Start", command= self.stop)
+
+        for i in range(5):
+            tkinter.Grid.columnconfigure(upper_grid, i, weight=1)
+            
+        upper_grid.pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=True)
+        self.start_button.grid (column=0, row=0, sticky=tkinter.NSEW)
+        self.highscore_label.grid(column=1, row=0, sticky=tkinter.NSEW)
+        self.frame_counter_label.grid(column=2, row=0, sticky=tkinter.NSEW)
+        self.percentage_label.grid(column=3, row=0, sticky=tkinter.NSEW)
+        self.exit_button.grid(column=4, row=0, sticky=tkinter.NSEW)
+        self.canvas.pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=True)
+        
+        self.screen = turtle.TurtleScreen(self.canvas)
+        self.screen.tracer(0)
+        self.pointer = turtle.RawTurtle(self.screen)
+        self.pointer.ht()
+        self.pointer.up()
+        self.pointer.setundobuffer(None)
+    
+    def stop(self):
+        self.stopped = not self.stopped
+        self.start_button.configure(text=["stop","start"][self.stopped])
+        
+
+    def format_screen_data(self):
+        self.new_dict = {}
+        for i in range(0,len(self.screen_data),3):
+            if self.screen_data[i+2] == 3:
+                self.paddle_position = (self.screen_data[i],self.screen_data[i+1])
+            elif self.screen_data[i+2] == 4:
+                self.ball_position = (self.screen_data[i],self.screen_data[i+1])
+            elif self.screen_data[i] == -1:
+                self.highscore_label.config(text = f"Score: {self.screen_data[i+2]:10}") 
+                continue
+            self.new_dict[(self.screen_data[i],self.screen_data[i+1])] = self.screen_data[i+2]
+        self.screen_dict.update(self.new_dict)
+        
+   
+    def move_paddle(self):
+        diff = self.paddle_position[0] - self.ball_position[0]
+        if diff > 0: self.paddle_offset = -1
+        elif diff < 0: self.paddle_offset = 1
+        else: self.paddle_offset = 0
+        
+        
+    def draw_screen(self):
+        if not self.frame_counter:
+            self.max_x_square, self.min_x_square = max([x for x,_ in self.screen_dict.keys()]), min([x for x,_ in self.screen_dict.keys()])
+            self.max_y_square, self.min_y_square = max([y for _,y in self.screen_dict.keys()]), min([y for _,y in self.screen_dict.keys()])
+            self.square_width = self.width/(self.max_x_square - self.min_x_square)
+            self.square_height = self.height/(self.max_y_square - self.min_y_square)
+            self.max_blocks = len([0 for pos in self.screen_dict.keys() if self.screen_dict[pos] == 2])
+            self.current_blocks = 0
+            
+        self.current_blocks += len([0 for pos in self.new_dict.keys() if self.new_dict[pos] == 0 and self.frame_counter])-2
+        self.percentage  = self.current_blocks*100//self.max_blocks
+        self.percentage_label.config(text = f"Percentage: {self.percentage:10}%") 
+
+        self.frame_counter += 1
+        self.frame_counter_label.config(text = f"Frame: {self.frame_counter:10}") 
+        
+        self.pointer.clear()
+        for position in self.screen_dict.keys():
+            entity= self.screen_dict[position]
+            if entity in [2,1]: self.draw_shape(position, self.color_map[entity], self.draw_rectangle)
+            elif entity == 4: self.draw_shape(position, self.color_map[4], self.draw_ball)
+            elif entity == 3: self.draw_shape(position, self.color_map[3], self.draw_paddle)
+        self.screen.update()
+
+    def draw_shape(self, position, color, shape):
+        x_position = (self.width/2)-position[0]*self.square_width
+        y_position = (self.height/2)-position[1]*self.square_height
+        self.pointer.goto(x_position,y_position)
+        self.pointer.fillcolor(color)
+        self.pointer.begin_fill()
+        self.pointer.setheading(90)
+        shape()
+        self.pointer.end_fill()
+        
+    def draw_rectangle(self):
+        self.pointer.fd(self.square_height/2)
+        self.pointer.left(90)
+        self.pointer.fd(self.square_width/2)
+        for i in range(4):
+            self.pointer.left(90)
+            self.pointer.fd(self.square_height if not i % 2 else self.square_width)
+        
+    
+    def draw_ball(self):
+        offset = min((self.square_width, self.square_height))
+        self.pointer.circle(radius=offset/2)
+    
+    def draw_paddle(self):
+        self.pointer.fd(self.square_height/2)
+        self.pointer.left(90)
+        self.pointer.fd(self.square_width*2)
+        for i in range(4):
+            self.pointer.left(90)
+            self.pointer.fd(self.square_height if not i % 2 else self.square_width*4)
+
+        
+
+
+with open("data//breakout_commands.txt") as file:
+    commands = [int(line[:-1]) for line in file]
+
+game = Breakout(commands, 2)
