@@ -68,59 +68,93 @@
 #   This applies to both read- and write operations.
 # - You need to implement a new opcode, opcode 9. opcode 9 adjusts the relative offset by the value of its only parameter.
 #   the offset increases by the value of the parameter (or decreases if that value is negative).
+
 from computer import Computer
-import numpy as np
 import curses
 from time import sleep
 
-screen = curses.initscr()
-curses.curs_set(0)
-
-# Initialize color in a separate step
-curses.start_color()
-# Assign it a number (1-255), a foreground, and background color.
-curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_BLACK)
-curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_BLACK)
-curses.init_pair(3, curses.COLOR_BLUE, curses.COLOR_BLACK)
-curses.init_pair(4, curses.COLOR_RED, curses.COLOR_BLACK)
+# game speed increases over time
+SLEEP_BETWEEN_FRAMES = 0.1
+SLEEP_MULT_PER_FRAME = 0.99
 
 
 def read_input_file():
     with open("./data/breakout_commands.txt", "r") as file:
         return [int(c) for c in file.readlines()]
+    
+commands = read_input_file()
+commands[0] = 2 # interactive mode
 
-coms = read_input_file()
-coms[0] = 2
-output = []
-ball_x = 0
-pedal_x = 0
 
-def input_hook():
-    global output
-    global screen
-    global ball_x, pedal_x
-    screen.refresh()
-    for i in range(0, len(output), 3):
-        x, y, t = output[i:i+3]
-        if x < 0: 
-            print("SKIP")
-            continue
-        if (t ==3): pedal_x = x
-        if (t == 4): ball_x = x
-        print(output[i:i+3])
-        screen.addstr(y, x, [" ", "█", "█", "█", "█"][t], curses.color_pair(t))
-        
-    output = []
+class KI:
+    ball_x = 0
+    pedal_x = 0
 
-    #inkey = {"j": -1, "k": 0, "l": 1}[screen.getkey(0, 0)]
-    #sleep(0.0005)
-    if ball_x > pedal_x: inkey = 1
-    elif ball_x < pedal_x: inkey = -1
-    else: inkey = 0
-    return inkey
+    def update(self, ball_x, pedal_x):
+        self.ball_x = ball_x
+        self.pedal_x = pedal_x
 
-def output_hook(v):
-    output.append(v)
+    def get_next_move(self):
+        if self.ball_x > self.pedal_x:
+            return 1
+        elif self.ball_x < self.pedal_x:
+            return -1
+        else:
+            return 0
 
-cpu = Computer(input_hook, output_hook)
-cpu.run(coms)
+class Main:
+    def __init__(self, commands) -> None:
+        self.commands = commands
+        self.output = []
+        self.ki = KI()
+        curses.wrapper(self.main)
+
+    def main(self, screen):
+        self.screen = screen
+        screen.clear()
+
+        # init curses
+        curses.curs_set(0)
+
+        curses.start_color()
+        curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_BLACK)
+        curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_BLACK)
+        curses.init_pair(3, curses.COLOR_BLUE, curses.COLOR_BLACK)
+        curses.init_pair(4, curses.COLOR_RED, curses.COLOR_BLACK)
+
+        computer = Computer(self.input_callback, self.output_callback)
+        computer.run(commands)
+        screen.refresh()
+
+    # called when int-computer requests input
+    def input_callback(self):
+        global SLEEP_INCREASE_PER_FRAME, SLEEP_BETWEEN_FRAMES
+        self.screen.refresh()
+        SLEEP_BETWEEN_FRAMES *= SLEEP_MULT_PER_FRAME
+        sleep(SLEEP_BETWEEN_FRAMES)
+
+        for i in range(0, len(self.output), 3):
+            x, y, t = self.output[i:i+3]
+            
+            if (x == -1):
+                self.score = t
+                print(f"Score: {self.score}")
+                continue
+
+            if (t == 3): self.ki.pedal_x = x
+            if (t == 4): self.ki.ball_x = x
+            # wall, block, pedal, ball
+            self.screen.addstr(y, x, [" ", "▓", "█", "▂", "▅"][t], curses.color_pair(t))
+
+        self.output.clear()
+        return  self.ki.get_next_move()
+    
+    # called when int-computer provides output
+    def output_callback(self, value):
+        self.output.append(value)
+
+
+if __name__ == "__main__":
+    Main(commands)
+
+# Highscore: 17086

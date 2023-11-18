@@ -115,8 +115,7 @@ class Computer:
     
     def command_change_offset(self, state: State) -> int: # code 9
         number1 = state.get_value(0)
-        new_offset = self.relative_offset + number1
-        self.relative_offset = new_offset
+        self.relative_offset += number1
         return state.head + 2
 
     """
