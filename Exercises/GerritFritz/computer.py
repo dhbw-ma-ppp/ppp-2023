@@ -7,6 +7,7 @@ class Computer:
         self.opcode = 0
         self.positions = []
         self.mode = "000"
+        self.terminated = False
 
         self.opcodes = {
         1: self.add,
@@ -92,3 +93,6 @@ class Computer:
                 self.mode_to_index()
                 self.opcodes[self.opcode]()
             else: raise KeyError(f"Wrong opcode {self.opcode}")
+        if self.commands[self.memory_pointer] == 99:
+            print("terminated")
+            self.terminated = True

@@ -23,10 +23,16 @@ class Breakout():
 
     def game_loop(self):
         if not self.stopped or not self.frame_counter:
+            
             self.screen_data = []
             self.computer.get_frame()
             self.format_screen_data()
             self.move_paddle()
+            self.frame_counter += 1
+        
+        if self.computer.terminated:
+            self.stopped = True
+
         self.draw_screen()
         if self.mode == 2:
             self.after_id = self.window.after(self.timepause, lambda:self.game_loop())
@@ -96,7 +102,7 @@ class Breakout():
         else: self.paddle_offset = 0
         
     def draw_screen(self):
-        if not self.frame_counter:
+        if not(self.frame_counter-1):
             self.max_x_square, self.min_x_square = max([x for x,_ in self.screen_dict.keys()]), min([x for x,_ in self.screen_dict.keys()])
             self.max_y_square, self.min_y_square = max([y for _,y in self.screen_dict.keys()]), min([y for _,y in self.screen_dict.keys()])
             self.square_width = self.width/(self.max_x_square - self.min_x_square)
@@ -108,7 +114,6 @@ class Breakout():
         self.percentage  = 100-(self.current_blocks*100//self.max_blocks)
         self.percentage_label.config(text = f"Percentage: {self.percentage:10}%") 
 
-        self.frame_counter += 1
         self.frame_counter_label.config(text = f"Frame: {self.frame_counter:10}") 
         
         self.pointer.clear()
