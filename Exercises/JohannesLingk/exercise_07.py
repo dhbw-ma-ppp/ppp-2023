@@ -72,6 +72,8 @@
 from computer import Computer
 import curses
 from time import sleep
+import pygame
+from random import randint
 
 # game speed increases over time
 SLEEP_BETWEEN_FRAMES = 0.1
@@ -102,7 +104,7 @@ class KI:
         else:
             return 0
 
-class Main:
+class Terminal:
     def __init__(self, commands) -> None:
         self.commands = commands
         self.output = []
@@ -153,8 +155,122 @@ class Main:
     def output_callback(self, value):
         self.output.append(value)
 
+class Graphical:
+    def __init__(self, commands) -> None:
+        self.framerate = 20
+        self.cell_scale = 15
+        self.block_colors = ["#85c86f", "#67b1f2", "#8489e2", "#ba82ea", "#fd6669", "#f7aa67"]
+        self.extra_lines_bottom = 5
+
+        self.ki = KI()
+        pygame.init()
+        pygame.font.init()
+        self.font = pygame.font.SysFont('Consolas', self.cell_scale)
+        self.screen = pygame.display.set_mode((43*self.cell_scale, (23+self.extra_lines_bottom)*self.cell_scale))
+        self.clock = pygame.time.Clock()
+        self.running = True
+        self.dimensions = self.screen.get_size()
+        self.grid_dimensions = [43, 23]
+        self.computer_output = []
+        self.score = 0
+        self.gameover = False
+        self.paused = True
+        self.screen.fill("white")
+        Computer(self.update, self.output_callback).run(commands)
+        self.gameover = True
+        while self.running:
+            self.update()
+
+    def output_callback(self, value):
+        self.computer_output.append(value)
+
+
+    def update(self):
+        screen = self.screen
+        clock = self.clock
+        while True: # should get stuck in loop while paused
+            if self.running:
+                for i in range(0, len(self.computer_output), 3):
+                    x, y, t = self.computer_output[i:i+3]
+                
+                    if (x == -1):
+                        self.score = t
+                        pygame.display.set_caption(f"Score: {t}")
+                        continue
+
+                    if (t == 3): self.ki.pedal_x = x
+                    if (t == 4): self.ki.ball_x = x
+                    xd = self.dimensions[0] / self.grid_dimensions[0]
+                    yd = (self.dimensions[1]-self.extra_lines_bottom*self.cell_scale) / self.grid_dimensions[1]
+
+                    if t == 0: # empty
+                        pygame.draw.rect(screen, "white", (xd*x, yd*y, xd, yd))
+                    elif t == 1: # wall
+                        pygame.draw.rect(screen, "black", (xd*x, yd*y, xd, yd))
+                    elif t == 2: # block
+                        color = self.block_colors[randint(0, len(self.block_colors)-1)]
+                        #color = self.block_colors[y%len(self.block_colors)]
+                        pygame.draw.rect(screen, color, (xd*x, yd*y, xd, yd))
+                    elif t == 3: # pedal
+                        pygame.draw.rect(screen, "black", (xd*x, yd*y, xd, yd*0.5))
+                    elif t == 4: # ball
+                        pygame.draw.circle(screen, "gray", (int(xd*x+xd*0.5), int(yd*y+yd*0.5)), int(xd*0.5))
+
+                
+                self.computer_output.clear()
+                # text
+                pygame.draw.rect(screen, "black", (0, self.cell_scale*23, 43*self.cell_scale, self.cell_scale*self.extra_lines_bottom))
+                pygame.draw.rect(screen, "white", (self.cell_scale, self.cell_scale*23, self.cell_scale*41, self.cell_scale*self.extra_lines_bottom))
+
+                if self.paused:     state = '<PAUSED>  '
+                elif self.gameover: state = "<GAMEOVER>"
+                else:               state = "<RUNNING> "
+                text_lines = [f"{state}{' '*5}FRAMERATE: {self.framerate}{' '*5}SCORE: {self.score}",
+                        "", f"[SPACE]: Pause/Resume     [UP]: Speed Up     [DOWN]: Speed Down",
+                    "INFO:  Pedal can be controlled manually in PAUSE mode. (Arrow Keys)"]
+                
+                for i in range(len(text_lines)):
+                    text_render = self.font.render(text_lines[i], False, "black")
+                    screen.blit(text_render, (self.cell_scale*2, self.cell_scale*(23+i)))
+                    
+
+                pygame.display.flip()
+                clock.tick(self.framerate) 
+                
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        self.running = False
+                    elif event.type == pygame.KEYDOWN:
+                        pressed = pygame.key.get_pressed()
+                        if pressed[pygame.K_SPACE]:
+                            self.paused = not self.paused
+                        if self.paused:
+                            if pressed[pygame.K_LEFT]:
+                                self.computer_output.clear()
+                                return -1
+                            if pressed[pygame.K_RIGHT]:
+                                return 1
+                            if pressed[pygame.K_UP] or pressed[pygame.K_DOWN]:
+                                return 0
+                        else:
+                            if pressed[pygame.K_UP]:
+                                self.framerate += 5
+                            if pressed[pygame.K_DOWN]:
+                                self.framerate -= 5
+                                if self.framerate < 1: self.framerate = 1
+                        
+                        
+            else: 
+                pygame.quit()
+
+            if not self.paused or not self.running: break
+
+        return self.ki.get_next_move()
+
+
+
 
 if __name__ == "__main__":
-    Main(commands)
+    Graphical(commands)
 
 # Highscore: 17086
