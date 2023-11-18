@@ -24,7 +24,6 @@ class State:
         if mode == 1: # immediate mode
             return self.get_pointer(index)
         elif mode == 2: # relative mode
-            print("used")
             return self.get_memory(self.relative_offset + self.get_pointer(index))
         elif mode == 0: # position mode
             return self.get_memory(self.get_pointer(index))
@@ -36,10 +35,13 @@ class State:
         """
         return self.get_memory(self.head + index + 1)
         
-    def write_memory(self, position: int, value: int):
+    def write_memory(self, index: int, value: int):
         """
         Writes a value into memory position.
+        Relative offset is used.
         """
+        mode = self._get_mode(index)
+        position = self.get_pointer(index) + (self.relative_offset if mode == 2 else 0)
         if len(self.commands) <= position:
             # if list is to small, expand with zeroes
             self.commands.extend([0 for _ in range(position - len(self.commands) + 1)])
@@ -50,31 +52,34 @@ class State:
 
 
 class Computer:
-    def __init__(self) -> None:
-        pass
+    def __init__(self, input_hook, output_hook) -> None:
+        self.input_hook = input_hook
+        self.output_hook = output_hook
 
     def command_addition(self, state: State) -> int: # code 1
         number1 = state.get_value(0)
         number2 = state.get_value(1)
-        state.write_memory(state.get_pointer(2), number1 + number2)
+        state.write_memory(2, number1 + number2)
         return state.head + 4
 
     def command_multiplication(self, state: State) -> int: # code 2
         number1 = state.get_value(0)
         number2 = state.get_value(1)
-        state.write_memory(state.get_pointer(2), number1 * number2)
+        state.write_memory(2, number1 * number2)
         return state.head + 4
 
     def command_stop(self, state: State) -> int: # code 99
         return len(state.commands)
 
     def command_input(self, state: State) -> int: # code 3
-        number = int(input("input digit: "))
-        state.write_memory(state.get_pointer(0), number)
+        #number = int(input("input digit: "))
+        number = self.input_hook()
+        state.write_memory(0, number)
         return state.head + 2
 
     def command_output(self, state: State) -> int: # code 4
-        print(state.get_value(0))
+        #print(state.get_value(0))
+        self.output_hook(state.get_value(0))
         self.output_log.append( state.get_value(0) )
         return state.head + 2
 
@@ -98,14 +103,14 @@ class Computer:
         number1 = state.get_value(0)
         number2 = state.get_value(1)
         result = 1 if number1 < number2 else 0
-        state.write_memory(state.get_pointer(2), result)
+        state.write_memory(2, result)
         return state.head + 4
 
     def command_equals(self, state: State) -> int: # code 8
         number1 = state.get_value(0)
         number2 = state.get_value(1)
         result = 1 if number1 == number2 else 0
-        state.write_memory(state.get_pointer(2), result)
+        state.write_memory(2, result)
         return state.head + 4
     
     def command_change_offset(self, state: State) -> int: # code 9
@@ -143,15 +148,17 @@ class Computer:
     def run(self, commands: list[int]):
         self.pointer = 0
         self.memory = commands
+        self.output_log = []
+        self.relative_offset = 0
         while self.pointer < len(self.memory):
             command = str(self.memory[self.pointer])
-            print(command, self.relative_offset)
             # Split command into op_code and mode string
             operation = int(command[-2:])
             modes = command[-3::-1]
             if operation not in self.op_codes.keys():
                 raise Exception(f'No operation code: {operation}')
             self.pointer = self.op_codes[operation](self, State(self, modes))
+        return self.output_log
         
 
 

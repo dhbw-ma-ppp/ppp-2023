@@ -69,10 +69,58 @@
 # - You need to implement a new opcode, opcode 9. opcode 9 adjusts the relative offset by the value of its only parameter.
 #   the offset increases by the value of the parameter (or decreases if that value is negative).
 from computer import Computer
+import numpy as np
+import curses
+from time import sleep
+
+screen = curses.initscr()
+curses.curs_set(0)
+
+# Initialize color in a separate step
+curses.start_color()
+# Assign it a number (1-255), a foreground, and background color.
+curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_BLACK)
+curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_BLACK)
+curses.init_pair(3, curses.COLOR_BLUE, curses.COLOR_BLACK)
+curses.init_pair(4, curses.COLOR_RED, curses.COLOR_BLACK)
+
 
 def read_input_file():
     with open("./data/breakout_commands.txt", "r") as file:
         return [int(c) for c in file.readlines()]
 
-cpu = Computer()
-cpu.run(read_input_file())
+coms = read_input_file()
+coms[0] = 2
+output = []
+ball_x = 0
+pedal_x = 0
+
+def input_hook():
+    global output
+    global screen
+    global ball_x, pedal_x
+    screen.refresh()
+    for i in range(0, len(output), 3):
+        x, y, t = output[i:i+3]
+        if x < 0: 
+            print("SKIP")
+            continue
+        if (t ==3): pedal_x = x
+        if (t == 4): ball_x = x
+        print(output[i:i+3])
+        screen.addstr(y, x, [" ", "█", "█", "█", "█"][t], curses.color_pair(t))
+        
+    output = []
+
+    #inkey = {"j": -1, "k": 0, "l": 1}[screen.getkey(0, 0)]
+    #sleep(0.0005)
+    if ball_x > pedal_x: inkey = 1
+    elif ball_x < pedal_x: inkey = -1
+    else: inkey = 0
+    return inkey
+
+def output_hook(v):
+    output.append(v)
+
+cpu = Computer(input_hook, output_hook)
+cpu.run(coms)
