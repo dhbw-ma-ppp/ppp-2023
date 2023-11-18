@@ -116,8 +116,7 @@ class Breakout():
         self.computer = Computer(commands, self)
         self.color_map = ["white", "grey", "green", "blue", "red"]
         self.stopped = True
-        #random.shuffle(self.color_map)
-
+        self.skipping = False 
         self.setup_canvas()
         self.after_id = self.window.after(self.timepause, lambda:self.game_loop())
         self.window.mainloop()
@@ -153,18 +152,20 @@ class Breakout():
         self.highscore_label = tkinter.Label(master= upper_grid, text= self.highscore)
         self.frame_counter_label = tkinter.Label(master= upper_grid, text= self.frame_counter)
         self.percentage_label = tkinter.Label(master= upper_grid, text= self.percentage)
+        self.skip_button = tkinter.Button(master= upper_grid, text= "start skip", command= self.skip)
         self.exit_button = tkinter.Button(master= upper_grid, text= "Exit", command= self.window.destroy)
         self.start_button = tkinter.Button(master= upper_grid, text= "Start", command= self.stop)
 
-        for i in range(5):
+        for i in range(6):
             tkinter.Grid.columnconfigure(upper_grid, i, weight=1)
             
         upper_grid.pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=True)
         self.start_button.grid (column=0, row=0, sticky=tkinter.NSEW)
-        self.highscore_label.grid(column=1, row=0, sticky=tkinter.NSEW)
-        self.frame_counter_label.grid(column=2, row=0, sticky=tkinter.NSEW)
-        self.percentage_label.grid(column=3, row=0, sticky=tkinter.NSEW)
-        self.exit_button.grid(column=4, row=0, sticky=tkinter.NSEW)
+        self.skip_button.grid (column=1, row=0, sticky=tkinter.NSEW)
+        self.highscore_label.grid(column=2, row=0, sticky=tkinter.NSEW)
+        self.frame_counter_label.grid(column=3, row=0, sticky=tkinter.NSEW)
+        self.percentage_label.grid(column=4, row=0, sticky=tkinter.NSEW)
+        self.exit_button.grid(column=5, row=0, sticky=tkinter.NSEW)
         self.canvas.pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=True)
         
         self.screen = turtle.TurtleScreen(self.canvas)
@@ -177,6 +178,10 @@ class Breakout():
     def stop(self):
         self.stopped = not self.stopped
         self.start_button.configure(text=["stop","start"][self.stopped])
+    
+    def skip(self):
+        self.skipping = not self.skipping
+        self.skip_button.configure(text=["stop skip","start skip"][not self.skipping])
         
 
     def format_screen_data(self):
@@ -209,8 +214,8 @@ class Breakout():
             self.max_blocks = len([0 for pos in self.screen_dict.keys() if self.screen_dict[pos] == 2])
             self.current_blocks = 0
             
-        self.current_blocks += len([0 for pos in self.new_dict.keys() if self.new_dict[pos] == 0 and self.frame_counter])-2
-        self.percentage  = self.current_blocks*100//self.max_blocks
+        self.current_blocks = len([0 for pos in self.screen_dict.keys() if self.screen_dict[pos] == 2])
+        self.percentage  = 100-(self.current_blocks*100//self.max_blocks)
         self.percentage_label.config(text = f"Percentage: {self.percentage:10}%") 
 
         self.frame_counter += 1
@@ -218,10 +223,11 @@ class Breakout():
         
         self.pointer.clear()
         for position in self.screen_dict.keys():
-            entity= self.screen_dict[position]
-            if entity in [2,1]: self.draw_shape(position, self.color_map[entity], self.draw_rectangle)
-            elif entity == 4: self.draw_shape(position, self.color_map[4], self.draw_ball)
-            elif entity == 3: self.draw_shape(position, self.color_map[3], self.draw_paddle)
+            if not self.skipping:
+                entity= self.screen_dict[position]
+                if entity in [2,1]: self.draw_shape(position, self.color_map[entity], self.draw_rectangle)
+                elif entity == 4: self.draw_shape(position, self.color_map[4], self.draw_ball)
+                elif entity == 3: self.draw_shape(position, self.color_map[3], self.draw_paddle)
         self.screen.update()
 
     def draw_shape(self, position, color, shape):
