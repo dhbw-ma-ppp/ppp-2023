@@ -1,7 +1,6 @@
-import tkinter
-import turtle
-from computer import Computer
 
+from computer import Computer
+""" 
 
 class Breakout():
     def __init__(self, commands, mode):
@@ -159,4 +158,78 @@ class Breakout():
 with open("data//breakout_commands.txt") as file:
     commands = [int(line[:-1]) for line in file]
 
+game = Breakout(commands, 2)
+ """
+
+import pyglet
+from pyglet import shapes
+import time
+
+class Breakout():
+    def __init__(self, commands, mode):
+        commands[0] = mode
+        self.mode = mode
+        self.screen_data = []
+        self.screen_dict = {}
+        self.computer = Computer(commands, self)
+        self.setup_canvas()
+        pyglet.app.run()
+
+    def setup_canvas(self):
+        self.window = pyglet.window.Window(800, 500)
+        self.batch = pyglet.graphics.Batch()
+        value = self.window.get_size()
+        self.screen_width = value[0]
+        self.screen_height = value[1]
+        block_num = (43,23)
+        self.block_width = self.screen_width/block_num[0]
+        self.block_height = self.screen_height/block_num[1]
+        pyglet.clock.schedule_interval(self.mainloop, 0.001)
+        #@window.event
+    def mainloop(self, dt):
+        self.screen_data = []
+        self.computer.get_frame()
+        self.format_screen_data()
+        self.move_paddle()
+        self.window.clear()
+        self.draw_screen()
+        self.batch.draw()
+    
+    def move_paddle(self):
+        diff = self.paddle_position[0] - self.ball_position[0]
+        if diff > 0: self.paddle_offset = -1
+        elif diff < 0: self.paddle_offset = 1
+        else: self.paddle_offset = 0
+    
+    def format_screen_data(self):
+        self.new_dict = {}
+        for i in range(0,len(self.screen_data),3):
+            block_x = self.screen_data[i]
+            block_y = self.screen_data[i+1]
+            entity = self.screen_data[i+2]
+            if self.screen_data[i+2] == 3:
+                self.paddle_position = (block_x,block_y)
+            elif self.screen_data[i+2] == 4:
+                self.ball_position = (block_x,block_y)
+            elif block_x == -1:
+                pass
+                continue
+        
+            self.new_dict[(block_x,block_y)] = [entity]
+        self.screen_dict.update(self.new_dict)
+    
+    def draw_screen(self):
+        for position in self.screen_dict.keys():
+            entity= self.screen_dict[position][0]
+            if entity in [1,2,3,4]: 
+                self.screen_dict[position] = [entity, shapes.Rectangle(position[0]*self.block_width, self.screen_height-(position[1]*self.block_height), self.block_width, self.block_height, color=(10, 255 ,50), batch=self.batch)]
+                
+        
+    
+   
+
+
+
+with open("data//breakout_commands.txt") as file:
+    commands = [int(line[:-1]) for line in file]
 game = Breakout(commands, 2)
