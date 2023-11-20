@@ -1,5 +1,6 @@
 from computer import Computer
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 def get_data() -> dict[int, int]:
@@ -15,11 +16,25 @@ def get_data() -> dict[int, int]:
     return data
 
 
-# memory = {key: element for (key, element) in enumerate(commands)}
-
 def render(data):
-    formatted_data = np.array(data).reshape(int(len(data)/3), 3)
-    print(formatted_data)
+    formatted_data = np.array(data).reshape(int(len(data) / 3), 3)
+    indices = np.argsort(formatted_data[:, 2])
+    temp = formatted_data[indices]
+    pixel = np.array_split(temp, np.where(np.diff(temp[:, 2]) != 0)[0] + 1)
+
+    # 0: empty tile
+    plt.scatter(pixel[0][:, 0], pixel[0][:, 1], c="w", marker="s")
+    # 1: wall. walls are indestructible
+    plt.scatter(pixel[1][:, 0], pixel[1][:, 1], c="c", marker="s")
+    # 2: block. blocks can be destroyed by the ball, marker="s"
+    plt.scatter(pixel[2][:, 0], pixel[2][:, 1], c="g", marker="s")
+    # 3: paddle. the paddle is indestructible
+    plt.scatter(pixel[3][:, 0], pixel[3][:, 1], c="b", marker="s")
+    # 4: ball. the ball moves diagonally and bounces off objects
+    plt.scatter(pixel[4][:, 0], pixel[4][:, 1], c="r", marker="s")
+    
+    plt.show()
+
 
 def main():
     output_stream = []
@@ -32,7 +47,3 @@ def main():
 
 
 main()
-
-
-
-    

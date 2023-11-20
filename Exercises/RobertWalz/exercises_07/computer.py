@@ -37,26 +37,26 @@ class Computer:
         Finally it moves the instruction pointer 4 steps forwards.
         """
 
-        amount_of_params = 2
-        first_reference, second_reference = self._get_refs(
+        amount_of_params = 3
+        first_reference, second_reference, save_ref = self._get_refs(
             params_to_get=amount_of_params
         )
         result = self._read_value(first_reference) + self._read_value(second_reference)
-        self._write_value_to(value=result, amount_of_params=amount_of_params)
-        self._instruction_pointer += amount_of_params + 2  # 2: opcode + savepos
+        self._write_value_to(value=result, save_pos=save_ref)
+        self._instruction_pointer += amount_of_params + 1  # opcode
 
     def _multiply_write(self):
         """
         Multiplies the first and second value after the instructio_pointer and stores it in third position.
         Finally it moves the instruction pointer 4 steps forwards.
         """
-        amount_of_params = 2
-        first_reference, second_reference = self._get_refs(
+        amount_of_params = 3
+        first_reference, second_reference, save_ref = self._get_refs(
             params_to_get=amount_of_params
         )
         result = self._read_value(first_reference) * self._read_value(second_reference)
-        self._write_value_to(value=result, amount_of_params=amount_of_params)
-        self._instruction_pointer += amount_of_params + 2  # 2: opcode + savepos
+        self._write_value_to(value=result, save_pos=save_ref)
+        self._instruction_pointer += amount_of_params + 1  # opcode
 
     def _input_and_write(self):
         """
@@ -64,13 +64,15 @@ class Computer:
         If the input is not valid, the computer will terminate.
         """
         user_input = input("Please input an integer value: ")
+        amount_of_params = 1
         try:
             result = int(user_input)
-            self._write_value_to(value=result, amount_of_params=0)
+            (save_ref,) = self._get_refs(params_to_get=amount_of_params)
+            self._write_value_to(result, save_ref)
         except ValueError:
             print("Please input a valid value next time.")
             self.terminate()
-        self._instruction_pointer += 2  # opcode + write_pos
+        self._instruction_pointer += amount_of_params + 1  # opcode + write_pos
 
     def _output(self):
         """
@@ -110,31 +112,31 @@ class Computer:
         Writes 1 to third position from instruction_pointer, if the first value is less than the second value from the instruction pointer .
         Otherwise it sets the value to 0
         """
-        amount_of_params = 2
-        first_reference, second_reference = self._get_refs(
+        amount_of_params = 3
+        first_reference, second_reference, save_ref = self._get_refs(
             params_to_get=amount_of_params
         )
         if self._read_value(first_reference) < self._read_value(second_reference):
-            self._write_value_to(1, amount_of_params=amount_of_params)
+            self._write_value_to(1, save_ref)
 
         else:
-            self._write_value_to(0, amount_of_params=amount_of_params)
-        self._instruction_pointer += amount_of_params + 2  # 2: opcode + savepos
+            self._write_value_to(0, save_ref)
+        self._instruction_pointer += amount_of_params + 1  # opcode
 
     def _equals(self):
         """
         Writes 1 to third position from instruction_pointer, if the first to values are equal.
         Otherwise it sets the value to 0
         """
-        amount_of_params = 2
-        first_reference, second_reference = self._get_refs(
+        amount_of_params = 3
+        first_reference, second_reference, save_ref = self._get_refs(
             params_to_get=amount_of_params
         )
         if self._read_value(first_reference) == self._read_value(second_reference):
-            self._write_value_to(1, amount_of_params=amount_of_params)
+            self._write_value_to(1, save_ref)
         else:
-            self._write_value_to(0, amount_of_params=amount_of_params)
-        self._instruction_pointer += amount_of_params + 2  # 2: opcode + savepos
+            self._write_value_to(0, save_ref)
+        self._instruction_pointer += amount_of_params + 1  # opcode
 
     def _adjust_relative_offset(self):
         amount_of_params = 1
@@ -142,17 +144,16 @@ class Computer:
         self._relative_offset += self._read_value(ref)
         self._instruction_pointer += amount_of_params + 1
 
-    def _write_value_to(self, value, amount_of_params):
+    def _write_value_to(self, value, save_pos):
         """Writes a value to the location of the instruction pointer + the respective save_pos_from_pointer
 
         Args:
             value (int): the value to write
             save_pos_from_pointer (int): position to add from instruction_pointer
         """
-        save_ref = self._read_value(
-            self._instruction_pointer + amount_of_params + 1
-        )  # 1 for the opcode
-        self._memory[save_ref] = value
+
+        # this value could be written in offset mode
+        self._memory[save_pos] = value
 
     def _get_refs(self, params_to_get):
         """gets references to a set number of params
@@ -180,12 +181,8 @@ class Computer:
                 case 2:
                     # relative
                     refs.append(
-                        self._read_value(
-                            self._instruction_pointer
-                            + 1
-                            + index
-                            + self._relative_offset
-                        )
+                        self._read_value(self._instruction_pointer + 1 + index)
+                        + self._relative_offset
                     )
             params //= 10
 
@@ -206,10 +203,5 @@ class Computer:
             self._memory
         ):
             self.calculate_step()
+
         return 0
-
-
-if __name__ == "__main__":
-
-    def main():
-        pass
