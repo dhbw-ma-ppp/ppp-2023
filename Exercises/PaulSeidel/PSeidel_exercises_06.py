@@ -90,11 +90,11 @@
 #terminal_list = ["$ cd /", "$ ls", "dir subdir1", "123 subfile1.bs", "dir subdir2", "$ cd subdir1", "$ ls", "234 subsubfile1.fg", "dir subsubdir1", "$ cd ..", "$ cd subdir2", "$ ls", "dir subsubdir1", "300 subsubfile1.fg"]
 #result: 1191 (correct)
 
-terminal_list = ["$ cd /", "$ ls", "dir subdir1", "123 subfile1.bs", "dir subdir2", "$ cd subdir1", "$ ls", "234 subsubfile1.fg", "dir subsubdir1", "$ cd ..", "$ cd subdir2", "$ ls", "dir subsubdir1", "300 subsubfile1.fg", "$ cd subsubdir1", "$ ls", "100001 file3", "$ cd ..", "$ cd ..", "$ cd subdir1", "$ cd subsubdir1", "$ ls", "200 file1", "300 file2", "$ cd ..", "$ cd .."]
+#terminal_list = ["$ cd /", "$ ls", "dir subdir1", "123 subfile1.bs", "dir subdir2", "$ cd subdir1", "$ ls", "234 subsubfile1.fg", "dir subsubdir1", "$ cd ..", "$ cd subdir2", "$ ls", "dir subsubdir1", "300 subsubfile1.fg", "$ cd subsubdir1", "$ ls", "100001 file3", "$ cd ..", "$ cd ..", "$ cd subdir1", "$ cd subsubdir1", "$ ls", "200 file1", "300 file2", "$ cd ..", "$ cd .."]
 #_____________________________________________________________________________________________________________________________________
 
-#with open("./data/terminal_record.txt", "r") as input_file:
-    #terminal_list = [line for line in input_file.readlines()]
+with open("./data/terminal_record.txt", "r") as input_file:
+    terminal_list = [line for line in input_file.readlines()]
 
 """import pathlib
 
@@ -124,18 +124,13 @@ def create_folder_structure():
     for line in terminal_list:  #going trough terminal_list and adding all dirs and files to the dict folder_structure
         line_counter += 1
         line = line.split()
-        #former_change_of_dir = ""
         if line[1] == "cd":
             if line[2] == "..":
-                #if former_change_of_dir == "..":    #if there is a "cd .." following another, don't remove the current path before pop'ing from the stack------------------#
                 current_path = parents_path
                 parents_path_as_list = list(parents_path)   #tuple has to be converted into a list, to remove the last element.
                 parents_path_as_list.pop()
                 parents_path = tuple(parents_path_as_list)  #now convert it back, so the tuple now has lost one element
-                """else:
-                    #current_path.pop()
-                    current_path.pop()
-                    parents_path = current_path"""
+
             else:
                 parents_path = current_path
                 new_tuple_part = (f"{line[2]}",)
@@ -155,33 +150,6 @@ def create_folder_structure():
             temp = folder_structure[current_path]
             temp.append(("dir", f"{line[1]}"))
             folder_structure[current_path] = temp  #adding the dir as a tuple ("dir", "<name>") to its parent-dir
-
-            """if ((f"{line[1]}") not in key_tuple for key_tuple in folder_structure.keys()):  #to make sure, no existing dir is beeing overwritten. A dir is recognized as the same, when the paths and names are same.
-                    folder_structure[(f"{current_path}", f"{line[1]}")] = []    #adding the dir to the dict with an empty list and a tuple as key ("<path>", "<name>") for the subelements
-
-                    key_to_search = (f"{current_path}", )
-
-                    searched_key = parents_path  #dir name to find in the key-tuples
-                    found_key = next(key for key in folder_structure.keys() if searched_key in key) #whole key-tuple containing the searched name of dir
-                    temp = folder_structure[found_key]
-
-                    temp.append((f"{line[0]}", f"{line[1]}")) #adding the dir as a tuple ("dir", "<name>") to its parent-dir
-                    folder_structure[f"{parents_path}"] = temp
-                
-            else:   #a dir with the same name is already existing.  #müsste ich weglassen können, weil die vollen Pfade als Key keine Dopplungen erzeugen
-                other_dir = folder_structure[f"{line[1]}"]   #other_dir is the describing list
-                other_path = other_dir[0]   #the path of every dir in the folder structure is written in first position
-                if current_path == other_path:  #if this exact dir was already analyzed: Skip it
-                    pass
-                else:   #same name but other dir (in another path). In this case, make it's name unique for the dict and add it then
-                    helping_counter += 1
-                    new_name = f"{line[1]} {helping_counter}" #e.g. "exampledict 1".            
-
-                    folder_structure[f"{new_name}"] = current_path    
-                    
-                    temp = folder_structure[f"{parents_path}"]
-                    temp.append((f"{line[0]}", f"{new_name}")) #adding the new named dir as a tuple to its parent-dir
-                    folder_structure[f"{parents_path}"] = temp"""
 
         else:   #element has to be a file
             temp = folder_structure[current_path]
