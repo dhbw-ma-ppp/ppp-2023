@@ -178,11 +178,6 @@ def recursive_calculate_size(current_directory = ("/",)):
     
     return dir_sizes[current_directory]
 
-"""Der Code zählt die Größen nicht durch alle Dirs. Evtl. etwas in der rekursiven Funktion? Auf jeden Fall hat das / dir aktuell eine größe
-von 0, was ja nicht sein kann. Die Ordnerstruktur scheint aber vollständig und richtig zu sein. D.h. es liegt jetzt nur noch an der Size-Auswertung.
-Das dürfte nun wirklich nicht mehr krass viel sein. Denk dran, wenn der Code läuft, alle unnötigen auskommentierten Zeilen und Absätze zu löschen und
-alle gewollten One-Line-Kommentare schick einzurücken, damit der Code nicht so unglaublich hässlich aussieht."""
-
 def run_and_return_dict():
     """runs the upper functions to analyze the input file into the folder structure and calculate the size of the dir "/" and all of it's subdirs
     and returns the directory of sizes. That's required by the exercise."""
