@@ -16,10 +16,19 @@
 # sum of two numbers out of the 25 numbers before it.
 # Please make not of your result in the PR.
 
+import pathlib
+
+path_here = pathlib.Path(__file__).parent
+path_dir_exercises = path_here.parent
+path_dir_root = path_dir_exercises.parent
+
+path_dir_data = path_dir_root / "data"
+
+
 def findNumber():
     numbers = []
 
-    with open("data\input_sequence.txt", 'r') as fp:
+    with open( path_dir_data / "input_sequence.txt", 'r') as fp:
 
         lines = fp.read().strip()
 
@@ -72,7 +81,7 @@ print(findNumber())
 # For the actual inputs, how many bags are inside your single shiny gold bag?
 # As usual, please list the answer as part of the PR.
 
-with open("data\input_bags.txt") as fp:
+with open(path_dir_data / "input_bags.txt") as fp:
 
     lines_temp = fp.read().strip()
 
