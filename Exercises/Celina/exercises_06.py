@@ -99,19 +99,18 @@
 ###############################################################################
 
 
-file_path = []
-
-directory_dic={}
 
 
-console_session = open('terminal_record.txt', 'r')
-input = []
-for line in console_session:
-    input.append(line)
+with open('terminal_record.txt', 'r') as console_session:
+    input = []
+    for line in console_session:
+        input.append(line)
 
 
 
 def size_of_directorys(input):
+    file_path = []
+    directory_dic={}
     #print(input)
     for line in input:
         if line.startswith("$ ls") or line.startswith("dir"):
@@ -134,9 +133,10 @@ def size_of_directorys(input):
                     directory_dic[path] = new_size
                 else:
                     directory_dic[path] = size
+    return directory_dic
     #print(directory_dic)
 
-def directorys_under_100000():
+def directorys_under_100000(directory_dic):
     sum=0
     for element in directory_dic:
         #rint (element)
@@ -144,7 +144,7 @@ def directorys_under_100000():
             sum += directory_dic[element]
     return sum
 
-def delete_directory():
+def delete_directory(directory_dic):
     size_to_delete= directory_dic["//"]- (70000000-30000000)
     if size_to_delete < 0:
         print("nothing to delete")
@@ -160,6 +160,6 @@ def delete_directory():
                 
         
 
-size_of_directorys(input)
-print(directorys_under_100000())
-print(delete_directory())
+diretory_dic = size_of_directorys(input)
+print(directorys_under_100000(diretory_dic))
+print(delete_directory(diretory_dic))
