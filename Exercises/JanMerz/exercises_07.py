@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import pathlib
 # to solve todays exercise you will need a fully functional int-computer
 # a fully functional int-computer has some additional features compared to the 
 # last one you implemented.
@@ -169,8 +170,8 @@ class RunGame:
     relevant_tiles = 0
     x_coordinate = 0
     y_coordinate = 0
-    paddle_direction = 0
     score = 0
+    ball_coordinate = 0
     matrix = np.zeros([23, 43])
     figure, ax = plt.subplots()
 
@@ -188,7 +189,7 @@ class RunGame:
                 self.ignore_value = True
                 return
             elif(self.zaehler == 3):
-                self.score += computer_return
+                self.score = computer_return
                 print("score:", self.score)
                 return
             else:
@@ -200,50 +201,51 @@ class RunGame:
 
         match self.relevant_tiles:
             case 1: 
-                self.y_coordinate = computer_return
-            case 2: 
                 self.x_coordinate = computer_return
+            case 2: 
+                self.y_coordinate = computer_return
             case 3: 
-                self.change_matrix(self.x_coordinate, self.y_coordinate, computer_return)
+                if(computer_return == 4):
+                    self.ball_coordinate = self.x_coordinate
+                self.change_matrix(computer_return)
+                self.relevant_tiles = 0
             
-        if(self.relevant_tiles == 3):
-            self.relevant_tiles = 0
-            self.move_paddle(computer_return, self.matrix)
 
-    def move_paddle(self, ball_coordinate, matrix):
+    def move_paddle(self):
         paddle_coordinate = 0
 
-        for index in range(23):
-            if(matrix[index, 42] == 4):
-                paddle_coordinate = matrix[index, 23]
-        
+        for index in range(43):
+            if(self.matrix[21, index] == 3):
+                paddle_coordinate = index
+                break
 
-        if(paddle_coordinate < ball_coordinate):
-                self.paddle_direction = 1
-        elif(paddle_coordinate > ball_coordinate):
-                self.paddle_direction = -1
+        if(paddle_coordinate < self.ball_coordinate):
+                paddle_direction = 1
+        elif(paddle_coordinate > self.ball_coordinate):
+                paddle_direction = -1
         else:
-            self.paddle_direction = 0
+            paddle_direction = 0
+        return paddle_direction
 
-    def change_matrix(self, x_coordinate, y_coordinate, tile_value):
-        self.matrix[x_coordinate, y_coordinate] = tile_value
+    def change_matrix(self, tile_value):
+        self.matrix[self.y_coordinate, self.x_coordinate] = tile_value
 
     def input_getter(self):
-        return self.paddle_direction
+        paddle_direction = self.move_paddle()
+        return paddle_direction
 
     def add_to_pixel_list(self, value):
         self.pixel_list.append(value)
 
     def paint_picture(self):
-        global computer_return
 
-        #print(self.pixel_list)
         self.ax.matshow(self.matrix)
         plt.draw()
-        plt.pause(1)
+        plt.pause(0.01)
         self.ax.clear()
 
-with open("breakout_commands.txt") as commands:
+root_dir = pathlib.Path().absolute().parents[1]
+with open(root_dir / "data" / "breakout_commands.txt", "r") as commands:
     lines = commands.read().splitlines()
     for element in range(len(lines)):
         lines[element] = int(lines[element])
@@ -252,4 +254,3 @@ run_obj = RunGame()
 computer = IntComputer(run_obj.input_getter, run_obj.output_method)
 picture_pixels = []
 computer.run(lines)
-plt.show()
