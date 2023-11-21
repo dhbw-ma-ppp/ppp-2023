@@ -33,6 +33,8 @@ def render(data):
     # 4: ball. the ball moves diagonally and bounces off objects
     plt.scatter(pixel[4][:, 0], pixel[4][:, 1], c="r", marker="s")
     
+    plt.gca().invert_yaxis() 
+     
     plt.show()
 
 
