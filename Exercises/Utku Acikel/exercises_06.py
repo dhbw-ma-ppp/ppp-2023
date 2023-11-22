@@ -75,47 +75,52 @@
 
 from pathlib import Path
 
+# Function to open a file and read it
 def open_file():
     filepath = Path (__file__).parents[2] / 'data' / 'terminal_record.txt'
     with open(filepath, 'r') as file:
         lines = file.readlines()
     return lines
 
+# Function to calculate sizes of directories
 def directory_sizes(lines):
     directory_sizes = {'': 0}
     current_path = []
 
     for line in lines:
-        if line.startswith('$ cd'):
-            dir_name = line.split()[2]
-            if dir_name == '/':
+        if line.startswith('$ cd'): # directory change command if "$ cd"
+            dir_name = line.split()[2] # Getting directory name
+            if dir_name == '/': # reset current path is "/"
                 current_path = []
-            elif dir_name == '..':
-                current_path.pop()
+            elif dir_name == '..': # remove last directory from current path
+                current_path.pop() 
             else:
-                current_path.append(dir_name)
-        elif line.startswith('dir'):
-            dir_name = line.split()[1]
+                current_path.append(dir_name) # Else adds directory to current path
+        elif line.startswith('dir'): # dir: directory creations command
+            dir_name = line.split()[1] # Getting directory name
+            # Adding directory to directory sizes with size 0
             directory_sizes['/'.join((current_path + [dir_name]) if current_path else [dir_name])] = 0
-        elif line[0].isdigit():
-            file_size = int(line.split()[0])
-            directory_sizes['/'.join(current_path if current_path else [''])] += file_size
+        elif line[0].isdigit(): # If line starts with digit, file creation with file size
+            file_size = int(line.split()[0]) # Getting file size
+            directory_sizes['/'.join(current_path if current_path else [''])] += file_size #  Adding file size to current directory size
 
-    for dir_path, size in directory_sizes.items():
-        parent_dir = '/'.join(dir_path.split('/')[:-1])
-        if parent_dir in directory_sizes:
+    for dir_path, size in directory_sizes.items(): # Loop through each directory and size
+        parent_dir = '/'.join(dir_path.split('/')[:-1]) # Getting the parent directory
+        if parent_dir in directory_sizes: # If parent dir in directory sizes dict, adding directory size
             directory_sizes[parent_dir] += size
 
     return directory_sizes
 
-
+# Function to calculate total size of all directories
 def total_size(directory_sizes):
+    # sum sizes of all directory that are less or equal to 100.000, 
     total_size = sum(size for size in directory_sizes.values() if size <= 100000)
     return total_size
 
-lines = open_file()
-directory_sizes = directory_sizes(lines)
-total_size = total_size(directory_sizes)
+
+lines = open_file() # Open file and read
+directory_sizes = directory_sizes(lines) # Calculate sizes of directories
+total_size = total_size(directory_sizes) # Calculate total size of all directories
 print(total_size)
         
     
@@ -153,7 +158,7 @@ def find_directory_to_delete(directory_sizes, total_space=70000000, space_needed
     suitable_directories = {dir_path: size for dir_path, size in directory_sizes.items() if size >= additional_space_needed}
     
     if not suitable_directories:
-        return None
+        return None, None
 
     directory_to_delete = min(suitable_directories, key=suitable_directories.get)
 
