@@ -73,7 +73,7 @@ class Computer:
                     case "2": self.positions.append(self.offset+self.commands[self.memory_pointer+i+1])
                     case _: raise KeyError(f"Wrong mode {self.mode}")
             else:
-                raise IndexError(f"out of range")
+                raise IndexError(f"Index {self.memory_pointer+i} not in list")
                     
         for i, position in enumerate(self.positions):
             if position>len(self.commands)-1:

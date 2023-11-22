@@ -1,7 +1,7 @@
 from computer import Computer
 import pyglet
-from pyglet import shapes
 import random
+import pathlib
 
 class Breakout():
     def __init__(self, commands, mode):
@@ -97,13 +97,13 @@ class Breakout():
 
     
     def rectangle(self, position, color):
-        return shapes.Rectangle(position[0]*self.block_width, 
+        return pyglet.shapes.Rectangle(position[0]*self.block_width, 
                                 self.window.height-(position[1]*self.block_height), 
                                 self.block_width, self.block_height, color=color, 
                                 batch=self.batch) 
 
     def circle(self, position, color):
-        return shapes.Circle(position[0]*self.block_width, 
+        return pyglet.shapes.Circle(position[0]*self.block_width, 
                              self.window.height-(position[1]*self.block_height), 
                              self.block_width//2, color=color, batch=self.batch)
     
@@ -112,7 +112,9 @@ class Breakout():
                 random.randint(*self.block_color_interval[1]),
                 random.randint(*self.block_color_interval[2]))
     
-    
-with open("data//breakout_commands.txt") as file:
+root_dir = pathlib.Path(__file__).parent.parent.parent
+command_file = root_dir / "data" / "breakout_commands.txt"
+
+with open(command_file) as file:
     commands = [int(line[:-1]) for line in file]
 game = Breakout(commands, 2)
