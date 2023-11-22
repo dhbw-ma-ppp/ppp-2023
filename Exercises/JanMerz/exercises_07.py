@@ -1,6 +1,3 @@
-import numpy as np
-import matplotlib.pyplot as plt
-import pathlib
 # to solve todays exercise you will need a fully functional int-computer
 # a fully functional int-computer has some additional features compared to the 
 # last one you implemented.
@@ -72,6 +69,9 @@ import pathlib
 # - You need to implement a new opcode, opcode 9. opcode 9 adjusts the relative offset by the value of its only parameter.
 #   the offset increases by the value of the parameter (or decreases if that value is negative).
 
+import numpy as np
+import matplotlib.pyplot as plt
+import pathlib
 import operator
 
 class IntComputer:
@@ -165,12 +165,11 @@ class IntComputer:
 class RunGame:
 
     ignore_value = False
+    painted_main_screen = False
     zaehler = 0
-    pixel_list = []
     relevant_tiles = 0
     x_coordinate = 0
     y_coordinate = 0
-    score = 0
     ball_coordinate = 0
     matrix = np.zeros([23, 43])
     figure, ax = plt.subplots()
@@ -179,9 +178,9 @@ class RunGame:
 
         if (computer_return == -1 or self.ignore_value):
 
-            if(self.zaehler == 0):
+            if(self.zaehler == 0 and not self.painted_main_screen):
                 self.paint_picture()
-                self.pixel_list = []
+                self.painted_main_screen = True
 
             self.zaehler += 1
 
@@ -189,8 +188,8 @@ class RunGame:
                 self.ignore_value = True
                 return
             elif(self.zaehler == 3):
-                self.score = computer_return
-                print("score:", self.score)
+                score = computer_return
+                print("score:", score)
                 return
             else:
                 self.zaehler = 0
@@ -205,12 +204,15 @@ class RunGame:
             case 2: 
                 self.y_coordinate = computer_return
             case 3: 
-                if(computer_return == 4):
-                    self.ball_coordinate = self.x_coordinate
                 self.change_matrix(computer_return)
                 self.relevant_tiles = 0
-            
 
+                if(computer_return == 4):
+                    self.ball_coordinate = self.x_coordinate
+                    if(self.painted_main_screen):
+                        self.paint_picture()
+            
+    
     def move_paddle(self):
         paddle_coordinate = 0
 
@@ -234,14 +236,11 @@ class RunGame:
         paddle_direction = self.move_paddle()
         return paddle_direction
 
-    def add_to_pixel_list(self, value):
-        self.pixel_list.append(value)
-
     def paint_picture(self):
 
         self.ax.matshow(self.matrix)
         plt.draw()
-        plt.pause(0.01)
+        plt.pause(0.0001)
         self.ax.clear()
 
 root_dir = pathlib.Path().absolute().parents[1]
