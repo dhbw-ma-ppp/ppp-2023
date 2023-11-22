@@ -238,9 +238,9 @@ class RunGame:
 
     def paint_picture(self):
 
-        self.ax.matshow(self.matrix)
+        self.ax.imshow(self.matrix)
         plt.draw()
-        plt.pause(0.0001)
+        plt.pause(0.000001)
         self.ax.clear()
 
 root_dir = pathlib.Path().absolute().parents[1]
