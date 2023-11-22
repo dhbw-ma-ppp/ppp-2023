@@ -93,20 +93,17 @@
 #terminal_list = ["$ cd /", "$ ls", "dir subdir1", "123 subfile1.bs", "dir subdir2", "$ cd subdir1", "$ ls", "234 subsubfile1.fg", "dir subsubdir1", "$ cd ..", "$ cd subdir2", "$ ls", "dir subsubdir1", "300 subsubfile1.fg", "$ cd subsubdir1", "$ ls", "100001 file3", "$ cd ..", "$ cd ..", "$ cd subdir1", "$ cd subsubdir1", "$ ls", "200 file1", "300 file2", "$ cd ..", "$ cd .."]
 #_____________________________________________________________________________________________________________________________________
 
-with open("./data/terminal_record.txt", "r") as input_file:
+"""with open("./data/terminal_record.txt", "r") as input_file:
+    terminal_list = [line for line in input_file.readlines()]"""
+
+import pathlib
+
+root_dir = pathlib.Path(__file__).parent.parent.parent
+command_file = root_dir / "data" / "breakout_commands.txt"
+
+with open(command_file) as input_file:
     terminal_list = [line for line in input_file.readlines()]
 
-"""import pathlib
-
-here = pathlib.Path(__file__).parent
-exercises_dir = here.parent
-root_dir = exercises_dir.parent
-
-data_dir = root_dir / "data"
-
-#get data into a list
-with open(data_dir / "terminal_record","r") as file:
-    data_list = [int(elements) for elements in file.read().split("\n")[:-1]]"""
 
 #globals:
 folder_structure = {("/",): list()}
@@ -185,12 +182,12 @@ def run_and_return_dict():
     recursive_calculate_size()
     return dir_sizes
 
-def sum_dirs_of_criteria(dictionary: dict):
+def sum_dirs_of_criteria(size_dictionary_criteria: dict):
     """Sums sizes of all directories in the given dictionary which sizes are at most 100000 and returns the total sum"""
     sum = 0
-    for dir_name in dictionary:
-        if dictionary[dir_name] <= 100000:
-            sum += dictionary[dir_name]
+    for dir_name in size_dictionary_criteria:
+        if size_dictionary_criteria[dir_name] <= 100000:
+            sum += size_dictionary_criteria[dir_name]
     return sum
 
 print(sum_dirs_of_criteria(run_and_return_dict()))
