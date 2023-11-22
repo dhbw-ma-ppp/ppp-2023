@@ -189,6 +189,7 @@ class BreakOut:
     ball_x_cord = 0
     paddle_x_cord = 0
 
+
     def input_function(self):
         self.print_screen()
         
