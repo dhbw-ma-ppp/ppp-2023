@@ -186,10 +186,20 @@ class BreakOut:
     matrix = np.zeros((23, 43))
     score = 0
 
+    ball_x_cord = 0
+    paddle_x_cord = 0
+
     def input_function(self):
         self.print_screen()
-        eingabe = int(input("Eingabe: "))
-        return eingabe
+        
+        if self.ball_x_cord < self.paddle_x_cord:
+            return -1
+        elif self.ball_x_cord > self.paddle_x_cord:
+            return 1
+        else:
+            return 0
+
+        #return eingabe
         #if self.counter < 10 and self.counter >= 0:
         #    return 1
         #elif self.counter >= 10:
@@ -212,6 +222,12 @@ class BreakOut:
                 y = self.output[line_index+1]
                 z = self.output[line_index+2]
                 self.matrix[y][x] = z
+
+                if z == 4:
+                    self.ball_x_cord = x
+                elif z == 3:
+                    self.paddle_x_cord = x
+
         plt.imshow(BRGame.matrix)
         plt.title(score)
         plt.draw()
