@@ -35,6 +35,7 @@
 # Mention the total size of the deleted directory in the PR.
 
 from collections import defaultdict
+from pathlib import Path
 
 def process_terminal_session(file_path):
     with open(file_path, 'r') as file:
@@ -52,11 +53,11 @@ def process_terminal_session(file_path):
                 stack.pop()
                 current_directory = stack[-1] if stack else '/'
             else:
-                current_directory = f"{current_directory}/{destination}"
+                current_directory = Path(current_directory) / destination
                 stack.append(current_directory)
         elif line.startswith('dir'):
             directory_name = line.split()[-1]
-            current_directory = f"{current_directory}/{directory_name}"
+            current_directory = Path(current_directory) / directory_name
             stack.append(current_directory)
         elif line.startswith('$ ls'):
             continue
@@ -78,7 +79,7 @@ def find_directory_to_delete(directory_sizes, required_space):
     return None, 0
 
 def main():
-    console_session_file = 'data/terminal_record.txt'
+    console_session_file = Path(input("Enter the path to the console session file: "))
 
     directory_sizes = process_terminal_session(console_session_file)
     max_individual_size = 100000
