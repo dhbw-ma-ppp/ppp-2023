@@ -4,7 +4,7 @@ class Computer:
     Therefore a 'value' in this doc in reality means 'commands[reference_to_that_value]'
     """
 
-    def __init__(self, memory: dict[int, int], output_stream):
+    def __init__(self, memory: dict[int, int], output_stream, input_getter):
         """Initializes a computer with the given commands.
 
         Args:
@@ -13,12 +13,36 @@ class Computer:
         self._memory = memory
         self._instruction_pointer = 0
         self._relative_offset = 0
-        self._output_stream = output_stream
+
+        def _input_and_write():
+            """
+            Reads a number user input and saves it at the at the correct position.
+            If the input is not valid, the computer will terminate.
+            """
+            amount_of_params = 1
+            try:
+                result = input_getter()
+                (save_ref,) = self._get_refs(params_to_get=amount_of_params)
+                self._write_value_to(result, save_ref)
+            except ValueError:
+                print("Please input a valid value next time.")
+                self.terminate()
+            self._instruction_pointer += amount_of_params + 1  # opcode + write_pos
+
+        def _output():
+            """
+            Outputs the first value after the instruction poiunter and moves the instruction_pointer one step forwards.
+            """
+            amount_of_params = 1
+            (address,) = self._get_refs(params_to_get=amount_of_params)
+            output_stream((self._read_value(address)))
+            self._instruction_pointer += amount_of_params + 1  # 1: opcode
+
         self.opcode_map = {
             1: self._add_write,
             2: self._multiply_write,
-            3: self._input_and_write,
-            4: self._output,
+            3: _input_and_write,
+            4: _output,
             5: self._jump_if_true,
             6: self._jump_if_false,
             7: self._less_than,
@@ -57,31 +81,6 @@ class Computer:
         result = self._read_value(first_reference) * self._read_value(second_reference)
         self._write_value_to(value=result, save_pos=save_ref)
         self._instruction_pointer += amount_of_params + 1  # opcode
-
-    def _input_and_write(self):
-        """
-        Reads a number user input and saves it at the first value after the opcode.
-        If the input is not valid, the computer will terminate.
-        """
-        user_input = input("Please input an integer value: ")
-        amount_of_params = 1
-        try:
-            result = int(user_input)
-            (save_ref,) = self._get_refs(params_to_get=amount_of_params)
-            self._write_value_to(result, save_ref)
-        except ValueError:
-            print("Please input a valid value next time.")
-            self.terminate()
-        self._instruction_pointer += amount_of_params + 1  # opcode + write_pos
-
-    def _output(self):
-        """
-        Outputs the first value after the instruction poiunter and moves the instruction_pointer one step forwards.
-        """
-        amount_of_params = 1
-        (address,) = self._get_refs(params_to_get=amount_of_params)
-        self._output_stream.append(self._read_value(address))
-        self._instruction_pointer += amount_of_params + 1  # 1: opcode
 
     def _jump_if_true(self):
         """
