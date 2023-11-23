@@ -1,9 +1,11 @@
 import operator
 import os
+import sys
 
-global three_values, x, y, type, high_score, c_input, buffer
-three_values, x, y, type, buffer  = [], [], [], [], []
+global three_values, x, y, type, high_score, c_input, buffer 
+three_values, x, y, type, buffer = [], [], [], [], []
 high_score, c_input = 0, 0
+game_type = sys.argv[1] if len(sys.argv) >= 2 else "no arguments"
 
 class IntComputer:
     def __init__(self, input_getter, output_collector):
@@ -85,6 +87,8 @@ class IntComputer:
         while True:
             opcode, modes = self.split_command_and_modes()
             if opcode == 99:
+                global high_score
+                print(f"\n[Highscore]: {high_score}")
                 break
             # calculate function arguments
             opcode_function = self.function_map[opcode]
@@ -93,21 +97,25 @@ class IntComputer:
 
 def input_getter():
     graphical_output()
-    value = input()
-    return int(value)
-    #return c_input
+    if("computer" in game_type):
+        return c_input
+    else:
+        value = input()
+        return int(value)
 
 
 def output_collector(output):
-    global three_values
+    global three_values 
     three_values.append(output)
     if len(three_values) == 3:
         global x,y,type,high_score
         x.append(three_values[0]) 
         y.append(three_values[1])
+        if(three_values[0] == -1 and three_values[1] == 0):
+            high_score = three_values[2]
         match three_values[2]:
             case 1:
-                type.append("|")
+                type.append("#")
             case 2:
                 type.append("~")
             case 3:
@@ -124,11 +132,11 @@ def graphical_output():
     print("\x1b[H\x1b[J")
     if not buffer:
         for i in range(max(y)+1):
-            buffer.append("".join(["0" for c in range(max(x))]))
-    print(len(y))
+            buffer.append(["0" for c in range(max(x)+1)])
     for j in range(len(y)):
-        buffer[y[j]] = buffer[y[j]][:x[j]] + type[j] + buffer[y[j]][x[j]+1:]  
-    j_buffer = "\n".join(buffer[1:])
+        buffer[y[j]][x[j]] = type[j]
+
+    j_buffer = "#" +"\n".join(("".join(line) for line in buffer))
     print(j_buffer)
     j_buffer  = ""
     x_point, x_platform = 0,0
