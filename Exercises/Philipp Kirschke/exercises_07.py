@@ -151,11 +151,8 @@ class ArcadeGame:
         return 0  # For now, the paddle remains in position
 
 def main():
-    # Read the file
-    working_dir = Path(os.getcwd()).parent.absolute().parent.absolute()
-    path = Path(str(working_dir) + "/data/breakout_commands.txt")
+   path = Path(__file__).resolve().parent.parent.parent / "data" / "breakout_commands.txt"
     with open(path, 'r') as file:
-        # Create a list of numbers
         numbers = [int(line) for line in file.readlines()]
 
     root = tk.Tk()
