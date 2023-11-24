@@ -68,10 +68,6 @@
 #   This applies to both read- and write operations.
 # - You need to implement a new opcode, opcode 9. opcode 9 adjusts the relative offset by the value of its only parameter.
 #   the offset increases by the value of the parameter (or decreases if that value is negative).
-import os
-from pathlib import Path
-import tkinter as tk
-from int_computer import IntComputer
 
 import os
 from pathlib import Path
@@ -81,10 +77,10 @@ from int_computer import IntComputer
 class ArcadeGame:
     def __init__(self, master, program):
         self.master = master
-        master.title("Advent of Code 2019 - Day 13 Arcade Game")
+        master.title("Breakout Game")
 
         # Create a canvas to draw the game
-        self.canvas = tk.Canvas(master, width=400, height=400)
+        self.canvas = tk.Canvas(master, width=850, height=400)
         self.canvas.pack()
 
         # Create a variable to store the output
@@ -95,19 +91,24 @@ class ArcadeGame:
         self.current_y = 0
 
         # Set the canvas width (adjust this based on your canvas size)
-        self.canvas_width = 10
-
-        # Wrap the update_display method to capture the output
-        def output_wrapper(output):
-            self.current_output = output
-            self.update_display(output)
+        self.canvas_width = 43
 
         # Create an instance of IntComputer with the wrapped output_collector
-        self.computer = IntComputer(self.get_input, output_wrapper)
+        self.computer = IntComputer(self.get_input, self.output_wrapper)
         self.computer.run(program)
 
+    def output_wrapper(self, output):
+        if self.current_output is None:
+            self.current_output = [output]
+        else:
+            self.current_output.append(output)
+
+        if len(self.current_output) == 3:
+            # Update the display when all three values are received
+            self.update_display(self.current_output[2])
+            self.current_output = None
+
     def update_display(self, tile_type):
-        # Map tile types to colors (you can customize this mapping)
         color_map = {
             0: "white",  # empty tile
             1: "black",  # wall
@@ -117,7 +118,7 @@ class ArcadeGame:
         }
 
         # Draw a rectangle on the canvas based on the tile type
-        tile_size = 20  # You can adjust this based on your preference
+        tile_size = 20
         x, y = self.current_x, self.current_y
         x_pixel, y_pixel = x * tile_size, y * tile_size
         x1, y1 = x_pixel, y_pixel
@@ -163,5 +164,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
