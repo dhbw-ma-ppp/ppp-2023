@@ -154,6 +154,7 @@ ball_position = 0               #the x-position of the ball which is always up t
 paddle_position = 0             #the x-position of the paddle (horizontal)
 score = 0                       #global counter containing the current score of the game
 first_frame = True              #True while current frame is the first, False while not. Needed to only open a new window at first frame.
+figure, ax = plt.subplots()     #splitting the plot into subplots. That's necessary to speed up the visualization.
 
 #________________________________________________________EXERCISES___________________________________________________________________________________
 
@@ -184,16 +185,19 @@ def insert_into_matrix(matrix_input: list):
 def control_paddle():
     """Returns the command for the paddle for it to always follow the ball"""
 
+    global ax#-----------------------------------------------
     global first_frame
     insert_into_matrix(output_list)
-    plt.imshow(matrix, cmap="rainbow")
+    ax.imshow(matrix, cmap="rainbow")
     if first_frame:
         plt.show(block  = False)
         first_frame = False
     else:
         plt.draw()
+
     plt.pause(0.000001)
-    
+    ax.clear()
+
     if ball_position < paddle_position:
         return -1
     elif ball_position > paddle_position:
