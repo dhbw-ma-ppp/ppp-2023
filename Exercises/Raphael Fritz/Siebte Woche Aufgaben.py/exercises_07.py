@@ -12,6 +12,7 @@ class breakout:
         self.commands = []
         self.paddle_x = 0
         self.ball_x = 0
+        self.highscore = 0
         self.arr = np.zeros((23, 43), dtype=int)
 
     def get_commands(self):     
@@ -25,13 +26,14 @@ class breakout:
     def update_screen(self, output):
         self.computeroutput = output
         for element in self.tripletinator():
-            if element[0] == -1: print(element[2])
+            if element[0] == -1: self.highscore = element[2] 
             else:
                 self.arr[element[1], element[0]] = element[2]
                 if element[2] == 3: self.paddle_x = element[0]
                 elif element[2] == 4: self.ball_x = element[0]
         plt.cla()
         plt.imshow(self.arr,cmap = self.colour)
+        plt.title(f"highscore: {self.highscore}") 
         plt.show(block=False)   #*Note: for part 1 remove block False and change first number in breakout commands from 2 to 1
         plt.pause(self.pausetimer) 
         return self.AI()
@@ -44,7 +46,8 @@ class breakout:
     def main(self):
         self.commands = self.get_commands()
         plt.imshow(self.arr,cmap = self.colour)
-        intcomp = intComputer(self.commands, self.update_screen) 
+        intcomp = intComputer(self.commands, self.update_screen)
+        plt.title(f"highscore: {self.highscore}") 
         plt.show(block=False)
         intcomp.main()  
 
