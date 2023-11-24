@@ -26,7 +26,7 @@ def calc_sums(numbers):
     return sums
 
 
-def get_data():
+def get_nums():
     try:
         with open("data/input_sequence.txt") as file:
             data = [int(line) for line in file.readlines()]
@@ -39,7 +39,7 @@ def get_data():
     return data
 
 
-numbers = get_data()
+numbers = get_nums()
 
 
 lower_bound = 0
