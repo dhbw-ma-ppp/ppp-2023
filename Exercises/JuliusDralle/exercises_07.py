@@ -210,7 +210,7 @@ class BreakOut:
         #    return -1
     
     def output_collect(self, x):
-        print(x)
+        #print(x)
         self.output.append(x)
         self.print_screen
 
