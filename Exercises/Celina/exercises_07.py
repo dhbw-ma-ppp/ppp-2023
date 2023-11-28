@@ -40,22 +40,15 @@ paddle_pos=None
 ball_pos=None
 tiles= np.zeros((23,43))
 
-with open("breakout_commands.txt", "r") as data:
+with open("../../data/breakout_commands.txt", "r") as data:
     for line in data:
         commands.append(int(line))
-
-type_color_map = {
-    0: "white",
-    1: "green",
-    2: "blue",
-    3: "red",
-    4: "yellow"
-}
+    commands[0]=2
 
 def make_type(x,y,types):
     global paddle_pos
     global ball_pos
-    tiles[x,y]=types
+    tiles[y,x]=types if types in [1,2,3,4] else 0
     if types ==3:
         #ax.bar(x,y,1,y,color="red")
         paddle_pos=x
@@ -66,12 +59,11 @@ def make_type(x,y,types):
         
 def breakout():
     #fig, ax = plt.subplots()
-    for element in output:
+    for index in range(len(output))[::3]:
         #print(output[element],output[element+1],output[element+2])
-        x = output[element]
-        y = output[element+1]
-        make_type(x,y,output[element+2])
-        element+=3
+        x = output[index]
+        y = output[index+1]
+        make_type(x,y,output[index+2])
     #plt.show()
     
 def output_collector(value):
@@ -81,9 +73,11 @@ def input_getter():
     global output
     breakout()
     output=[]
-    fig, ax = plt.subplots()
-    ax.imshow(tiles)
-    plt.show()
+    #fig, ax = plt.subplots()
+    plt.cla()
+    plt.imshow(tiles)
+    plt.show(block=False)
+    plt.pause(0.0001)
     if ball_pos > paddle_pos:
         return 1
     elif ball_pos < paddle_pos:
