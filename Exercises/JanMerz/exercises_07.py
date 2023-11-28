@@ -166,7 +166,7 @@ class RunGame:
 
     ignore_value = False
     painted_main_screen = False
-    zaehler = 0
+    counter = 0
     relevant_tiles = 0
     x_coordinate = 0
     y_coordinate = 0
@@ -176,23 +176,23 @@ class RunGame:
 
     def output_method(self, computer_return):
 
-        if (computer_return == -1 or self.ignore_value):
+        if computer_return == -1 or self.ignore_value:
 
-            if(self.zaehler == 0 and not self.painted_main_screen):
+            if self.counter == 0 and not self.painted_main_screen:
                 self.paint_picture()
                 self.painted_main_screen = True
 
-            self.zaehler += 1
+            self.counter += 1
 
-            if(self.zaehler < 3):
+            if self.counter < 3:
                 self.ignore_value = True
                 return
-            elif(self.zaehler == 3):
+            elif self.counter == 3:
                 score = computer_return
                 print("score:", score)
                 return
             else:
-                self.zaehler = 0
+                self.counter = 0
                 self.ignore_value = False
 
         self.ignore_value = False
@@ -207,9 +207,9 @@ class RunGame:
                 self.change_matrix(computer_return)
                 self.relevant_tiles = 0
 
-                if(computer_return == 4):
+                if computer_return == 4:
                     self.ball_coordinate = self.x_coordinate
-                    if(self.painted_main_screen):
+                    if self.painted_main_screen:
                         self.paint_picture()
             
     
@@ -217,13 +217,13 @@ class RunGame:
         paddle_coordinate = 0
 
         for index in range(43):
-            if(self.matrix[21, index] == 3):
+            if self.matrix[21, index] == 3:
                 paddle_coordinate = index
                 break
 
-        if(paddle_coordinate < self.ball_coordinate):
+        if paddle_coordinate < self.ball_coordinate:
                 paddle_direction = 1
-        elif(paddle_coordinate > self.ball_coordinate):
+        elif paddle_coordinate > self.ball_coordinate:
                 paddle_direction = -1
         else:
             paddle_direction = 0
@@ -238,12 +238,12 @@ class RunGame:
 
     def paint_picture(self):
 
-        self.ax.imshow(self.matrix)
+        self.ax.matshow(self.matrix)
         plt.draw()
-        plt.pause(0.000001)
+        plt.pause(0.0001)
         self.ax.clear()
 
-root_dir = pathlib.Path().absolute().parents[1]
+root_dir = pathlib.Path(__file__).absolute().parents[2]
 with open(root_dir / "data" / "breakout_commands.txt", "r") as commands:
     lines = commands.read().splitlines()
     for element in range(len(lines)):
@@ -251,5 +251,7 @@ with open(root_dir / "data" / "breakout_commands.txt", "r") as commands:
 
 run_obj = RunGame()
 computer = IntComputer(run_obj.input_getter, run_obj.output_method)
-picture_pixels = []
 computer.run(lines)
+
+list = []
+list
