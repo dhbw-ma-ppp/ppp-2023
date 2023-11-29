@@ -50,34 +50,27 @@ def make_type(x,y,types):
     global ball_pos
     tiles[y,x]=types if types in [1,2,3,4] else 0
     if types ==3:
-        #ax.bar(x,y,1,y,color="red")
         paddle_pos=x
     elif types==4:
-        #ax.bar(x,y,1,y,color="yellow")
         ball_pos=x
         
         
 def breakout():
-    #fig, ax = plt.subplots()
     for index in range(len(output))[::3]:
-        #print(output[element],output[element+1],output[element+2])
         x = output[index]
         y = output[index+1]
         make_type(x,y,output[index+2])
-    #plt.show()
     
 def output_collector(value):
     output.append(value)
     
 def input_getter():
-    global output
     breakout()
-    output=[]
-    #fig, ax = plt.subplots()
     plt.cla()
     plt.imshow(tiles)
     plt.show(block=False)
     plt.pause(0.0001)
+    #return int(input())
     if ball_pos > paddle_pos:
         return 1
     elif ball_pos < paddle_pos:
