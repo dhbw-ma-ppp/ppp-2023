@@ -252,6 +252,3 @@ with open(root_dir / "data" / "breakout_commands.txt", "r") as commands:
 run_obj = RunGame()
 computer = IntComputer(run_obj.input_getter, run_obj.output_method)
 computer.run(lines)
-
-list = []
-list
