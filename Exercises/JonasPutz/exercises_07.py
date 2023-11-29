@@ -73,7 +73,7 @@ from exercises_07_breakoutgui import BreakoutGUI
 from pathlib import Path
 
 def get_breakout_commands() -> list[int]:
-    """ Gets the commands from a file
+    """ Gets the commands from breakout_commands.txt
 
         Returns them as a List of ints"""
     
@@ -89,12 +89,12 @@ def user_input() -> int:
         This will only accept the controls sepcified below"""
     print(breakout_gui)
 
-    while (answer := input("Input: ")) not in _controls:
+    while (answer := input("Input: ")) not in _CONTROLS:
         print(_control_str)
 
-    return _controls[answer]
+    return _CONTROLS[answer]
 
-_controls = { #The possible user inputs and their interpretation
+_CONTROLS = { #The possible user inputs and their interpretation
     '0': 0,
     '1': 1,
     '-1': -1,
@@ -104,7 +104,7 @@ _controls = { #The possible user inputs and their interpretation
     's': 0,
     'd': 1,
 }
-_control_str = f"Controls: {[key + ': ' + ('left' if val == -1 else 'wait' if val == 0 else 'right') for key, val in _controls.items()]}"
+_control_str = f"Controls: {[key + ': ' + ('left' if val == -1 else 'wait' if val == 0 else 'right') for key, val in _CONTROLS.items()]}"
 
 def auto_input() -> int:
     """ Will automaticly send a input to the computer, keeping the paddle under the ball at all time"""
@@ -124,7 +124,9 @@ def run_game():
     commands[0] = 2 #switches to game mode
 
     print("Choose input mode: Auto [0], Manual [1]")
-    while (mode := input("")) not in ['0', '1']: pass
+    while (mode := input("")) not in ['0', '1']: 
+        pass
+
     input_method = None
     if mode == '0':
         input_method = auto_input
@@ -140,7 +142,9 @@ def run_game():
         print("\n\nFinal Board:")
         print(breakout_gui)
 
-        while ((answer := input("Try again? [y] [n]\n")) not in ['y', 'n']): pass
+        while ((answer := input("Try again? [y] [n]\n")) not in ['y', 'n']): 
+            pass
+        
         running = answer == 'y'
 
 run_game()
