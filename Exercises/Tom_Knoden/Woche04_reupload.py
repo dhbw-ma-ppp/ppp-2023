@@ -76,6 +76,7 @@ def bearbeite_programm(programm, inputs):
         # ... (rest of the code, unchanged)
 
 # Beispiel-Eingabe und Ausführung des Programms
+# Die Programm-Variable kann beliebig durch Auskommentieren ausgewechselt werden...
 #programm = [int(x) for x in input("Geben Sie das Programm als Liste von Zahlen ein: ").split(",")]
 programm = commands
 eingabe = int(input("Geben Sie die Eingabe (z.B. 5) ein: "))
