@@ -17,16 +17,16 @@
 # Please make not of your result in the PR.
 
 def part1_read_input():
-    with open("/Users/corvinansorge/PycharmProjects/ppp-2023/data/input_sequence.txt") as f:
+    with open("./../../data/input_sequence.txt") as f:
         return [int(line) for line in f.readlines()]
 
-def part1_solution(numbers, preamble_length):
+def find_first_invalid_number(numbers, preamble_length):
     for i in range(preamble_length, len(numbers)):
         preamble = numbers[i-preamble_length:i]
         if not any([numbers[i] - x in preamble for x in preamble]):
             return numbers[i]
 
-print(part1_solution(part1_read_input(), 25))
+print(find_first_invalid_number(part1_read_input(), 25))
 
 
 # PART 2:
@@ -75,8 +75,8 @@ def get_bag_count(bagdict, bag):
             count += int(innerbag[0]) + int(innerbag[0]) * get_bag_count(bagdict, innerbag[1:])
         return count
 
-def part2_solution(fp):
+def nestedBags(fp):
     bagdict = get_bag_dict(fp)
     return get_bag_count(bagdict, "shinygoldbag")
 
-print(part2_solution("/Users/corvinansorge/PycharmProjects/ppp-2023/data/input_bags.txt"))
+print(nestedBags("./../../data/input_bags.txt"))
