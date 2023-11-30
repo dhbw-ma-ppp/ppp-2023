@@ -77,10 +77,10 @@ def execute_program(commands, input_value):
                                                                                                        param_modes[1])
             op_pointer += 4
         elif opcode == 3:
-            commands[commands[op_pointer + 1]] = input_value
+            commands[commands[op_pointer + 1]] = int(input("Input: "))
             op_pointer += 2
         elif opcode == 4:
-            output = get_value(op_pointer + 1, param_modes[0])
+            output = commands[commands[op_pointer + 1]] if param_modes[0] == 0 else commands[op_pointer + 1]
             op_pointer += 2
         elif opcode == 5:
             if get_value(op_pointer + 1, param_modes[0]) != 0:
