@@ -21,7 +21,6 @@
 
 from pathlib import Path
 import pandas as pd
-import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 
@@ -37,8 +36,7 @@ print('-' * 30)
 
 #Treating null values:
 print(f"\nCount of null arguments:\n{data.isnull().sum()}")
-#Age: null replaced with average age
-data["Age"] = data["Age"].fillna(int(data["Age"].mean())) #Still have to converte data to age!!
+#Age: null rows will be dropped in age analysis
 #Cabin: Mostly empty: data is unnecessary and can be deleted
 data.drop(columns = ["Cabin"], inplace = True)
 #Embarked: Only 2 null Arguments, will be replaced by 'S'
@@ -82,10 +80,13 @@ for col in _SURVIVALRATE_BY_COLUMNS_Discrete:
     plt.title(f"Survivalrate by {col}")
     plt.show()
 
+sns.violinplot(data = data[["Pclass", "Embarked"]], x = "Embarked", y = "Pclass")
+plt.title(f"Class by Embarked")
+plt.show()
+
 _SURVIVALRATE_BY_COLUMNS_Continuous = [
     "PassengerId",
     "Name",
-    "Age",
     "Ticket",
     "Fare",
     "Fam",
@@ -95,3 +96,11 @@ for col in _SURVIVALRATE_BY_COLUMNS_Continuous:
     sns.violinplot(data = data[["Survived", col]], x = "Survived", y = col)
     plt.title(f"Survivalrate by {col}")
     plt.show()
+
+sns.violinplot(data = data.dropna(inplace = False)[["Survived", "Age"]], x = "Survived", y = "Age")
+plt.title(f"Survivalrate by Age")
+plt.show()
+
+sns.violinplot(data = data[["Pclass", "Name"]], x = "Pclass", y = "Name")
+plt.title(f"Class by Name")
+plt.show()   
