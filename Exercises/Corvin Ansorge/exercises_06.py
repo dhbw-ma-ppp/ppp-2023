@@ -123,7 +123,7 @@ class Dir:
 root = Dir("/", None)
 curr_dir: Dir = root
 
-cmds = [e.strip() for e in open("/Users/corvinansorge/PycharmProjects/ppp-2023/data/terminal_record.txt") if not e.startswith("$ ls")]
+cmds = [e.strip() for e in open("./../../data/terminal_record.txt") if not e.startswith("$ ls")]
 for line in cmds[1:]:
     if line.startswith("$ cd"):
         curr_dir = curr_dir[line.split(" ")[2]]
