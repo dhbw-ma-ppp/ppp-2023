@@ -31,23 +31,42 @@ path_dir_exercises = path_here.parent
 path_dir_root = path_dir_exercises.parent
 path_dir_data = path_dir_root / "data"
 
-
 df = pd.read_csv(path_dir_data / "titanic_train.csv" )
 
+
+#print(df["Embarked"])
+
+
 df['Sex'] = df['Sex'].replace(['female','male'],[0,1])
+df['Embarked'] = df['Embarked'].replace(['S','C','Q'],[0,1,2])
  
 #print(df)
 
 label = df[["Survived"]]
-features = df.drop(columns = ['Name','Ticket','PassengerId','Survived','Embarked','Cabin'])
+#features = df.drop(columns = ['Name','Ticket','PassengerId','Survived','Embarked','Cabin'])
+features = df.drop(columns = ['Name','Ticket','PassengerId','Survived','Cabin'])
 
 features_train, features_validate, label_train, label_validate = train_test_split(features, label, test_size=0.2, stratify=label)
 
-classifier = tree.DecisionTreeClassifier(max_depth=20)
+classifier = tree.DecisionTreeClassifier(max_depth=8)
 classifier.fit(features_train, label_train)
 label_predicted = classifier.predict(features_validate)
 label_predicted_ontraindata = classifier.predict(features_train)
 
-print("Test: ",matthews_corrcoef(label_validate, label_predicted))
+print("Validierung: ",matthews_corrcoef(label_validate, label_predicted))
 print("Train: ",matthews_corrcoef(label_train, label_predicted_ontraindata))
+
+
+# TEST Data area
+
+df_test = pd.read_csv(path_dir_data / "titanic_test.csv" )
+df_test['Embarked'] = df_test['Embarked'].replace(['S','C','Q'],[0,1,2])
+df_test['Sex'] = df_test['Sex'].replace(['female','male'],[0,1])
+label_test = df_test['Survived']
+features_test = df_test.drop(columns = ['Name','Ticket','PassengerId','Survived','Cabin'])
+
+label_predicted_test = classifier.predict(features_test)
+
+
+print("TEST: ",matthews_corrcoef(label_test, label_predicted_test))
 
