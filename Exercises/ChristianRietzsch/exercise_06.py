@@ -1,4 +1,5 @@
 def concat(value1, value2):
+    # adds a new dir / file in a directory
     value1[[*value2.keys()][0]] = [*value2.values()][0]
     return value1
 
@@ -11,6 +12,7 @@ def count_dir_size(dir, orig_dir, path, size_dir):
             path.append(key)
             dir_path = "/"+"/".join(path[1:])            
             s_size = count_dir_size(orig_dir[dir_path], orig_dir, path, size_dir)
+            # recursively counts the size of a directory (every file in a dir + the size of the other dirs)
             size_dir[dir_path] = s_size
             size += s_size
             path = zw
@@ -23,6 +25,7 @@ def count_all(commands):
     dir_content = {}
     dir_path= []
     for line in commands:
+        # parse command
         if "$ cd" in line.strip():
             if ".." in line:
                 dir_path.pop()    
@@ -50,23 +53,26 @@ def count_all(commands):
     dir_size["/"] = slash_size
     return dir_size
 
-def task1():
-    with open("terminal_record.txt", "r") as file: 
-        dir_sizes = count_all(file.readlines())
-        values = [*dir_sizes.values()]
-        return (sum([value for value in values if value <= 100000]))
+def task1(lines):
+    dir_sizes = count_all(lines)
+    values = [*dir_sizes.values()]
+    return (sum([value for value in values if value <= 100000]))
 
-assert(task1() == 1778099)
 
-def task2():
-    with open("terminal_record.txt", "r") as file: 
-        dir_sizes = count_all(file.readlines())
-        slash_size = dir_sizes["/"]
-        max_size = 70000000
-        req_free_space = 30000000 
-        free_space = max_size - slash_size
-        if free_space < req_free_space:
-            needed_space = req_free_space - free_space
-            return min([dir_sizes[key] for key in [*dir_sizes.keys()] if dir_sizes[key] >= needed_space])
+
+def task2(lines):
+    dir_sizes = count_all(lines)
+    slash_size = dir_sizes["/"]
+    max_size = 70000000
+    req_free_space = 30000000 
+    free_space = max_size - slash_size
+    # calculates the free space
+    if free_space < req_free_space:
+        needed_space = req_free_space - free_space
+        return min([dir_sizes[key] for key in [*dir_sizes.keys()] if dir_sizes[key] >= needed_space])
+        # checks for the directory with a size the nearest to needed_space
         
-assert(task2() == 1623571)
+with open("../../data/terminal_record.txt", "r") as file:
+    lines = file.readlines()
+    assert(task1(lines) == 1778099)    
+    assert(task2(lines) == 1623571)
