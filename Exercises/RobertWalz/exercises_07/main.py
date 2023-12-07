@@ -163,10 +163,10 @@ class Game:
         # get input, draw new screen
 
         Screen.wrapper(self.render)
-        key = self.screen.get_event()
+        key_event = self.screen.get_event()
         if not key:
             return 0
-        key = key.key_code
+        key = key_event.key_code
         print(key)
         if key == 97:
             return -1

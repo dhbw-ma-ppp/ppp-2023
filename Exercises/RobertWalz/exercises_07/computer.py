@@ -1,7 +1,7 @@
 class Computer:
     """
-    The computer only uses referenced values and therfore converts explicit values to references.
-    Therefore a 'value' in this doc in reality means 'commands[reference_to_that_value]'
+    The computer only uses referenced values and therefore converts explicit values to references.
+    A 'value' in this doc in reality means 'commands[reference_to_that_value]'
     """
 
     def __init__(self, memory: dict[int, int], output_stream, input_getter):
@@ -57,7 +57,7 @@ class Computer:
 
     def _add_write(self):
         """
-        Adds the first and second value after the instructio_pointer and stores it in third position.
+        Adds the first and second value after the instruction_pointer and stores it in third position.
         Finally it moves the instruction pointer 4 steps forwards.
         """
 
@@ -71,7 +71,7 @@ class Computer:
 
     def _multiply_write(self):
         """
-        Multiplies the first and second value after the instructio_pointer and stores it in third position.
+        Multiplies the first and second value after the instruction_pointer and stores it in third position.
         Finally it moves the instruction pointer 4 steps forwards.
         """
         amount_of_params = 3
@@ -84,7 +84,7 @@ class Computer:
 
     def _jump_if_true(self):
         """
-        Jumps to position referenced by the second position from the instruction pointer, if the first value is true (!=0).
+        Jumps to position referenced by the second position from the instruction_pointer, if the first value is true (!=0).
         Otherwise it moves the instruction_pointer 3 steps forwards.
         """
         amount_of_params = 2
@@ -96,7 +96,7 @@ class Computer:
 
     def _jump_if_false(self):
         """
-        Jumps to position referenced by the second position from the instruction pointer, if the first value is false (=0).
+        Jumps to position referenced by the second position from the instruction_pointer, if the first value is false (=0).
         Otherwise it moves the instruction_pointer 3 steps forward.
         """
         amount_of_params = 2
@@ -124,7 +124,7 @@ class Computer:
 
     def _equals(self):
         """
-        Writes 1 to third position from instruction_pointer, if the first to values are equal.
+        Writes 1 to third position from instruction_pointer, if the first two values are equal.
         Otherwise it sets the value to 0
         """
         amount_of_params = 3
