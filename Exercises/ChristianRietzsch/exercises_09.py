@@ -22,13 +22,17 @@ from sklearn import tree
 from sklearn.metrics import matthews_corrcoef
 from sklearn.impute import KNNImputer
 import pandas as pd
+import numpy as np
 
-data = pd.read_csv("../../data/titanic_train.csv")
-data['Sex'] = data['Sex'].apply(lambda x: 1 if 'female' in x else 0)
-del data['PassengerId'], data['Embarked'], data['Ticket'], data['Name'], data['Parch'], data['SibSp'], data['Cabin']
+def get_data(path):
+    data = pd.read_csv(path)
+    data['Sex'] = data['Sex'].apply(lambda x: 1 if 'female' in x else 0)
+    del data['PassengerId'], data['Embarked'], data['Ticket'], data['Name'], data['Parch'], data['SibSp'], data['Cabin']
+    return data
+
 values = []
 
-def compute(neighbor=5, comp_data = data, depth=5):
+def compute(neighbor=5, comp_data=[], depth=5):
     imputer = KNNImputer(n_neighbors = neighbor)
     missing_columns = comp_data.isnull().sum()
     for key in [index for index in missing_columns.index if missing_columns[index] > 0]:
@@ -43,13 +47,26 @@ def compute(neighbor=5, comp_data = data, depth=5):
     res = matthews_corrcoef(y_test, y_pred)
     return res
 
-for a in range(1,4):
-    for i in range(1,50):
-        values.append(max([compute(i) for j in range(1,10)]))
-    neighbor = values.index(max(values))+1
-    values = []
-    for i in range(1,50):
-        values.append(max([compute(neighbor, data, i) for j in range(1,10)]))
-    depth = values.index(max(values))+1
-    print(compute(neighbor, data, depth))
-    print(compute())
+data = get_data("../../data/titanic_train.csv")
+for i in range(1,50):
+    values.append(np.mean([compute(i, data) for j in range(1,15)]))
+neighbor = values.index(max(values))+1
+values = []
+for i in range(1,50):
+    values.append(max([compute(neighbor, data, i) for j in range(1,15)]))
+depth = values.index(max(values))+1
+
+comp_data = get_data("../../data/titanic_test.csv")
+
+imputer = KNNImputer(n_neighbors = neighbor)
+missing_columns = data.isnull().sum()
+for key in [index for index in missing_columns.index if missing_columns[index] > 0]:
+    data[key] = imputer.fit_transform(data[key].values.reshape(-1,1))
+features = data.iloc[:, 1:]
+label = data[['Survived']]
+model = tree.DecisionTreeClassifier(max_depth=depth)
+model.fit(features, label)
+test_features = comp_data.iloc[:, 1:]
+test_label = comp_data[['Survived']]
+test_pred = model.predict(test_features)
+print(matthews_corrcoef(test_label, test_pred))
