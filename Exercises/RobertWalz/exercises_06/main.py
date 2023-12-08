@@ -68,8 +68,7 @@ def get_dir_sizes(dir: Directory, sizes_of_dirs):
 
 
 def get_size_of_dirs_above_size(size: int, directories: dict[Path, int]):
-    values = [value for value in directories.values() if value <= size]
-    count = sum(values)
+    count = sum([value for value in directories.values() if value <= size])
     return count
 
 
